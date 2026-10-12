@@ -1,6 +1,37 @@
+# sheen-theme
+
 > Theme for www.sheenupholstery.com (Shopify, vintage Impulse). Branch `main` is the live theme **sheen-theme/main**; `staging` is **sheen-theme/staging**. Make changes on `staging`, check the preview, then open a PR into `main`. Back-office scripts live in [kwr14/sheen-backoffice](https://github.com/kwr14/sheen-backoffice).
 
-# Sheen furniture pages: how it works (updated 12 Oct 2026)
+## How to update the theme (staging → main)
+
+| Branch | Shopify theme | Who sees it |
+|---|---|---|
+| `staging` | **sheen-theme/staging** (unpublished) | Preview only |
+| `main` | **sheen-theme/main** (live) | Customers |
+
+Shopify keeps each branch and its theme in sync both ways: a push to the branch updates the theme, and a save in the theme editor or code editor is committed back to the branch.
+
+1. **Make the change on `staging`.** Use any of these:
+   - Shopify admin → Online Store → Themes → sheen-theme/staging → Customize or Edit code, then Save (Shopify commits it to `staging`).
+   - Edit locally and push: `git checkout staging && git pull`, make the change, `git commit`, `git push`.
+   - Claude can write to the staging theme through the Shopify connector, and Shopify commits the change.
+2. **Check it** in the staging preview: Themes → sheen-theme/staging → ⋯ → Preview. Look at the pages you touched on desktop and mobile.
+3. **Open a pull request from `staging` into `main`:**
+   ```bash
+   gh pr create --repo kwr14/sheen-theme --base main --head staging --title "…" --body "…"
+   ```
+   Or use https://github.com/kwr14/sheen-theme/compare/main...staging.
+4. **Review and merge.** Shopify updates the live theme a few seconds after the merge.
+5. **Bring `staging` up to date:** `git checkout staging && git pull && git merge origin/main && git push`. This keeps the two branches from drifting apart.
+
+**Don'ts**
+- Don't edit the live theme (sheen-theme/main) in the theme editor except for urgent fixes. Saves there go straight to `main`. If you do, merge `main` back into `staging` afterwards.
+- Don't upload files to the live theme any other way (the CLI, or `furniture_agent.py theme --allow-live`). That makes the theme and the branch disagree.
+- Don't commit logins or tokens.
+
+**Rolling back:** revert the merge on GitHub ("Revert" on the PR) and merge the revert PR. The live theme goes back to how it was.
+
+## Sheen furniture pages: how it works (updated 12 Oct 2026)
 
 Made-to-order furniture (sofas, armchairs, headboards) on the Shopify store, following Developer Brief v3. Customers:
 1. pick a fabric **family**,
@@ -12,7 +43,7 @@ The detailed guides are in the project folder:
 - `agents/README.md`: everyday use (spreadsheets, sync, photos, going-live checklist)
 - `furniture-theme/README.md`: what the theme files do and their settings
 
-## The pieces
+### The pieces
 
 | Part | Where | Notes |
 |---|---|---|
@@ -32,7 +63,7 @@ Which colours customers see:
 
 The theme is "vintage" Impulse, so templates are `.liquid` files that load the sections. JSON templates don't work.
 
-## Status (11 Oct 2026)
+### Status (11 Oct 2026)
 
 **Live**
 - The theme "Impulse – Furniture preview" (178813043064) was **published** on 11 Oct at 20:04 UTC and is now the live theme.
@@ -73,7 +104,7 @@ The theme is "vintage" Impulse, so templates are `.liquid` files that load the s
 - `status` against the store shows all four pieces in sync.
 - Custom fields are saved with `metafieldsSet`. Never send `metafields` inside `productSet`: it deletes every product field not listed.
 
-## Before launch
+### Before launch
 1. Confirm the tier £/m (`tiers.csv`) and Dexter's fabric metres.
 2. Mark colours Live and add swatch photos (`furniture_agent.py fabrics` lists what's missing).
 3. Add real photos, specs and lead times, and set shipping weights (currently 0).
@@ -84,7 +115,7 @@ The theme is "vintage" Impulse, so templates are `.liquid` files that load the s
    - set `preview_fabrics` to `no` in `pieces.csv`, then run `sync --apply`.
 6. Publish and price the Fabric swatch product.
 
-## Fabric library tidy-up (12 Oct 2026)
+### Fabric library tidy-up (12 Oct 2026)
 - **Collection** now holds only the customer-facing name: Elba, Linara, Davey, Smooth III, Omega IV, Atlantis, Teddy FR, Kobi. The supplier and range notes that used to be in brackets were moved to **internal_note** ("Collection note (moved 12 Oct): …").
 - **Composition** no longer says "TBC". Partial values were kept, e.g. "Wool" and "Cotton-linen". Where nothing was known, the field is now empty, so the fabric card shows no composition line. The original wording is in internal_note ("Composition to confirm (was: …)").
 - Checked on all four live product pages: no "TBC", no supplier notes, and internal notes are not on the page.
@@ -94,7 +125,7 @@ The theme is "vintage" Impulse, so templates are `.liquid` files that load the s
   - Shared placeholder chip colours: for example, #9C8B7A and #C9C2B6 are each used by 6 colours. The chip colour also drives the illustration.
   - Empty composition for Petrus, Smooth III and Kobi.
 
-## Theme version control (GitHub), set up 12 Oct 2026
+### Theme version control (GitHub), set up 12 Oct 2026
 - Repository: **github.com/kwr14/sheen-theme** (private). It holds the full theme (532 files), snapshotted from the live theme on 12 Oct.
 - Branches are connected to Shopify themes through the Shopify GitHub app:
   - `main` → theme **sheen-theme/main** (178888114552)
@@ -112,7 +143,7 @@ The theme is "vintage" Impulse, so templates are `.liquid` files that load the s
   - Claude sessions with `kwr14/sheen-theme` attached can commit directly.
 - `furniture_agent.py theme` (direct theme upload) is no longer needed for the connected themes. Once `main` is live, don't upload to the live theme outside GitHub, or the branch and the theme will drift apart.
 
-## Colour illustration (12 Oct 2026, on staging)
+### Colour illustration (12 Oct 2026, on staging)
 - When a colour has no photos of its own, the product page draws an illustration of the piece in that colour.
   - The shape follows the product type: sofa, armchair, headboard or footstool.
   - A texture hint follows the fabric family: weave for linen/cotton, sheen for velvet/chenille, loops for bouclé, zigzag for herringbone, diagonal for twill.
