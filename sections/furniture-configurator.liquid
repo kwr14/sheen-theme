@@ -21,6 +21,7 @@
   • "Discontinued" → hidden.  "Not yet approved" → hidden, except in preview
     (theme editor, the "Preview unapproved fabrics" setting, or a product tagged "fabric-preview").
   • allowed_products: when filled, the fabric only shows on matching product types (e.g. "Sofa").
+    A shape type also matches its base type: "Curved sofas" → Sofa, "Tub chairs" → Armchair.
 
   Products without the fabrics metafield fall back to a plain variant list.
   Install: see furniture-theme/README.md
@@ -70,6 +71,11 @@
   if plast == 's'
     assign ptype = ptype | remove_last: 's'
   endif
+  # Shape variants match their base type too ("Curved sofa" → "sofa", "Tub chair" → "armchair")
+  assign ptype_base = ptype | split: ' ' | last
+  if ptype_base == 'chair'
+    assign ptype_base = 'armchair'
+  endif
 
   # Pass 1: which fabrics are visible, and which families they make
   assign visible = ','
@@ -95,7 +101,7 @@
           if alast == 's'
             assign al = al | remove_last: 's'
           endif
-          if al == ptype or al == 'all' or al == product.handle
+          if al == ptype or al == ptype_base or al == 'all' or al == product.handle
             assign allowed = true
             break
           endif
