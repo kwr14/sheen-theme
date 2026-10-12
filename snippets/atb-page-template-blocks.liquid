@@ -1,0 +1,50 @@
+{% comment %}
+  This file handles each block available on product.sections or page.sections templates.
+  Each block is a near identical duplicate of a section also available on the home page.
+  Exception is sections that had blocks become hard coded options.
+{% endcomment %}
+<div class="page-blocks">
+  {% for block0 in blocks %}
+    <div {{ block.shopify_attributes }}>
+      {% case block_type[forloop.index0] %}
+
+        {% when 'contact-form' %}
+          {% include 'atb-page-block-contact-form'   %}
+
+        {% when 'custom-html' %}
+          {% include 'atb-page-block-custom-html'   %}
+
+        {% when 'background-image-text' %}
+          {% include 'atb-page-block-background-image-text'   %}
+
+        {% when 'hero-video' %}
+          {% include 'atb-page-block-hero-video'   %}
+
+        {% when 'image-hero' %}
+          {% include 'atb-page-block-image-hero'   %}
+
+        {% when 'image-row' %}
+          {% include 'atb-page-block-image-row'   %}
+
+        {% when 'rich-text'%}
+          {% include 'atb-page-block-rich-text'   %}
+
+        {% when 'text-and-image' %}
+          {% include 'atb-page-block-text-and-image'   %}
+
+        {% when 'text-columns' %}
+          {% include 'atb-page-block-text-columns'   %}
+
+        {% when 'testimonials' %}
+          {% include 'atb-page-block-testimonials'   %}
+
+        {% when 'map' %}
+          {% include 'atb-page-block-map'   %}
+
+        {% when 'featured-collection' %}
+          {% include 'atb-page-block-featured-collection'   %}
+
+      {% endcase %}
+    </div>
+  {% endfor %}
+</div>

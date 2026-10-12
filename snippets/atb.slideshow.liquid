@@ -1,0 +1,609 @@
+{% comment %}
+ATB-SCHEMA{
+  "name": "Slideshow",
+  "class": "index-section--hero",
+  "max_blocks": 5,
+  "id": "slideshow",
+  "banner": "",
+  "icon": "",
+  "tags": "",
+  "description": "",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section ID",
+      "info": "Enter a unique ID with only letters and numbers, no spaces",
+      "default": ""
+    },
+    {
+      "type": "select",
+      "id": "atb_section_height",
+      "label": "Desktop height",
+      "default": "650px",
+      "options": [
+        {
+          "label": "Natural",
+          "value": "natural"
+        },
+        {
+          "label": "450px",
+          "value": "450px"
+        },
+        {
+          "label": "550px",
+          "value": "550px"
+        },
+        {
+          "label": "650px",
+          "value": "650px"
+        },
+        {
+          "label": "750px",
+          "value": "750px"
+        },
+        {
+          "label": "Full screen",
+          "value": "100vh"
+        }
+      ],
+      "info": ""
+    },
+    {
+      "type": "select",
+      "id": "atb_mobile_height",
+      "label": "Mobile height",
+      "default": "auto",
+      "info": "",
+      "options": [
+        {
+          "label": "Auto",
+          "value": "auto"
+        },
+        {
+          "label": "250px",
+          "value": "250px"
+        },
+        {
+          "label": "300px",
+          "value": "300px"
+        },
+        {
+          "label": "400px",
+          "value": "400px"
+        },
+        {
+          "label": "500px",
+          "value": "500px"
+        },
+        {
+          "label": "Full screen",
+          "value": "100vh"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "atb_parallax",
+      "label": "Enable parallax",
+      "default": true,
+      "info": ""
+    },
+    {
+      "type": "select",
+      "id": "atb_style",
+      "label": "Slide navigation style",
+      "default": "minimal",
+      "options": [
+        {
+          "value": "minimal",
+          "label": "Minimal"
+        },
+        {
+          "value": "arrows",
+          "label": "Arrows"
+        },
+        {
+          "value": "bars",
+          "label": "Bars"
+        },
+        {
+          "value": "dots",
+          "label": "Dots"
+        }
+      ],
+      "info": ""
+    },
+    {
+      "type": "checkbox",
+      "id": "atb_autoplay",
+      "label": "Auto-change slides",
+      "default": true,
+      "info": ""
+    },
+    {
+      "type": "range",
+      "id": "atb_autoplay_speed",
+      "label": "Change images every",
+      "default": 7,
+      "min": 5,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "info": ""
+    },
+    {
+      "type": "text",
+      "id": "blocks",
+      "label": "Block ID",
+      "info": "Enter a unique ID with only letters and numbers, no spaces",
+      "default": "",
+      "repeatable": "Slide"
+    },
+    {
+      "type": "text",
+      "id": "block_top_subheading",
+      "label": "Subheading",
+      "repeatable": "Slide",
+      "info": ""
+    },
+    {
+      "type": "textarea",
+      "id": "block_title",
+      "label": "Heading",
+      "default": "Two line\ntitle slide.",
+      "repeatable": "Slide",
+      "info": ""
+    },
+    {
+      "type": "range",
+      "id": "block_title_size",
+      "label": "Heading text size",
+      "default": 80,
+      "min": 40,
+      "max": 100,
+      "unit": "px",
+      "repeatable": "Slide",
+      "info": ""
+    },
+    {
+      "type": "text",
+      "id": "block_subheading",
+      "label": "Text",
+      "default": "And optional subtext",
+      "repeatable": "Slide",
+      "info": ""
+    },
+    {
+      "type": "text",
+      "id": "block_link",
+      "label": "Slide link",
+      "repeatable": "Slide",
+      "info": ""
+    },
+    {
+      "type": "text",
+      "id": "block_link_text",
+      "label": "Slide link text",
+      "default": "Optional button",
+      "repeatable": "Slide",
+      "info": ""
+    },
+    {
+      "type": "text",
+      "id": "block_link_2",
+      "label": "Slide link 2",
+      "repeatable": "Slide",
+      "info": ""
+    },
+    {
+      "type": "text",
+      "id": "block_link_text_2",
+      "label": "Slide link text 2",
+      "repeatable": "Slide",
+      "info": ""
+    },
+    {
+      "type": "color",
+      "id": "block_color_accent",
+      "label": "Buttons",
+      "default": "rgba(0,0,0,0)",
+      "repeatable": "Slide",
+      "info": ""
+    },
+    {
+      "type": "select",
+      "id": "block_text_align",
+      "label": "Text alignment",
+      "default": "vertical-center horizontal-center",
+      "options": [
+        {
+          "value": "vertical-center horizontal-left",
+          "label": "Center left"
+        },
+        {
+          "value": "vertical-center horizontal-center",
+          "label": "Center"
+        },
+        {
+          "value": "vertical-center horizontal-right",
+          "label": "Center right"
+        },
+        {
+          "value": "vertical-bottom horizontal-left",
+          "label": "Bottom left"
+        },
+        {
+          "value": "vertical-bottom horizontal-center",
+          "label": "Bottom center"
+        },
+        {
+          "value": "vertical-bottom horizontal-right",
+          "label": "Bottom right"
+        }
+      ],
+      "repeatable": "Slide",
+      "info": ""
+    },
+    {
+      "type": "image_picker",
+      "id": "block_image",
+      "label": "Image",
+      "repeatable": "Slide",
+      "info": ""
+    },
+    {
+      "type": "select",
+      "id": "block_focal_point",
+      "label": "Image focal point",
+      "info": "",
+      "default": "center center",
+      "options": [
+        {
+          "value": "20% 0",
+          "label": "Top left"
+        },
+        {
+          "value": "top center",
+          "label": "Top center"
+        },
+        {
+          "value": "80% 0",
+          "label": "Top right"
+        },
+        {
+          "value": "20% 50%",
+          "label": "Left"
+        },
+        {
+          "value": "center center",
+          "label": "Center"
+        },
+        {
+          "value": "80% 50%",
+          "label": "Right"
+        },
+        {
+          "value": "20% 100%",
+          "label": "Bottom left"
+        },
+        {
+          "value": "bottom center",
+          "label": "Bottom center"
+        },
+        {
+          "value": "80% 100%",
+          "label": "Bottom right"
+        }
+      ],
+      "repeatable": "Slide"
+    }
+  ],
+  "warnings": [
+    "repeating range fields may not be properly handled",
+    "repeating image fields may not be properly handled"
+  ]
+}ATB-SCHEMA
+{% endcomment %}
+
+
+{%- include 'atb-render' field:'section_id' -%}
+{%- assign section_id = val -%}
+{%- include 'atb-render' field:'atb_section_height' -%}
+{%- assign atb_section_height = val -%}
+{%- include 'atb-render' field:'atb_mobile_height' -%}
+{%- assign atb_mobile_height = val -%}
+{%- include 'atb-render' field:'atb_parallax' -%}
+{%- assign atb_parallax = val -%}
+{%- include 'atb-render' field:'atb_style' -%}
+{%- assign atb_style = val -%}
+{%- include 'atb-render' field:'atb_autoplay' -%}
+{%- assign atb_autoplay = val -%}
+{%- include 'atb-render' field:'atb_autoplay_speed' -%}
+{%- assign atb_autoplay_speed = val -%}
+{%- include 'atb-render' field:'blocks' -%}
+{%- assign blocks = val -%}
+{%- include 'atb-render' field:'block_top_subheading' -%}
+{%- assign block_top_subheading = val -%}
+{%- include 'atb-render' field:'block_title' -%}
+{%- assign block_title = val -%}
+{%- include 'atb-render' field:'block_title_size' -%}
+{%- assign block_title_size = val -%}
+{%- include 'atb-render' field:'block_subheading' -%}
+{%- assign block_subheading = val -%}
+{%- include 'atb-render' field:'block_link' -%}
+{%- assign block_link = val -%}
+{%- include 'atb-render' field:'block_link_text' -%}
+{%- assign block_link_text = val -%}
+{%- include 'atb-render' field:'block_link_2' -%}
+{%- assign block_link_2 = val -%}
+{%- include 'atb-render' field:'block_link_text_2' -%}
+{%- assign block_link_text_2 = val -%}
+{%- include 'atb-render' field:'block_color_accent' -%}
+{%- assign block_color_accent = val -%}
+{%- include 'atb-render' field:'block_text_align' -%}
+{%- assign block_text_align = val -%}
+{%- include 'atb-render' field:'block_image' -%}
+{%- assign block_image = val -%}
+{%- include 'atb-render' field:'block_focal_point' -%}
+{%- assign block_focal_point = val -%}
+{%- if atb_parallax == blank -%}
+{%- assign atb_parallax = false -%}
+{%- else -%}
+{%- assign atb_parallax = true -%}
+{%- endif -%}
+{%- if atb_autoplay == blank -%}
+{%- assign atb_autoplay = false -%}
+{%- else -%}
+{%- assign atb_autoplay = true -%}
+{%- endif -%}
+{%- assign atb_autoplay_speed = atb_autoplay_speed | plus: 0 -%}
+{%- assign no_image = images['no_image_comparison'] -%}
+
+<section id="shopify-section-{{section_id}}" class="shopify-section index-section--hero">
+<div
+  data-section-id="{{ section_id }}"
+  data-section-type="slideshow-section"
+  data-align-top="true"
+  {% if atb_parallax %}data-parallax="true"{% endif %}>
+
+  {% if blocks.size > 0 %}
+    <div class="slideshow-wrapper">
+      {% if atb_autoplay and atb_style == 'bars' and blocks.size > 1 %}
+        {% style %}
+          .slick-slider[data-bars][data-autoplay="true"] .slick-dots li.slick-active button::before {
+            animation-duration: {{ atb_autoplay_speed | times: 1000 }}ms;
+          }
+        {% endstyle %}
+
+        <button type="button" class="visually-hidden slideshow__pause" data-id="{{ section_id }}" aria-live="polite">
+          <span class="slideshow__pause-stop">
+            <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-pause" viewBox="0 0 10 13"><g fill="#000" fill-rule="evenodd"><path d="M0 0h3v13H0zM7 0h3v13H7z"/></g></svg>
+            <span class="icon__fallback-text">{{ 'sections.slideshow.pause_slideshow' | t }}</span>
+          </span>
+          <span class="slideshow__pause-play">
+            <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-play" viewBox="0 0 32 32"><path class="st0" d="M9.3 6.2l17.1 9.7-17.1 9.7"/></svg>
+            <span class="icon__fallback-text">{{ 'sections.slideshow.play_slideshow' | t }}</span>
+          </span>
+        </button>
+      {% endif %}
+
+      {%- assign natural_height = false -%}
+      {% if atb_section_height == 'natural' %}
+        {% comment %}
+          Get first image's aspect ratio
+        {% endcomment %}
+        {% for block0 in blocks limit: 1 %}
+{%- assign my_range0 = block_title_size[forloop.index0] | plus: 0 -%}
+{%- assign my_image_key0 = block_image[forloop.index0]| split: '/files/' | last -%}
+{%- assign my_image0 = images[my_image_key0] -%}
+          {% if my_image0 != blank %}
+            {%- assign natural_height = true -%}
+            {%- capture natural_height_ratio -%}{{ 100 | divided_by: my_image0.aspect_ratio }}%{% endcapture %}
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+
+      {% if natural_height %}
+        {% style %}
+          .hero-natural--{{ section_id }} {
+            height: 0;
+            padding-bottom: {{ natural_height_ratio }};
+          }
+        {% endstyle %}
+      {% endif %}
+
+      {% if natural_height %}
+        <div class="hero-natural--{{ section_id }}">
+      {% endif %}
+        <div id="Slideshow-{{ section_id }}"
+          class="hero hero--{{ atb_section_height }} hero--{{ section_id }} hero--mobile--{{ atb_mobile_height }} loading loading--delayed"
+          {% if natural_height %}
+            data-natural="true"
+          {% endif %}
+          data-autoplay="{{ atb_autoplay }}"
+          data-speed="{{ atb_autoplay_speed | times: 1000 }}"
+          data-aos="hero__animation"
+          {% if atb_style == 'arrows' %}
+            data-arrows="true"
+          {% endif %}
+          {% if atb_style == 'dots' %}
+            data-dots="true"
+          {% endif %}
+          {% if atb_style == 'bars' %}
+            data-dots="true"
+            data-bars="true"
+          {% endif %}
+          data-slide-count="{{ blocks.size }}">
+          {% for block0 in blocks %}
+{%- assign my_range0 = block_title_size[forloop.index0] | plus: 0 -%}
+{%- assign my_image_key0 = block_image[forloop.index0]| split: '/files/' | last -%}
+{%- assign my_image0 = images[my_image_key0] -%}
+            <div
+              {{ block.shopify_attributes }}
+              class="slideshow__slide slideshow__slide--{{ blocks[forloop.index0] }}"
+              data-id="{{ blocks[forloop.index0] }}">
+
+              {% style %}
+                .slideshow__slide--{{ blocks[forloop.index0] }} .hero__title {
+                  font-size: {{ my_range0 | times: 0.5 }}px;
+                }
+                @media only screen and (min-width: 769px) {
+                  .slideshow__slide--{{ blocks[forloop.index0] }} .hero__title {
+                    font-size: {{ my_range0 }}px;
+                  }
+                }
+
+                {% unless block_color_accent[forloop.index0] contains 'rgba(0,0,0,0)' %}
+                  .slideshow__slide--{{ blocks[forloop.index0] }} .btn {
+                    background: {{ block_color_accent[forloop.index0] }} !important;
+                    border: none;
+
+                    {%- assign accent_brightness = block_color_accent[forloop.index0] | color_extract: 'lightness' -%}
+
+                    {% if accent_brightness > 40 %}
+                      color: #000 !important;
+                    {% endif %}
+                  }
+
+                  {% if settings.button_style == 'angled' %}
+                    .slideshow__slide--{{ blocks[forloop.index0] }} .btn:before,
+                    .slideshow__slide--{{ blocks[forloop.index0] }} .btn:after {
+                      background: {{ block_color_accent[forloop.index0] }} !important;
+                      border: none;
+                    }
+                  {% endif %}
+                {% endunless %}
+              {% endstyle %}
+
+              {%- assign hero_text = false -%}
+              {%- assign link_slide = false -%}
+              {% if block_top_subheading[forloop.index0] != blank or block_title[forloop.index0] != blank or block_subheading[forloop.index0] != blank or block_link_text[forloop.index0] != blank %}
+                {%- assign hero_text = true -%}
+              {% endif %}
+              {% if block_link[forloop.index0] != blank and block_link_2[forloop.index0] == blank %}
+                {%- assign link_slide = true -%}
+              {% endif %}
+
+              {% if atb_parallax %}
+                {% if my_image0 != blank %}
+                  {% style %}
+                    .hero__image--{{ blocks[forloop.index0] }} {
+                      background-position: {{ block_focal_point[forloop.index0] }};
+                      background-size: cover;
+                    }
+                  {% endstyle %}
+                {% endif %}
+                <div class="parallax-container">
+                  <div class="hero__image-wrapper">
+                    <div
+                      class="parallax-image hero__image hero__image--{{ blocks[forloop.index0] }}{% unless hero_text %} hero__image--no-overlay{% endunless %}{% if my_image0 != blank %} lazyload{% else %} hero__image--svg{% endif %}"
+                      {% if my_image0 != blank %}
+                        data-bgset="{% include 'atb-bgset' , image: my_image0  %}"
+                        data-sizes="auto"
+                      {% endif %}>
+                      {% if my_image0 == blank %}
+                        {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+              {% else %}
+                <div class="hero__image-wrapper{% unless hero_text %} hero__image-wrapper--no-overlay{% endunless %}">
+                  {% if my_image0 != blank %}
+                    {% style %}
+                      .hero__image--{{ blocks[forloop.index0] }} {
+                        object-position: {{ block_focal_point[forloop.index0] }};
+                        font-family: "object-fit: cover; object-position: {{ block_focal_point[forloop.index0] }};";
+                      }
+                    {% endstyle %}
+
+                    {%- assign img_url = my_image0 | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+
+                    <img class="image-fit hero__image hero__image--{{ blocks[forloop.index0] }} lazyload"
+                      src=""
+                      data-src="{{ img_url }}"
+                      data-aspectratio="{{ my_image0.aspect_ratio }}"
+                      data-sizes="auto"
+                      data-parent-fit="cover"
+                      alt="{{ my_image0.alt | escape }}">
+                    <noscript>
+                      <img class="image-fit hero__image hero__image--{{ blocks[forloop.index0] }}"
+                        src="{{ my_image0 | img_url: '1400x' }}"
+                        alt="{{ my_image0.alt | escape }}">
+                    </noscript>
+                  {% else %}
+                    {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                  {% endif %}
+                </div>
+              {% endif %}
+
+              {% if link_slide %}
+                <a href="{{ block_link[forloop.index0] }}" class="hero__slide-link"></a>
+              {% endif %}
+
+              {% if hero_text %}
+                <div class="hero__text-wrap">
+                  <div class="page-width">
+                    <div class="hero__text-content {{ block_text_align[forloop.index0] }}">
+                      <div class="hero__text-shadow">
+                        {% unless block_top_subheading[forloop.index0] == blank %}
+                          <div class="hero__top-subtitle">
+                            <div class="animation-cropper"><div class="animation-contents">
+                              {{ block_top_subheading[forloop.index0] | escape }}
+                            </div></div>
+                          </div>
+                        {% endunless %}
+                        {% unless block_title[forloop.index0] == blank %}
+                          <h2 class="h1 hero__title">
+                            <div class="animation-cropper"><div class="animation-contents">
+                            {{ block_title[forloop.index0] | newline_to_br }}
+                            </div></div>
+                          </h2>
+                        {% endunless %}
+                        {% if block_subheading[forloop.index0] or block_link[forloop.index0] or block_link_2[forloop.index0] %}
+                          {% unless block_subheading[forloop.index0] == blank %}
+                            <div class="hero__subtitle">
+                              <div class="animation-cropper"><div class="animation-contents">
+                                {{ block_subheading[forloop.index0] | escape }}
+                              </div></div>
+                            </div>
+                          {% endunless %}
+                          {% if block_link_text[forloop.index0] != blank or block_link_text_2[forloop.index0] != blank %}
+                            <div class="hero__link">
+                              {% if block_link_text[forloop.index0] != blank %}
+                                <a href="{{ block_link[forloop.index0] }}" class="btn{% if block_color_accent[forloop.index0] contains 'rgba(0,0,0,0)' %} btn--inverse{% endif %}">
+                                  {{ block_link_text[forloop.index0] }}
+                                </a>
+                              {% endif %}
+                              {% if block_link_text_2[forloop.index0] != blank %}
+                                <a href="{{ block_link_2[forloop.index0] }}" class="btn{% if block_color_accent[forloop.index0] contains 'rgba(0,0,0,0)' %} btn--inverse{% endif %}">
+                                  {{ block_link_text_2[forloop.index0] }}
+                                </a>
+                              {% endif %}
+                            </div>
+                          {% endif %}
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      {% if natural_height %}
+        </div>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  {% if blocks.size == 0 %}
+    <div class="placeholder-noblocks">
+      {{ 'home_page.onboarding.no_content' | t }}
+    </div>
+  {% endif %}
+</div>
+
+
+</section>

@@ -1,0 +1,143 @@
+{% comment %}
+ATB-SCHEMA{
+  "name": "Logo list",
+  "class": "index-section",
+  "max_blocks": 10,
+  "id": "logo-list",
+  "banner": "",
+  "icon": "",
+  "tags": "",
+  "description": "",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section ID",
+      "info": "Enter a unique ID with only letters and numbers, no spaces",
+      "default": ""
+    },
+    {
+      "type": "text",
+      "id": "atb_title",
+      "label": "Heading",
+      "info": ""
+    },
+    {
+      "type": "range",
+      "id": "atb_logo_opacity",
+      "label": "Logo opacity",
+      "default": 76,
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "%",
+      "info": ""
+    },
+    {
+      "type": "checkbox",
+      "id": "atb_divider",
+      "label": "Show section divider",
+      "default": false,
+      "info": ""
+    },
+    {
+      "type": "text",
+      "id": "blocks",
+      "label": "Block ID",
+      "info": "Enter a unique ID with only letters and numbers, no spaces",
+      "default": "",
+      "repeatable": "Logo"
+    },
+    {
+      "type": "image_picker",
+      "id": "block_image",
+      "label": "Image",
+      "repeatable": "Logo",
+      "info": ""
+    },
+    {
+      "type": "text",
+      "id": "block_link",
+      "label": "Link",
+      "info": "",
+      "repeatable": "Logo"
+    }
+  ],
+  "warnings": [
+    "repeating image fields may not be properly handled"
+  ]
+}ATB-SCHEMA
+{% endcomment %}
+
+
+{%- include 'atb-render' field:'section_id' -%}
+{%- assign section_id = val -%}
+{%- include 'atb-render' field:'atb_title' -%}
+{%- assign atb_title = val -%}
+{%- include 'atb-render' field:'atb_logo_opacity' -%}
+{%- assign atb_logo_opacity = val -%}
+{%- include 'atb-render' field:'atb_divider' -%}
+{%- assign atb_divider = val -%}
+{%- include 'atb-render' field:'blocks' -%}
+{%- assign blocks = val -%}
+{%- include 'atb-render' field:'block_image' -%}
+{%- assign block_image = val -%}
+{%- include 'atb-render' field:'block_link' -%}
+{%- assign block_link = val -%}
+{%- if atb_divider == blank -%}
+{%- assign atb_divider = false -%}
+{%- else -%}
+{%- assign atb_divider = true -%}
+{%- endif -%}
+{%- assign atb_logo_opacity = atb_logo_opacity | plus: 0 -%}
+{%- assign no_image = images['no_image_comparison'] -%}
+
+<section id="shopify-section-{{section_id}}" class="shopify-section index-section">
+{% style %}
+.logo-bar--{{ section_id }} {
+  opacity: {{ atb_logo_opacity | divided_by: 100.0 }};
+}
+{% endstyle %}
+
+{% if atb_divider %}<div class="section--divider">{% endif %}
+
+<div class="page-width" data-aos="logo__animation">
+  {% if atb_title != blank %}
+    <div class="section-header">
+      <h2 class="section-header__title">{{ atb_title | escape }}</h2>
+    </div>
+  {% endif %}
+
+  {% if blocks.size > 0 %}
+    <div class="logo-bar logo-bar--{{ section_id }}">
+      {% for block0 in blocks %}
+{%- assign my_image_key0 = block_image[forloop.index0]| split: '/files/' | last -%}
+{%- assign my_image0 = images[my_image_key0] -%}
+        <div class="logo-bar__item" {{ block.shopify_attributes }}>
+          {% if block_link[forloop.index0] != blank %}
+            <a href="{{ block_link[forloop.index0] }}" class="logo-bar__link">
+          {% endif %}
+          {% if my_image0 != blank %}
+            {%- assign img_url = my_image0 | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+            <img class="logo-bar__image lazyload"
+                data-src="{{ img_url }}"
+                data-widths="[180, 360, 540, 720]"
+                data-aspectratio="{{ my_image0.aspect_ratio }}"
+                data-sizes="auto"
+                alt="{{ my_image0.alt }}">
+          {% else %}
+            {{ 'logo' | placeholder_svg_tag: 'placeholder-svg' }}
+          {% endif %}
+          {% if block_link[forloop.index0] != blank %}
+            </a>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>
+
+{% if atb_divider %}</div>{% endif %}
+
+
+</section>

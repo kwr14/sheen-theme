@@ -1,0 +1,210 @@
+{% comment %}
+ATB-SCHEMA{
+  "name": "Collection list",
+  "class": "index-section",
+  "max_blocks": 15,
+  "id": "featured-collections",
+  "banner": "",
+  "icon": "",
+  "tags": "",
+  "description": "",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section ID",
+      "info": "Enter a unique ID with only letters and numbers, no spaces",
+      "default": ""
+    },
+    {
+      "type": "text",
+      "id": "atb_title",
+      "label": "Heading",
+      "default": "Collection list",
+      "info": ""
+    },
+    {
+      "type": "checkbox",
+      "id": "atb_divider",
+      "label": "Show section divider",
+      "default": false,
+      "info": ""
+    },
+    {
+      "type": "range",
+      "id": "atb_per_row",
+      "label": "Collections per row",
+      "default": 4,
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "info": ""
+    },
+    {
+      "type": "checkbox",
+      "id": "atb_enable_gutter",
+      "label": "Add spacing",
+      "default": true,
+      "info": ""
+    },
+    {
+      "type": "text",
+      "id": "blocks",
+      "label": "Block ID",
+      "info": "Enter a unique ID with only letters and numbers, no spaces",
+      "default": "",
+      "repeatable": "Collection"
+    },
+    {
+      "id": "block_collection",
+      "type": "collection",
+      "label": "Collection",
+      "repeatable": "Collection",
+      "info": ""
+    },
+    {
+      "type": "text",
+      "id": "block_title",
+      "label": "Title",
+      "repeatable": "Collection",
+      "info": ""
+    },
+    {
+      "type": "select",
+      "id": "block_focal_point",
+      "label": "Focal point",
+      "info": "",
+      "default": "center center",
+      "options": [
+        {
+          "value": "20% 0",
+          "label": "Top left"
+        },
+        {
+          "value": "top center",
+          "label": "Top center"
+        },
+        {
+          "value": "80% 0",
+          "label": "Top right"
+        },
+        {
+          "value": "20% 50%",
+          "label": "Left"
+        },
+        {
+          "value": "center center",
+          "label": "Center"
+        },
+        {
+          "value": "80% 50%",
+          "label": "Right"
+        },
+        {
+          "value": "20% 100%",
+          "label": "Bottom left"
+        },
+        {
+          "value": "bottom center",
+          "label": "Bottom center"
+        },
+        {
+          "value": "80% 100%",
+          "label": "Bottom right"
+        }
+      ],
+      "repeatable": "Collection"
+    }
+  ],
+  "warnings": []
+}ATB-SCHEMA
+{% endcomment %}
+
+
+{%- include 'atb-render' field:'section_id' -%}
+{%- assign section_id = val -%}
+{%- include 'atb-render' field:'atb_title' -%}
+{%- assign atb_title = val -%}
+{%- include 'atb-render' field:'atb_divider' -%}
+{%- assign atb_divider = val -%}
+{%- include 'atb-render' field:'atb_per_row' -%}
+{%- assign atb_per_row = val -%}
+{%- include 'atb-render' field:'atb_enable_gutter' -%}
+{%- assign atb_enable_gutter = val -%}
+{%- include 'atb-render' field:'blocks' -%}
+{%- assign blocks = val -%}
+{%- include 'atb-render' field:'block_collection' -%}
+{%- assign block_collection = val -%}
+{%- include 'atb-render' field:'block_title' -%}
+{%- assign block_title = val -%}
+{%- include 'atb-render' field:'block_focal_point' -%}
+{%- assign block_focal_point = val -%}
+{%- if atb_divider == blank -%}
+{%- assign atb_divider = false -%}
+{%- else -%}
+{%- assign atb_divider = true -%}
+{%- endif -%}
+{%- if atb_enable_gutter == blank -%}
+{%- assign atb_enable_gutter = false -%}
+{%- else -%}
+{%- assign atb_enable_gutter = true -%}
+{%- endif -%}
+{%- assign atb_per_row = atb_per_row | plus: 0 -%}
+{%- assign no_image = images['no_image_comparison'] -%}
+
+<section id="shopify-section-{{section_id}}" class="shopify-section index-section">
+{% if atb_divider %}<div class="section--divider">{% endif %}
+
+<div class="page-width">
+  {% if atb_title != blank %}
+    <div class="section-header">
+      <h2 class="section-header__title">{{ atb_title }}</h2>
+    </div>
+  {% endif %}
+
+  <div class="grid grid--uniform{% unless atb_enable_gutter %} grid--no-gutters{% endunless %}">
+
+    {%- assign isEmpty = true -%}
+
+    {% if blocks.size > 0 %}
+      {%- assign isEmpty = false -%}
+    {% endif %}
+
+    {% for block0 in blocks limit: collection_limit %}
+      {%- assign collection = collections[block_collection[forloop.index0]] -%}
+      {%- assign background_position = block_focal_point[forloop.index0] -%}
+
+      {% case atb_per_row %}
+      {% when 2 %}
+        {%- assign grid_item_width = 'medium-up--one-half' -%}
+      {% when 3 %}
+        {%- assign grid_item_width = 'small--one-half medium-up--one-third' -%}
+      {% when 4 %}
+        {%- assign grid_item_width = 'small--one-half medium-up--one-quarter' -%}
+      {% when 5 %}
+        {%- assign grid_item_width = 'small--one-half medium-up--one-fifth' -%}
+      {% endcase %}
+
+      {% include 'atb-collection-grid-item' , per_row: atb_per_row  %}
+    {% endfor %}
+
+    {% if isEmpty %}
+      <div class="page-width">
+        <div class="grid">
+          <div class="grid__item">
+            <div class="rte">
+              {{ 'home_page.onboarding.no_content' | t }}
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
+  </div>
+</div>
+
+{% if atb_divider %}</div>{% endif %}
+
+
+
+</section>

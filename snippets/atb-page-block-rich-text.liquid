@@ -1,0 +1,20 @@
+<div class="index-section {{ section_class }}">
+  <div class="page-width text-{{ block_align_text[forloop.index0] }}">
+    <div class="grid">
+      <div class="grid__item{% if block_narrow_column[forloop.index0] %} medium-up--three-quarters medium-up--push-one-eighth{% endif %}">
+        {% if block_title[forloop.index0] != blank %}
+          <p class="h2">
+            {{ block_title[forloop.index0] | escape }}
+          </p>
+        {% endif %}
+        {% if block_text[forloop.index0] != blank %}
+          <div class="rte">
+            {% if block_enlarge_text[forloop.index0] %}<div class="enlarge-text">{% endif %}
+              {{ block_text[forloop.index0] }}
+            {% if block_enlarge_text[forloop.index0] %}</div>{% endif %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>

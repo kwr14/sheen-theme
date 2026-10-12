@@ -1,0 +1,239 @@
+{% comment %}
+ATB-SCHEMA{
+  "name": "Blog posts",
+  "class": "index-section",
+  "id": "blog-posts",
+  "banner": "",
+  "icon": "",
+  "tags": "",
+  "description": "",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section ID",
+      "info": "Enter a unique ID with only letters and numbers, no spaces",
+      "default": ""
+    },
+    {
+      "type": "text",
+      "id": "atb_title",
+      "label": "Heading",
+      "default": "Blog posts",
+      "info": ""
+    },
+    {
+      "id": "atb_blog",
+      "type": "blog",
+      "label": "Blog",
+      "info": ""
+    },
+    {
+      "type": "range",
+      "id": "atb_post_limit",
+      "label": "Posts",
+      "default": 3,
+      "min": 3,
+      "max": 12,
+      "step": 3,
+      "info": ""
+    },
+    {
+      "type": "checkbox",
+      "id": "atb_blog_show_tags",
+      "label": "Show tags",
+      "info": ""
+    },
+    {
+      "type": "checkbox",
+      "id": "atb_blog_show_date",
+      "label": "Show date",
+      "default": true,
+      "info": ""
+    },
+    {
+      "type": "checkbox",
+      "id": "atb_blog_show_comments",
+      "label": "Show comment count",
+      "info": ""
+    },
+    {
+      "type": "checkbox",
+      "id": "atb_blog_show_author",
+      "label": "Show author",
+      "info": ""
+    },
+    {
+      "type": "checkbox",
+      "id": "atb_view_all",
+      "label": "Show 'View all' button",
+      "default": true,
+      "info": ""
+    },
+    {
+      "type": "select",
+      "id": "atb_blog_image_size",
+      "label": "Image size",
+      "default": "wide",
+      "options": [
+        {
+          "value": "natural",
+          "label": "Natural"
+        },
+        {
+          "value": "square",
+          "label": "Square (1:1)"
+        },
+        {
+          "value": "landscape",
+          "label": "Landscape (4:3)"
+        },
+        {
+          "value": "portrait",
+          "label": "Portrait (2:3)"
+        },
+        {
+          "value": "wide",
+          "label": "Wide (16:9)"
+        }
+      ],
+      "info": ""
+    },
+    {
+      "type": "checkbox",
+      "id": "atb_divider",
+      "label": "Show section divider",
+      "default": false,
+      "info": ""
+    }
+  ],
+  "warnings": []
+}ATB-SCHEMA
+{% endcomment %}
+
+
+{%- include 'atb-render' field:'section_id' -%}
+{%- assign section_id = val -%}
+{%- include 'atb-render' field:'atb_title' -%}
+{%- assign atb_title = val -%}
+{%- include 'atb-render' field:'atb_blog' -%}
+{%- assign atb_blog = val -%}
+{%- include 'atb-render' field:'atb_post_limit' -%}
+{%- assign atb_post_limit = val -%}
+{%- include 'atb-render' field:'atb_blog_show_tags' -%}
+{%- assign atb_blog_show_tags = val -%}
+{%- include 'atb-render' field:'atb_blog_show_date' -%}
+{%- assign atb_blog_show_date = val -%}
+{%- include 'atb-render' field:'atb_blog_show_comments' -%}
+{%- assign atb_blog_show_comments = val -%}
+{%- include 'atb-render' field:'atb_blog_show_author' -%}
+{%- assign atb_blog_show_author = val -%}
+{%- include 'atb-render' field:'atb_view_all' -%}
+{%- assign atb_view_all = val -%}
+{%- include 'atb-render' field:'atb_blog_image_size' -%}
+{%- assign atb_blog_image_size = val -%}
+{%- include 'atb-render' field:'atb_divider' -%}
+{%- assign atb_divider = val -%}
+{%- if atb_blog_show_tags == blank -%}
+{%- assign atb_blog_show_tags = false -%}
+{%- else -%}
+{%- assign atb_blog_show_tags = true -%}
+{%- endif -%}
+{%- if atb_blog_show_date == blank -%}
+{%- assign atb_blog_show_date = false -%}
+{%- else -%}
+{%- assign atb_blog_show_date = true -%}
+{%- endif -%}
+{%- if atb_blog_show_comments == blank -%}
+{%- assign atb_blog_show_comments = false -%}
+{%- else -%}
+{%- assign atb_blog_show_comments = true -%}
+{%- endif -%}
+{%- if atb_blog_show_author == blank -%}
+{%- assign atb_blog_show_author = false -%}
+{%- else -%}
+{%- assign atb_blog_show_author = true -%}
+{%- endif -%}
+{%- if atb_view_all == blank -%}
+{%- assign atb_view_all = false -%}
+{%- else -%}
+{%- assign atb_view_all = true -%}
+{%- endif -%}
+{%- if atb_divider == blank -%}
+{%- assign atb_divider = false -%}
+{%- else -%}
+{%- assign atb_divider = true -%}
+{%- endif -%}
+{%- assign atb_post_limit = atb_post_limit | plus: 0 -%}
+{%- assign no_image = images['no_image_comparison'] -%}
+
+<section id="shopify-section-{{section_id}}" class="shopify-section index-section">
+{%- assign blog = blogs[atb_blog] -%}
+
+{% if atb_divider %}<div class="section--divider">{% endif %}
+
+<div class="page-width">
+
+  {% if atb_title != blank %}
+    <header class="section-header{% if atb_view_all %}{% unless settings.type_headers_align_text %} section-header--with-link{% endunless %}{% endif %}">
+      <h2 class="section-header__title">
+        {{ atb_title | escape }}
+      </h2>
+      {% if atb_view_all %}
+        <a href="{{ blog.url }}"  class="btn btn--secondary btn--small section-header__link">{{ 'blogs.article.view_all' | t }}</a>
+      {% endif %}
+    </header>
+  {% endif %}
+
+  {% unless blog.empty? or blog.articles.size == 0 %}
+
+    <div class="grid grid--uniform">
+      {% for article in blog.articles limit: atb_post_limit %}
+        {% include 'atb-article-grid-item' , grid_item_width: 'medium-up--one-third', per_row: '3', image_size: atb_blog_image_size  %}
+      {% endfor %}
+    </div>
+
+  {% else %}
+
+    <div class="grid grid--uniform">
+      {% for i in (1..atb_post_limit) %}
+        <div class="grid__item medium-up--one-third" data-aos="row-of-3">
+          <div class="grid">
+            <div class="grid__item small--one-third">
+              <a href="#" class="article__grid-image">
+                {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+              </a>
+            </div>
+            <div class="grid__item small--two-thirds">
+              <div class="article__grid-meta">
+                {% if atb_blog_show_date or article.tags.size > 0 or articles.comments_count > 0 %}
+                  <div class="article__date">
+                    {% if atb_blog_show_comments and article.comments_count > 0 %}
+                      <a href="#">3 comments</a> &middot;
+                    {% endif %}
+                    {% if atb_blog_show_date %}
+                      Jul 17, {{ 'now' | date: "%Y" }}
+                    {% endif %}
+                  </div>
+                {% endif %}
+
+                <a href="#" class="article__title">Example blog post</a>
+
+                {% if atb_blog_show_author %}
+                  <div class="article__author">by Archetype Themes</div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+  {% endunless %}
+
+</div>
+
+{% if atb_divider %}</div>{% endif %}
+
+
+</section>

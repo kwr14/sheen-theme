@@ -1,0 +1,97 @@
+{% comment %}
+ATB-SCHEMA{
+  "name": "Newsletter",
+  "id": "newsletter",
+  "banner": "",
+  "icon": "",
+  "tags": "",
+  "description": "",
+  "class": "",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section ID",
+      "info": "Enter a unique ID with only letters and numbers, no spaces",
+      "default": ""
+    },
+    {
+      "type": "paragraph",
+      "content": "Customers who subscribe will have their email address added to the 'accepts marketing' [customer list](/admin/customers?query=&accepts_marketing=1).",
+      "info": ""
+    },
+    {
+      "type": "text",
+      "id": "atb_title",
+      "label": "Heading",
+      "default": "Sign up and save",
+      "info": ""
+    },
+    {
+      "type": "wysiwyg",
+      "id": "atb_text",
+      "label": "Subheading",
+      "default": "<p>Subscribe to get special offers, free giveaways, and once-in-a-lifetime deals.</p>",
+      "info": ""
+    },
+    {
+      "type": "color",
+      "id": "atb_color_background",
+      "label": "Background",
+      "default": "#f9f9f9",
+      "info": ""
+    },
+    {
+      "type": "color",
+      "id": "atb_color_text",
+      "label": "Text",
+      "default": "#1c1d1d",
+      "info": ""
+    }
+  ],
+  "warnings": []
+}ATB-SCHEMA
+{% endcomment %}
+
+
+{%- include 'atb-render' field:'section_id' -%}
+{%- assign section_id = val -%}
+{%- include 'atb-render' field:'undefined' -%}
+{%- assign undefined = val -%}
+{%- include 'atb-render' field:'atb_title' -%}
+{%- assign atb_title = val -%}
+{%- include 'atb-render' field:'atb_text' -%}
+{%- assign atb_text = val -%}
+{%- include 'atb-render' field:'atb_color_background' -%}
+{%- assign atb_color_background = val -%}
+{%- include 'atb-render' field:'atb_color_text' -%}
+{%- assign atb_color_text = val -%}
+{%- assign no_image = images['no_image_comparison'] -%}
+
+<section id="shopify-section-{{section_id}}" class="shopify-section ">
+{% style %}
+  .newsletter-{{ section_id }} {
+    background-color: {{ atb_color_background }};
+    color: {{ atb_color_text }};
+  }
+
+  .newsletter-{{ section_id }} .newsletter__input::-webkit-input-placeholder { color: {{ atb_color_text }}; }
+  .newsletter-{{ section_id }} .newsletter__input::-moz-placeholder { color: {{ atb_color_text }}; }
+  .newsletter-{{ section_id }} .newsletter__input::-ms-input-placeholder { color: {{ atb_color_text }}; }
+{% endstyle %}
+
+<div class="newsletter-section newsletter-{{ section_id }}{% if atb_color_background == settings.color_body_bg %} newsletter-section--with-divider{% endif %}">
+  <div class="page-width text-center">
+    {% if atb_title != blank %}
+      <p class="h3">{{ atb_title | escape }}</p>
+    {% endif %}
+    {% if atb_text != blank %}
+      <div class="rte">{{ atb_text }}</div>
+    {% endif %}
+
+    {% include 'atb-newsletter-form' , section_id: section_id, snippet_context: 'section'  %}
+  </div>
+</div>
+
+
+</section>

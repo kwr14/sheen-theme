@@ -1,0 +1,270 @@
+{% comment %}
+ATB-SCHEMA{
+  "name": "Custom content",
+  "max_blocks": 3,
+  "id": "advanced-content",
+  "banner": "",
+  "icon": "",
+  "tags": "",
+  "description": "",
+  "class": "",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section ID",
+      "info": "Enter a unique ID with only letters and numbers, no spaces",
+      "default": ""
+    },
+    {
+      "type": "checkbox",
+      "id": "atb_full_width",
+      "label": "Full page width",
+      "default": false,
+      "info": ""
+    },
+    {
+      "type": "checkbox",
+      "id": "atb_space_around",
+      "label": "Add spacing above and below",
+      "default": true,
+      "info": ""
+    },
+    {
+      "type": "select",
+      "id": "block_type",
+      "label": "Block Type",
+      "info": "",
+      "default": "",
+      "options": [
+        {
+          "value": "html",
+          "label": "html"
+        },
+        {
+          "value": "image",
+          "label": "image"
+        }
+      ],
+      "repeatable": "block"
+    },
+    {
+      "type": "text",
+      "id": "blocks",
+      "label": "Block ID",
+      "info": "Enter a unique ID with only letters and numbers, no spaces",
+      "default": "",
+      "repeatable": "block"
+    },
+    {
+      "type": "textarea",
+      "id": "block_code",
+      "label": "HTML",
+      "default": "<h2>Custom content</h2><p>Use this advanced section to build your own layouts or to add custom HTML or scripts.</p>",
+      "repeatable": "block",
+      "info": "",
+      "conditional": "block_type:html"
+    },
+    {
+      "type": "select",
+      "id": "block_width",
+      "label": "Width",
+      "default": "100%",
+      "options": [
+        {
+          "value": "25%",
+          "label": "25%"
+        },
+        {
+          "value": "33%",
+          "label": "33%"
+        },
+        {
+          "value": "50%",
+          "label": "50%"
+        },
+        {
+          "value": "66%",
+          "label": "66%"
+        },
+        {
+          "value": "75%",
+          "label": "75%"
+        },
+        {
+          "value": "100%",
+          "label": "100%"
+        }
+      ],
+      "repeatable": "block",
+      "info": ""
+    },
+    {
+      "type": "select",
+      "id": "block_alignment",
+      "label": "Vertical alignment",
+      "default": "top-middle",
+      "info": "",
+      "options": [
+        {
+          "value": "top-middle",
+          "label": "Top"
+        },
+        {
+          "value": "center",
+          "label": "Middle"
+        },
+        {
+          "value": "bottom-middle",
+          "label": "Bottom"
+        }
+      ],
+      "repeatable": "block"
+    },
+    {
+      "type": "image_picker",
+      "id": "block_image",
+      "label": "Image",
+      "repeatable": "block",
+      "info": "",
+      "conditional": "block_type:image"
+    },
+    {
+      "type": "text",
+      "id": "block_link",
+      "label": "Link",
+      "repeatable": "block",
+      "info": "",
+      "conditional": "block_type:image"
+    }
+  ],
+  "warnings": [
+    "repeating image fields may not be properly handled",
+    "some fields may be named the same"
+  ]
+}ATB-SCHEMA
+{% endcomment %}
+
+
+{%- include 'atb-render' field:'section_id' -%}
+{%- assign section_id = val -%}
+{%- include 'atb-render' field:'atb_full_width' -%}
+{%- assign atb_full_width = val -%}
+{%- include 'atb-render' field:'atb_space_around' -%}
+{%- assign atb_space_around = val -%}
+{%- include 'atb-render' field:'block_type' -%}
+{%- assign block_type = val -%}
+{%- include 'atb-render' field:'blocks' -%}
+{%- assign blocks = val -%}
+{%- include 'atb-render' field:'block_code' -%}
+{%- assign block_code = val -%}
+{%- include 'atb-render' field:'block_width' -%}
+{%- assign block_width = val -%}
+{%- include 'atb-render' field:'block_alignment' -%}
+{%- assign block_alignment = val -%}
+{%- include 'atb-render' field:'block_image' -%}
+{%- assign block_image = val -%}
+{%- include 'atb-render' field:'block_link' -%}
+{%- assign block_link = val -%}
+{%- if atb_full_width == blank -%}
+{%- assign atb_full_width = false -%}
+{%- else -%}
+{%- assign atb_full_width = true -%}
+{%- endif -%}
+{%- if atb_space_around == blank -%}
+{%- assign atb_space_around = false -%}
+{%- else -%}
+{%- assign atb_space_around = true -%}
+{%- endif -%}
+{%- assign no_image = images['no_image_comparison'] -%}
+
+<section id="shopify-section-{{section_id}}" class="shopify-section ">
+{% if atb_space_around %}
+  <div class="index-section">
+{% endif %}
+{% unless atb_full_width %}
+  <div class="page-width">
+{% endunless %}
+  <div class="custom-content">
+  {% for block0 in blocks %}
+{%- assign my_image_key0 = block_image[forloop.index0]| split: '/files/' | last -%}
+{%- assign my_image0 = images[my_image_key0] -%}
+    {% case block_width[forloop.index0] %}
+      {% when '25%' %}
+        {%- assign block_width = 'small--one-whole one-quarter' -%}
+      {% when '33%' %}
+        {%- assign block_width = 'small--one-whole one-third' -%}
+      {% when '50%' %}
+        {%- assign block_width = 'small--one-whole one-half' -%}
+      {% when '66%' %}
+        {%- assign block_width = 'small--one-whole two-thirds' -%}
+      {% when '75%' %}
+        {%- assign block_width = 'small--one-whole three-quarters' -%}
+      {% when '100%' %}
+        {%- assign block_width = 'one-whole' -%}
+    {% endcase %}
+    <div class="custom__item {{ block_width }} {% if block_alignment[forloop.index0] %}align--{{ block_alignment[forloop.index0] }}{% endif %}" {{ block.shopify_attributes }}>
+      <div class="custom__item-inner custom__item-inner--{{ block_type[forloop.index0] }} {% if my_image0 == blank and block_type[forloop.index0] == 'image' %} custom__item-inner--placeholder-image{% endif %}">
+        {% case block_type[forloop.index0] %}
+          {% when 'html' %}
+            {% if block_code[forloop.index0] != blank %}
+              <div class="rte" data-section-id="{{ section_id }}" data-section-type="featured-content-section">
+                {{ block_code[forloop.index0] }}
+              </div>
+            {% else %}
+              <div class="rte">
+                {{ 'home_page.onboarding.no_content' | t }}
+              </div>
+            {% endif %}
+          {% when 'image' %}
+            <div class="aos-animate">
+              {% if block_link[forloop.index0] != blank %}
+                <a href="{{ block_link[forloop.index0] }}">
+              {% endif %}
+              {% if my_image0 != blank %}
+                <div class="image-wrap" style="height: 0; padding-bottom: {{ 100 | divided_by: my_image0.aspect_ratio }}%;">
+                  {%- assign img_url = my_image0 | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+                  <img class="lazyload"
+                      data-src="{{ img_url }}"
+                      data-widths="[360, 540, 720, 900, 1080, 1600]"
+                      data-aspectratio="{{ my_image0.aspect_ratio }}"
+                      data-sizes="auto"
+                      alt="{{ my_image0.alt }}">
+                  <noscript>
+                    <img class="lazyloaded" src="{{ my_image0 | img_url: '400x' }}" alt="{{ block_image[forloop.index0].alt }}">
+                  </noscript>
+                </div>
+                {% else %}
+                  <div class="image-wrap">
+                    {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                  </div>
+              {% endif %}
+              {% if block_link[forloop.index0] != blank %}
+                </a>
+              {% endif %}
+            </div>
+        {% endcase %}
+      </div>
+    </div>
+  {% endfor %}
+  {% if blocks.size == 0 %}
+    <div class="page-width">
+      <div class="grid">
+        <div class="grid__item">
+          <div class="rte">
+            {{ 'home_page.onboarding.no_content' | t }}
+          </div>
+        </div>
+      </div>
+   </div>
+  {% endif %}
+  </div>
+{% unless atb_full_width %}
+  </div>
+{% endunless %}
+{% if atb_space_around %}
+  </div>
+{% endif %}
+
+
+</section>

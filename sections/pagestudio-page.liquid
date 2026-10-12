@@ -1,0 +1,28 @@
+{% schema %}
+{
+    "name": "Page Studio page",
+    "settings": [
+      {
+        "type": "page",
+        "id": "pagestudio_page",
+        "label": "Page"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Page Studio page",
+        "category": "Page Studio"
+      }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}
+
+{%- assign page = pages[section.settings.pagestudio_page] -%}
+
+<link href="//studios.cdn.theshoppad.net/pagestudio/blocks.css?v={% assign page_version = page.metafields.global.version %}{% if page_version == 3 %}3{% else %}2{% endif %}&shop={{ shop.permanent_domain }}" rel="stylesheet" type="text/css"/><script src="//studios.cdn.theshoppad.net/pagestudio/pagestudio.dist.js?v={% assign page_version = page.metafields.global.version %}{% if page_version == 3 %}3{% else %}2{% endif %}"></script><div class="studioengine">{{ page.content }}</div>

@@ -1,0 +1,186 @@
+{% comment %}
+ATB-SCHEMA{
+  "name": "Image with text",
+  "class": "index-section",
+  "id": "text-and-image",
+  "banner": "",
+  "icon": "",
+  "tags": "",
+  "description": "",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section ID",
+      "info": "Enter a unique ID with only letters and numbers, no spaces",
+      "default": ""
+    },
+    {
+      "type": "image_picker",
+      "id": "atb_image",
+      "label": "Image",
+      "info": ""
+    },
+    {
+      "type": "range",
+      "id": "atb_image_width",
+      "label": "Image width",
+      "default": 500,
+      "min": 100,
+      "max": 500,
+      "step": 10,
+      "unit": "px",
+      "info": ""
+    },
+    {
+      "type": "text",
+      "id": "atb_subtitle",
+      "label": "Subheading",
+      "default": "Improved",
+      "info": ""
+    },
+    {
+      "type": "text",
+      "id": "atb_title",
+      "label": "Heading",
+      "default": "Image with text",
+      "info": ""
+    },
+    {
+      "type": "wysiwyg",
+      "id": "atb_text",
+      "label": "Text",
+      "default": "<p>Pair large text with an image to tell a story, explain a detail about your product, or describe a new promotion.</p>",
+      "info": ""
+    },
+    {
+      "type": "text",
+      "id": "atb_button_label",
+      "label": "Button label",
+      "default": "Optional button",
+      "info": ""
+    },
+    {
+      "type": "text",
+      "id": "atb_button_link",
+      "label": "Button link",
+      "info": ""
+    },
+    {
+      "type": "select",
+      "id": "atb_layout",
+      "label": "Layout",
+      "default": "left",
+      "options": [
+        {
+          "value": "left",
+          "label": "Image on left"
+        },
+        {
+          "value": "right",
+          "label": "Image on right"
+        }
+      ],
+      "info": ""
+    },
+    {
+      "type": "checkbox",
+      "id": "atb_divider",
+      "label": "Show section divider",
+      "default": false,
+      "info": ""
+    }
+  ],
+  "warnings": []
+}ATB-SCHEMA
+{% endcomment %}
+
+
+{%- include 'atb-render' field:'section_id' -%}
+{%- assign section_id = val -%}
+{%- include 'atb-render' field:'atb_image' -%}
+{%- assign atb_image = val -%}
+{%- include 'atb-render' field:'atb_image_width' -%}
+{%- assign atb_image_width = val -%}
+{%- include 'atb-render' field:'atb_subtitle' -%}
+{%- assign atb_subtitle = val -%}
+{%- include 'atb-render' field:'atb_title' -%}
+{%- assign atb_title = val -%}
+{%- include 'atb-render' field:'atb_text' -%}
+{%- assign atb_text = val -%}
+{%- include 'atb-render' field:'atb_button_label' -%}
+{%- assign atb_button_label = val -%}
+{%- include 'atb-render' field:'atb_button_link' -%}
+{%- assign atb_button_link = val -%}
+{%- include 'atb-render' field:'atb_layout' -%}
+{%- assign atb_layout = val -%}
+{%- include 'atb-render' field:'atb_divider' -%}
+{%- assign atb_divider = val -%}
+{%- if atb_divider == blank -%}
+{%- assign atb_divider = false -%}
+{%- else -%}
+{%- assign atb_divider = true -%}
+{%- endif -%}
+{%- assign atb_image_width = atb_image_width | plus: 0 -%}
+{%- assign atb_image_key = atb_image| split: '/files/' | last -%}{%- assign atb_image = images[atb_image_key] -%}{%- assign no_image = images['no_image_comparison'] -%}
+
+<section id="shopify-section-{{section_id}}" class="shopify-section index-section">
+{% if atb_divider %}<div class="section--divider">{% endif %}
+
+<div class="page-width">
+  {% capture image_layout %}
+    <div class="feature-row__item">
+      <div style="margin: 0 auto; max-width: {{ atb_image_width }}px;">
+        {% if atb_image != blank %}
+          {% if atb_button_label != blank and atb_button_link != blank %}<a href="{{ atb_button_link }}">{% endif %}
+          <div class="image-wrap" style="height: 0; padding-bottom: {{ 100 | divided_by: atb_image.aspect_ratio }}%;">
+            {%- assign img_url = atb_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+            <img class="feature-row__image lazyload"
+                data-src="{{ img_url }}"
+                data-widths="[180, 360, 540, 720, 900, 1080]"
+                data-aspectratio="{{ atb_image.aspect_ratio }}"
+                data-sizes="auto"
+                alt="{{ atb_image.alt }}">
+          </div>
+          {% if atb_button_label != blank and atb_button_link != blank %}</a>{% endif %}
+        {% else %}
+          <div class="image-wrap">
+            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  {% endcapture %}
+
+  <div class="feature-row" data-aos>
+    {% if atb_layout == 'left' %}
+      {{ image_layout }}
+    {% endif %}
+
+    <div class="feature-row__item feature-row__text feature-row__text--{{ atb_layout }}">
+      {% if atb_subtitle != blank %}
+        <p class="h5">{{ atb_subtitle }}</p>
+      {% endif %}
+      {% if atb_title != blank %}
+        <p class="h3">{{ atb_title | escape }}</p>
+      {% endif %}
+      {% if atb_text != blank %}
+        <div class="rte featured-row__subtext">{{ atb_text }}</div>
+      {% endif %}
+      {% if atb_button_label != blank %}
+        <a href="{{ atb_button_link }}" class="btn">
+          {{ atb_button_label }}
+        </a>
+      {% endif %}
+    </div>
+
+    {% if atb_layout == 'right' %}
+      {{ image_layout }}
+    {% endif %}
+  </div>
+</div>
+
+{% if atb_divider %}</div>{% endif %}
+
+
+</section>

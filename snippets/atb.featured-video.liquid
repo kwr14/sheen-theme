@@ -1,0 +1,103 @@
+{% comment %}
+ATB-SCHEMA{
+  "name": "Video",
+  "class": "index-section",
+  "id": "featured-video",
+  "banner": "",
+  "icon": "",
+  "tags": "",
+  "description": "",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section ID",
+      "info": "Enter a unique ID with only letters and numbers, no spaces",
+      "default": ""
+    },
+    {
+      "type": "text",
+      "id": "atb_title",
+      "label": "Heading",
+      "info": ""
+    },
+    {
+      "type": "select",
+      "id": "atb_video_url_type",
+      "label": "Video link Type",
+      "default": "youtube",
+      "options": [
+        {
+          "value": "youtube",
+          "label": "Youtube"
+        },
+        {
+          "value": "vimeo",
+          "label": "Vimeo"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "atb_video_url_id",
+      "label": "YouTube or Vimeo ID",
+      "default": "_9VUPq3SxOc"
+    },
+    {
+      "type": "checkbox",
+      "id": "atb_divider",
+      "label": "Show section divider",
+      "default": false,
+      "info": ""
+    }
+  ],
+  "warnings": []
+}ATB-SCHEMA
+{% endcomment %}
+
+
+{%- include 'atb-render' field:'section_id' -%}
+{%- assign section_id = val -%}
+{%- include 'atb-render' field:'atb_title' -%}
+{%- assign atb_title = val -%}
+{%- include 'atb-render' field:'atb_divider' -%}
+{%- assign atb_divider = val -%}
+{%- if atb_divider == blank -%}
+{%- assign atb_divider = false -%}
+{%- else -%}
+{%- assign atb_divider = true -%}
+{%- endif -%}
+{%- include 'atb-render' field:'atb_video_url_id' -%}
+{%- assign atb_video_url_id = val -%}
+{%- include 'atb-render' field:'atb_video_url_type' -%}
+{%- assign atb_video_url_type = val -%}
+{%- assign no_image = images['no_image_comparison'] -%}
+
+<section id="shopify-section-{{section_id}}" class="shopify-section index-section">
+{% if atb_divider %}<div class="section--divider">{% endif %}
+
+<div class="page-width">
+  {% if atb_title != blank %}
+    <div class="section-header">
+      <h2>{{ atb_title }}</h2>
+    </div>
+  {% endif %}
+  <div class="video-wrapper">
+  {% if atb_video_url_id == blank %}
+    <iframe src="//www.youtube.com/embed/_9VUPq3SxOc?rel=0&showinfo=0&vq=720" width="850" height="480" frameborder="0" allowfullscreen></iframe>
+  {% else %}
+    {% if atb_video_url_type == "youtube" %}
+      <iframe src="//www.youtube.com/embed/{{ atb_video_url_id }}?rel=0&showinfo=0&vq=720" width="850" height="480" frameborder="0" allowfullscreen></iframe>
+    {% endif %}
+    {% if atb_video_url_type == "vimeo" %}
+      <iframe src="//player.vimeo.com/video/{{ atb_video_url_id }}?color={{ settings.color_button | remove: "#" }}&byline=0&portrait=0&badge=0" width="850" height="480" frameborder="0" allowfullscreen></iframe>
+    {% endif %}
+  {% endif %}
+  </div>
+</div>
+
+{% if atb_divider %}</div>{% endif %}
+
+
+
+</section>

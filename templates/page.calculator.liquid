@@ -1,0 +1,305 @@
+{% comment %}
+  Fabric Quantity Calculator — custom page template for Sheen Upholstery.
+  Install:
+    1. Shopify admin → Online Store → Themes → ⋯ → Edit code
+    2. Under "Templates", click "Add a new template"
+    3. Type: page  |  Name: calculator  |  File type: liquid
+    4. Replace the file contents with everything in this file and Save
+    5. Go to Online Store → Pages → Add page
+       Title: "Fabric Calculator"  |  Template: page.calculator  |  Save
+{% endcomment %}
+ 
+<style>
+  .fc-wrap {
+    --fc-bg: #faf7f2;
+    --fc-card: #ffffff;
+    --fc-ink: #1a1a1a;
+    --fc-muted: #6b6b6b;
+    --fc-line: #e6e2da;
+    --fc-soft: #f2ede4;
+    max-width: 860px;
+    margin: 40px auto;
+    padding: 0 20px;
+    color: var(--fc-ink);
+    font-family: inherit;
+    line-height: 1.5;
+  }
+  .fc-wrap * { box-sizing: border-box; }
+  .fc-header h1 { font-size: 28px; margin: 0 0 6px; font-weight: 600; letter-spacing: -0.01em; }
+  .fc-header p { color: var(--fc-muted); margin: 0 0 28px; font-size: 15px; }
+  .fc-tabs { display: flex; gap: 4px; background: var(--fc-soft); padding: 4px; border-radius: 10px; margin-bottom: 20px; width: fit-content; }
+  .fc-tab { padding: 10px 18px; border: 0; background: transparent; cursor: pointer; font-size: 14px; font-weight: 500; border-radius: 7px; color: var(--fc-muted); font-family: inherit; }
+  .fc-tab.fc-active { background: var(--fc-card); color: var(--fc-ink); box-shadow: 0 1px 2px rgba(0,0,0,.05); }
+  .fc-card { background: var(--fc-card); border: 1px solid var(--fc-line); border-radius: 14px; padding: 28px; }
+  .fc-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 14px; }
+  .fc-row.fc-full { grid-template-columns: 1fr; }
+  .fc-wrap label { display: block; font-size: 13px; font-weight: 500; color: var(--fc-ink); margin-bottom: 6px; }
+  .fc-wrap label .fc-hint { color: var(--fc-muted); font-weight: 400; font-size: 12px; }
+  .fc-wrap input[type="number"], .fc-wrap select {
+    width: 100%; padding: 10px 12px; border: 1px solid var(--fc-line); border-radius: 8px;
+    font-size: 14px; background: #fff; color: var(--fc-ink); font-family: inherit;
+  }
+  .fc-wrap input:focus, .fc-wrap select:focus { outline: 2px solid var(--fc-ink); outline-offset: -1px; border-color: var(--fc-ink); }
+  .fc-check { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+  .fc-check input { width: 18px; height: 18px; }
+  .fc-check label { margin: 0 !important; }
+  .fc-btn {
+    background: var(--fc-ink); color: #fff; border: 0; padding: 12px 22px;
+    border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; margin-top: 8px;
+    font-family: inherit;
+  }
+  .fc-btn:hover { opacity: 0.9; }
+  .fc-result { margin-top: 22px; padding: 20px; background: var(--fc-soft); border-radius: 10px; display: none; }
+  .fc-result.fc-show { display: block; }
+  .fc-result .fc-headline { font-size: 15px; color: var(--fc-muted); margin-bottom: 4px; }
+  .fc-result .fc-figure { font-size: 32px; font-weight: 600; letter-spacing: -0.02em; }
+  .fc-result .fc-figure small { font-size: 14px; color: var(--fc-muted); font-weight: 400; margin-left: 6px; }
+  .fc-breakdown { margin-top: 14px; font-size: 13px; color: var(--fc-muted); }
+  .fc-breakdown ul { margin: 8px 0 0; padding-left: 18px; }
+  .fc-breakdown li { margin: 2px 0; }
+  .fc-note { font-size: 12px; color: var(--fc-muted); margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--fc-line); }
+  .fc-note strong { color: var(--fc-ink); font-weight: 600; }
+  .fc-pane { display: none; }
+  .fc-pane.fc-active { display: block; }
+  @media (max-width: 560px) { .fc-row { grid-template-columns: 1fr; } }
+</style>
+ 
+<div class="fc-wrap">
+  <div class="fc-header">
+    <h1>{{ page.title | default: 'Fabric Quantity Calculator' }}</h1>
+    <p>Estimate how much fabric you'll need for your project. Always confirm with us before ordering.</p>
+  </div>
+ 
+  <div class="fc-tabs" role="tablist">
+    <button class="fc-tab fc-active" data-pane="upholstery" type="button">Upholstery</button>
+    <button class="fc-tab" data-pane="curtains" type="button">Curtains &amp; Blinds</button>
+  </div>
+ 
+  <section class="fc-pane fc-active" id="fc-upholstery">
+    <div class="fc-card">
+      <div class="fc-row">
+        <div>
+          <label>Item <span class="fc-hint">(plain fabric, 137cm wide)</span></label>
+          <select id="fc-u-item">
+            <option value="4|5">Chair — no cushions</option>
+            <option value="6|7">Chair — one cushion</option>
+            <option value="7|9">Chair — with cushions (back + seat)</option>
+            <option value="3|4">Armless chair</option>
+            <option value="1.5|1.5">Dining chair — full cover</option>
+            <option value="0.6|0.6">Dining chair — seat pad only</option>
+            <option value="12|14">2-seater sofa</option>
+            <option value="16|18">3-seater sofa</option>
+            <option value="20|22">4-seater sofa</option>
+            <option value="24|28">Corner sofa (L-shape)</option>
+            <option value="14|16">Chaise longue</option>
+            <option value="2|2">Ottoman / footstool</option>
+            <option value="2.5|2.5">Headboard — single (3ft)</option>
+            <option value="3.5|3.5">Headboard — double (4ft6)</option>
+            <option value="4.5|4.5">Headboard — king (5ft)</option>
+            <option value="5.5|5.5">Headboard — super king (6ft)</option>
+          </select>
+        </div>
+        <div>
+          <label>Quantity</label>
+          <input type="number" id="fc-u-qty" value="1" min="1" step="1">
+        </div>
+      </div>
+      <div class="fc-row">
+        <div>
+          <label>Fabric width</label>
+          <select id="fc-u-width">
+            <option value="137">137 cm (standard)</option>
+            <option value="140">140 cm</option>
+            <option value="150">150 cm</option>
+            <option value="300">300 cm (extra wide)</option>
+          </select>
+        </div>
+        <div>
+          <label>Pattern repeat <span class="fc-hint">(vertical, cm)</span></label>
+          <input type="number" id="fc-u-repeat" value="0" min="0" step="1" placeholder="0 for plain">
+        </div>
+      </div>
+      <div class="fc-row fc-full">
+        <div class="fc-check">
+          <input type="checkbox" id="fc-u-piping">
+          <label for="fc-u-piping">Add contrast piping / buttons (+0.5m)</label>
+        </div>
+      </div>
+      <button class="fc-btn" id="fc-u-calc" type="button">Calculate</button>
+      <div class="fc-result" id="fc-u-result">
+        <div class="fc-headline">You'll need approximately</div>
+        <div class="fc-figure"><span id="fc-u-figure">0</span><small>metres</small></div>
+        <div class="fc-breakdown" id="fc-u-breakdown"></div>
+      </div>
+      <div class="fc-note">
+        <strong>How we calculate:</strong> Base metres are for plain 137cm fabric on standard UK shapes. Narrower widths or large pattern repeats add fabric; we uplift by width ratio and add one repeat per item where applicable. Always allow a sample check — every frame differs.
+      </div>
+    </div>
+  </section>
+ 
+  <section class="fc-pane" id="fc-curtains">
+    <div class="fc-card">
+      <div class="fc-row">
+        <div>
+          <label>Project type</label>
+          <select id="fc-c-type">
+            <option value="curtains">Curtains (pair)</option>
+            <option value="roman">Roman blind</option>
+          </select>
+        </div>
+        <div>
+          <label>Heading / fullness</label>
+          <select id="fc-c-fullness">
+            <option value="2.0">Pencil pleat (2.0×)</option>
+            <option value="2.25">Pinch pleat (2.25×)</option>
+            <option value="2.5">Goblet / wave (2.5×)</option>
+            <option value="1.5">Eyelet (1.5×)</option>
+            <option value="1.0">Roman blind (1.0×)</option>
+          </select>
+        </div>
+      </div>
+      <div class="fc-row">
+        <div>
+          <label>Track / pole width <span class="fc-hint">(cm)</span></label>
+          <input type="number" id="fc-c-width" value="200" min="10" step="1">
+        </div>
+        <div>
+          <label>Finished drop <span class="fc-hint">(cm)</span></label>
+          <input type="number" id="fc-c-drop" value="220" min="10" step="1">
+        </div>
+      </div>
+      <div class="fc-row">
+        <div>
+          <label>Fabric width</label>
+          <select id="fc-c-fabwidth">
+            <option value="137">137 cm (standard)</option>
+            <option value="140">140 cm</option>
+            <option value="280">280 cm (wide — curtain fabric)</option>
+            <option value="300">300 cm (extra wide)</option>
+          </select>
+        </div>
+        <div>
+          <label>Pattern repeat <span class="fc-hint">(vertical, cm)</span></label>
+          <input type="number" id="fc-c-repeat" value="0" min="0" step="1" placeholder="0 for plain">
+        </div>
+      </div>
+      <div class="fc-row fc-full">
+        <div class="fc-check">
+          <input type="checkbox" id="fc-c-lining" checked>
+          <label for="fc-c-lining">Include standard cotton lining</label>
+        </div>
+      </div>
+      <button class="fc-btn" id="fc-c-calc" type="button">Calculate</button>
+      <div class="fc-result" id="fc-c-result">
+        <div class="fc-headline">You'll need approximately</div>
+        <div class="fc-figure"><span id="fc-c-figure">0</span><small>metres of face fabric</small></div>
+        <div class="fc-breakdown" id="fc-c-breakdown"></div>
+      </div>
+      <div class="fc-note">
+        <strong>How we calculate:</strong> Number of widths = (track × fullness) ÷ fabric width, rounded up. Cut length = finished drop + 30cm hems, rounded up to the next pattern repeat. Total = widths × cut length. Lining is a separate quantity at the same number of widths.
+      </div>
+    </div>
+  </section>
+</div>
+ 
+{% raw %}
+<script>
+(function(){
+  document.querySelectorAll('.fc-tab').forEach(function(t){
+    t.addEventListener('click', function(){
+      document.querySelectorAll('.fc-tab').forEach(function(x){ x.classList.remove('fc-active'); });
+      document.querySelectorAll('.fc-pane').forEach(function(x){ x.classList.remove('fc-active'); });
+      t.classList.add('fc-active');
+      document.getElementById('fc-' + t.dataset.pane).classList.add('fc-active');
+    });
+  });
+ 
+  document.getElementById('fc-u-calc').addEventListener('click', function(){
+    var raw = document.getElementById('fc-u-item').value.split('|');
+    var baseLow = parseFloat(raw[0]);
+    var baseHigh = parseFloat(raw[1] || raw[0]);
+    var itemLabel = document.getElementById('fc-u-item').selectedOptions[0].text;
+    var qty = parseInt(document.getElementById('fc-u-qty').value, 10) || 1;
+    var width = parseInt(document.getElementById('fc-u-width').value, 10);
+    var repeat = parseFloat(document.getElementById('fc-u-repeat').value) || 0;
+    var piping = document.getElementById('fc-u-piping').checked;
+ 
+    var widthFactor = 137 / width;
+    var metresLow = baseLow * widthFactor * qty;
+    var metresHigh = baseHigh * widthFactor * qty;
+ 
+    var repeatAdd = 0;
+    if (repeat > 15) {
+      repeatAdd = (repeat / 100) * qty;
+      metresLow += repeatAdd;
+      metresHigh += repeatAdd;
+    }
+    var pipingAdd = 0;
+    if (piping) {
+      pipingAdd = 0.5 * qty;
+      metresLow += pipingAdd;
+      metresHigh += pipingAdd;
+    }
+ 
+    var finalLow = Math.ceil(metresLow * 2) / 2;
+    var finalHigh = Math.ceil(metresHigh * 2) / 2;
+    var figure = (finalLow === finalHigh) ? finalLow.toFixed(1) : finalLow.toFixed(1) + '–' + finalHigh.toFixed(1);
+    document.getElementById('fc-u-figure').textContent = figure;
+ 
+    var baseStr = (baseLow === baseHigh) ? baseLow + 'm' : baseLow + '–' + baseHigh + 'm';
+    var bd = [];
+    bd.push('<li>Trade range: ' + baseStr + ' × ' + qty + ' × ' + itemLabel.toLowerCase() + '</li>');
+    if (width !== 137) bd.push('<li>Width adjustment (' + width + 'cm vs 137cm standard): ×' + widthFactor.toFixed(2) + '</li>');
+    if (repeatAdd > 0) bd.push('<li>Pattern repeat allowance (' + repeat + 'cm): +' + repeatAdd.toFixed(1) + 'm</li>');
+    if (pipingAdd > 0) bd.push('<li>Piping / buttons: +' + pipingAdd.toFixed(1) + 'm</li>');
+    bd.push('<li>Rounded up to the nearest 0.5m. Final quantity depends on the frame — please confirm with us before ordering.</li>');
+    document.getElementById('fc-u-breakdown').innerHTML = '<strong>Breakdown</strong><ul>' + bd.join('') + '</ul>';
+    document.getElementById('fc-u-result').classList.add('fc-show');
+  });
+ 
+  document.getElementById('fc-c-type').addEventListener('change', function(e){
+    var ff = document.getElementById('fc-c-fullness');
+    if (e.target.value === 'roman') { ff.value = '1.0'; }
+    else if (ff.value === '1.0') { ff.value = '2.0'; }
+  });
+ 
+  document.getElementById('fc-c-calc').addEventListener('click', function(){
+    var type = document.getElementById('fc-c-type').value;
+    var fullness = parseFloat(document.getElementById('fc-c-fullness').value);
+    var trackW = parseFloat(document.getElementById('fc-c-width').value);
+    var drop = parseFloat(document.getElementById('fc-c-drop').value);
+    var fabW = parseFloat(document.getElementById('fc-c-fabwidth').value);
+    var repeat = parseFloat(document.getElementById('fc-c-repeat').value) || 0;
+    var lining = document.getElementById('fc-c-lining').checked;
+ 
+    var widthsRaw = (trackW * fullness) / fabW;
+    var widths = Math.max(1, Math.ceil(widthsRaw));
+ 
+    var hems = type === 'roman' ? 25 : 30;
+    var cutLength = drop + hems;
+ 
+    var repeatNote = '';
+    if (repeat > 0) {
+      var repeats = Math.ceil(cutLength / repeat);
+      var newCut = repeats * repeat;
+      repeatNote = 'Rounded up to ' + repeats + ' × ' + repeat + 'cm repeat = ' + newCut + 'cm per width';
+      cutLength = newCut;
+    }
+ 
+    var totalCm = widths * cutLength;
+    var metres = totalCm / 100;
+    metres = Math.ceil(metres * 2) / 2;
+ 
+    document.getElementById('fc-c-figure').textContent = metres.toFixed(1);
+ 
+    var bd = [];
+    bd.push('<li>Widths needed: (' + trackW + 'cm × ' + fullness + ') ÷ ' + fabW + 'cm = ' + widthsRaw.toFixed(2) + ' → <strong>' + widths + ' widths</strong></li>');
+    bd.push('<li>Cut length: ' + drop + 'cm drop + ' + hems + 'cm hems = ' + (drop + hems) + 'cm' + (repeat > 0 ? ' → ' + repeatNote : '') + '</li>');
+    bd.push('<li>Total face fabric: ' + widths + ' × ' + cutLength + 'cm = ' + (totalCm/100).toFixed(2) + 'm, rounded up to ' + metres.toFixed(1) + 'm</li>');
+    if (lining) bd.push('<li><strong>Lining:</strong> ~' + (widths * (drop + 20) / 100).toFixed(1) + 'm (' + widths + ' widths × ' + (drop + 20) + 'cm, plain so no repeat)</li>');
+    document.getElementById('fc-c-breakdown').innerHTML = '<strong>Breakdown</strong><ul>' + bd.join('') + '</ul>';
+    document.getElementById('fc-c-result').classList.add('fc-show');
+  });
+})();
+</script>
+{% endraw %}

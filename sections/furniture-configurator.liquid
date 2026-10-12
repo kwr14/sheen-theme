@@ -1,0 +1,897 @@
+{% comment %}
+  Furniture configurator — Sheen Upholstery (v2, fabric library)
+  Flow: fabric family tabs → colour chips → size → add to basket / order a swatch.
+
+  Data
+  • product.metafields.custom.fabrics   list of "fabric_colour" metaobjects (the shared fabric library)
+      fields used: display_name, fabric_family, supplier, collection, colour_name, supplier_code,
+      swatch_sku, swatch_image, chip_colour, composition, badges, price_tier, stock_status,
+      lead_time_note, allowed_products
+  • Variants = Size × Fabric tier (option names "Size" and "Fabric tier"; tiers Core / Premium / Designer).
+    The chosen fabric's price_tier picks the variant, so the basket charges the tier price.
+    The fabric name, supplier code and swatch SKU travel with the order as line item properties.
+  • variant.metafields.custom.fabric_price_per_metre (optional) → price breakdown when there is one size.
+  • product.metafields.custom.frame_price / fabric_metres / furniture_specs / lead_time as before.
+  • Views: product images whose alt text starts with "#<supplier code>" belong to that fabric,
+    e.g. "#LF2282C/001 Front", "#LF2282C/001 Side". The words after the code are the view name.
+    Fabrics without their own photos show the untagged product images (named by "View names").
+
+  Which fabrics show
+  • stock_status "Live" → selectable.  "Temporarily unavailable" → shown, not selectable.
+  • "Discontinued" → hidden.  "Not yet approved" → hidden, except in preview
+    (theme editor, the "Preview unapproved fabrics" setting, or a product tagged "fabric-preview").
+  • allowed_products: when filled, the fabric only shows on matching product types (e.g. "Sofa").
+
+  Products without the fabrics metafield fall back to a plain variant list.
+  Install: see furniture-theme/README.md
+{% endcomment %}
+
+{%- liquid
+  assign frame = product.metafields.custom.frame_price.value
+  assign metres = product.metafields.custom.fabric_metres.value
+  assign specs_raw = product.metafields.custom.furniture_specs.value
+  assign lead_time = product.metafields.custom.lead_time.value
+  assign current = product.selected_or_first_available_variant
+  assign form_id = 'fc-form-' | append: section.id
+  assign fabrics = product.metafields.custom.fabrics.value
+
+  assign metres_display = metres | append: ''
+  assign metres_parts = metres_display | split: '.'
+  if metres_parts.size == 2 and metres_parts[1] == '0'
+    assign metres_display = metres_parts[0]
+  endif
+
+  # Preview mode: also show fabrics that are not yet approved
+  assign preview = false
+  if section.settings.show_unapproved or request.design_mode or product.tags contains 'fabric-preview'
+    assign preview = true
+  endif
+
+  # Option positions for Size and Fabric tier
+  assign size_idx = -1
+  assign tier_idx = -1
+  for opt in product.options
+    assign o = opt | downcase | strip
+    if o == 'size'
+      assign size_idx = forloop.index0
+    elsif o == 'fabric tier' or o == 'tier' or o == 'price tier'
+      assign tier_idx = forloop.index0
+    endif
+  endfor
+
+  assign library_mode = false
+  if fabrics != blank and tier_idx >= 0
+    assign library_mode = true
+  endif
+
+  # Product type in singular, for allowed_products matching ("Sofas" → "sofa")
+  assign ptype = product.type | downcase | strip
+  assign plast = ptype | slice: -1
+  if plast == 's'
+    assign ptype = ptype | remove_last: 's'
+  endif
+
+  # Pass 1: which fabrics are visible, and which families they make
+  assign visible = ','
+  assign families = ''
+  assign visible_count = 0
+  assign any_live = false
+  if library_mode
+    for f in fabrics
+      assign status = f.stock_status.value | default: 'Not yet approved'
+      if status == 'Discontinued'
+        continue
+      endif
+      if status == 'Not yet approved' and preview == false
+        continue
+      endif
+      assign allowed = true
+      assign allow_list = f.allowed_products.value
+      if allow_list != blank and allow_list.size > 0
+        assign allowed = false
+        for a in allow_list
+          assign al = a | downcase | strip
+          assign alast = al | slice: -1
+          if alast == 's'
+            assign al = al | remove_last: 's'
+          endif
+          if al == ptype or al == 'all' or al == product.handle
+            assign allowed = true
+            break
+          endif
+        endfor
+      endif
+      unless allowed
+        continue
+      endunless
+      assign tier = f.price_tier.value
+      if tier == blank
+        continue
+      endif
+      assign visible = visible | append: f.system.handle | append: ','
+      assign visible_count = visible_count | plus: 1
+      if status == 'Live'
+        assign any_live = true
+      endif
+      assign fam = f.fabric_family.value | default: 'Other'
+      assign fam_key = '|' | append: fam | append: '|'
+      assign families_wrapped = '|' | append: families | append: '|'
+      unless families_wrapped contains fam_key
+        if families == ''
+          assign families = fam
+        else
+          assign families = families | append: '|' | append: fam
+        endif
+      endunless
+    endfor
+  endif
+  assign family_list = families | split: '|'
+
+  # Size values
+  assign sizes = ''
+  if size_idx >= 0
+    assign sizes = product.options_with_values[size_idx].values
+  endif
+  assign first_size = sizes | first
+
+  # Lowest price per tier (first size) for the tab labels: "Core:£1,870|Premium:…"
+  assign tier_prices = ''
+  for v in product.variants
+    if size_idx >= 0 and v.options[size_idx] != first_size
+      continue
+    endif
+    assign tier_prices = tier_prices | append: '|' | append: v.options[tier_idx] | append: ':' | append: v.price
+  endfor
+
+  assign single_size = true
+  if sizes.size > 1
+    assign single_size = false
+  endif
+
+  assign swatch_product = section.settings.swatch_product
+  if swatch_product == blank
+    assign swatch_product = all_products['furniture-fabric-swatch']
+  endif
+  assign view_labels = section.settings.view_labels | split: ','
+
+  # Until at least one colour is Live (ordering open), prices are hidden unless the setting allows them
+  assign show_prices = true
+  if library_mode and any_live == false and section.settings.prices_before_live == false
+    assign show_prices = false
+  endif
+-%}
+
+<style>
+  #fc-{{ section.id }} {
+    --fc-bg: {{ section.settings.background }};
+    --fc-card: #ffffff;
+    --fc-ink: #111111;
+    --fc-muted: #5a5650;
+    --fc-line: #e3ded6;
+    --fc-soft: #ede8e0;
+    background: var(--fc-bg);
+    color: var(--fc-ink);
+  }
+  #fc-{{ section.id }} * { box-sizing: border-box; }
+  #fc-{{ section.id }} [hidden] { display: none !important; }
+  #fc-{{ section.id }} .fc-inner { max-width: 1280px; margin: 0 auto; padding: 32px 32px 72px; }
+  #fc-{{ section.id }} .fc-crumbs { font-size: 14px; color: var(--fc-muted); display: flex; gap: 8px; margin-bottom: 16px; }
+  #fc-{{ section.id }} .fc-crumbs a { color: var(--fc-muted); }
+  #fc-{{ section.id }} .fc-layout { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 64px; align-items: start; }
+  #fc-{{ section.id }} .fc-layout > *, #fc-{{ section.id }} .fc-panel > *, #fc-{{ section.id }} form > div { min-width: 0; }
+  #fc-{{ section.id }} .fc-media { position: sticky; top: 24px; }
+  #fc-{{ section.id }} .fc-stage { position: relative; background: var(--fc-soft); border-radius: 4px; aspect-ratio: 8 / 7; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  #fc-{{ section.id }} .fc-stage img { width: 100%; height: 100%; object-fit: cover; display: block; transition: opacity .2s ease; }
+  #fc-{{ section.id }} .fc-stage.is-loading img { opacity: .35; }
+  #fc-{{ section.id }} .fc-stage svg.placeholder-svg { width: 70%; height: auto; fill: #cfc7ba; }
+  #fc-{{ section.id }} .fc-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--fc-line); background: rgba(255,255,255,.92); color: var(--fc-ink); display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; }
+  #fc-{{ section.id }} .fc-nav:focus-visible { outline: 2px solid var(--fc-ink); outline-offset: 2px; }
+  #fc-{{ section.id }} .fc-nav-prev { left: 12px; }
+  #fc-{{ section.id }} .fc-nav-next { right: 12px; }
+  #fc-{{ section.id }} .fc-view-label { position: absolute; left: 12px; bottom: 12px; background: rgba(255,255,255,.92); border-radius: 999px; padding: 4px 12px; font-size: 13px; }
+  #fc-{{ section.id }} .fc-generic { position: absolute; right: 12px; bottom: 12px; background: rgba(255,255,255,.92); border-radius: 999px; padding: 4px 12px; font-size: 12px; color: var(--fc-muted); }
+  #fc-{{ section.id }} .fc-views { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+  #fc-{{ section.id }} .fc-view { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 0; border: 0; background: none; cursor: pointer; font: inherit; font-size: 12px; color: var(--fc-muted); }
+  #fc-{{ section.id }} .fc-view img { width: 76px; height: 66px; object-fit: cover; border-radius: 4px; border: 1px solid var(--fc-line); display: block; }
+  #fc-{{ section.id }} .fc-view[aria-pressed="true"] { color: var(--fc-ink); font-weight: 500; }
+  #fc-{{ section.id }} .fc-view[aria-pressed="true"] img { border: 2px solid var(--fc-ink); }
+  #fc-{{ section.id }} .fc-view:focus-visible img { outline: 2px solid var(--fc-ink); outline-offset: 2px; }
+  #fc-{{ section.id }} .fc-panel { display: flex; flex-direction: column; gap: 28px; }
+  #fc-{{ section.id }} .fc-title { font-family: var(--font-heading-family, inherit); font-weight: 500; font-size: clamp(34px, 4vw, 48px); line-height: 1.05; margin: 0 0 12px; }
+  #fc-{{ section.id }} .fc-desc { font-size: 16px; line-height: 1.6; color: var(--fc-muted); }
+  #fc-{{ section.id }} .fc-desc p { margin: 0 0 8px; }
+  #fc-{{ section.id }} .fc-price { display: flex; align-items: baseline; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+  #fc-{{ section.id }} .fc-price strong { font-size: 32px; font-weight: 500; }
+  #fc-{{ section.id }} .fc-price span { font-size: 14px; color: var(--fc-muted); }
+  #fc-{{ section.id }} .fc-rule { height: 1px; background: var(--fc-line); border: 0; margin: 0; }
+  #fc-{{ section.id }} fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+  #fc-{{ section.id }} legend, #fc-{{ section.id }} .fc-step { padding: 0; margin: 0 0 14px; font-size: 15px; font-weight: 500; display: block; }
+  #fc-{{ section.id }} .fc-step-num { display: inline-block; min-width: 22px; color: var(--fc-muted); font-weight: 400; }
+  #fc-{{ section.id }} .fc-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: thin; }
+  #fc-{{ section.id }} .fc-tab { flex: 0 0 auto; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 10px 14px; border: 1px solid var(--fc-line); border-radius: 4px; background: var(--fc-card); color: var(--fc-ink); font: inherit; font-size: 14px; cursor: pointer; text-align: left; }
+  #fc-{{ section.id }} .fc-tab small { font-size: 12px; color: var(--fc-muted); }
+  #fc-{{ section.id }} .fc-tab[aria-selected="true"] { border: 2px solid var(--fc-ink); padding: 9px 13px; }
+  #fc-{{ section.id }} .fc-tab:focus-visible { outline: 2px solid var(--fc-ink); outline-offset: 2px; }
+  #fc-{{ section.id }} .fc-colours { display: grid; grid-template-columns: repeat(6, minmax(0, 72px)); gap: 12px; }
+  #fc-{{ section.id }} .fc-colour { position: relative; display: flex; flex-direction: column; gap: 6px; cursor: pointer; font-size: 12px; line-height: 1.25; color: var(--fc-muted); }
+  #fc-{{ section.id }} .fc-colour input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  #fc-{{ section.id }} .fc-chip { display: block; aspect-ratio: 1; border-radius: 50%; border: 1px solid #d8d2c8; background-color: var(--fc-soft); background-size: cover; background-position: center; box-shadow: 0 0 0 3px var(--fc-bg); }
+  #fc-{{ section.id }} .fc-colour input:checked + .fc-chip { box-shadow: 0 0 0 3px var(--fc-bg), 0 0 0 5px var(--fc-ink); }
+  #fc-{{ section.id }} .fc-colour input:checked ~ .fc-colour-name { color: var(--fc-ink); font-weight: 500; }
+  #fc-{{ section.id }} .fc-colour input:focus-visible + .fc-chip { outline: 2px solid var(--fc-ink); outline-offset: 6px; }
+  #fc-{{ section.id }} .fc-colour input:disabled + .fc-chip { opacity: .4; background-image: linear-gradient(135deg, transparent 47%, #8a847b 47%, #8a847b 53%, transparent 53%) !important; }
+  #fc-{{ section.id }} .fc-colour input:disabled ~ .fc-colour-name { text-decoration: line-through; }
+  #fc-{{ section.id }} .fc-colour-name { text-align: center; }
+  #fc-{{ section.id }} .fc-card { background: var(--fc-card); border: 1px solid var(--fc-line); border-radius: 4px; padding: 18px 20px; display: grid; grid-template-columns: 64px 1fr; gap: 16px; align-items: start; margin-top: 18px; }
+  #fc-{{ section.id }} .fc-card-chip { width: 64px; height: 64px; border-radius: 4px; border: 1px solid var(--fc-line); background-size: cover; background-position: center; }
+  #fc-{{ section.id }} .fc-card-name { font-size: 16px; font-weight: 500; margin: 0 0 4px; }
+  #fc-{{ section.id }} .fc-card-meta { font-size: 13px; line-height: 1.55; color: var(--fc-muted); margin: 0; }
+  #fc-{{ section.id }} .fc-badges { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  #fc-{{ section.id }} .fc-badge { font-size: 11px; letter-spacing: .04em; text-transform: uppercase; border: 1px solid var(--fc-line); border-radius: 999px; padding: 3px 9px; background: var(--fc-bg); }
+  #fc-{{ section.id }} .fc-badge-tier { background: var(--fc-ink); color: #fff; border-color: var(--fc-ink); }
+  #fc-{{ section.id }} .fc-status { font-size: 13px; color: #8a4b12; margin: 8px 0 0; }
+  #fc-{{ section.id }} .fc-sizes { display: flex; flex-wrap: wrap; gap: 8px; }
+  #fc-{{ section.id }} .fc-size { position: relative; }
+  #fc-{{ section.id }} .fc-size input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  #fc-{{ section.id }} .fc-size span { display: block; padding: 10px 16px; border: 1px solid var(--fc-line); border-radius: 4px; background: var(--fc-card); font-size: 14px; cursor: pointer; }
+  #fc-{{ section.id }} .fc-size input:checked + span { border: 2px solid var(--fc-ink); padding: 9px 15px; }
+  #fc-{{ section.id }} .fc-size input:focus-visible + span { outline: 2px solid var(--fc-ink); outline-offset: 2px; }
+  #fc-{{ section.id }} .fc-breakdown { background: var(--fc-card); border: 1px solid var(--fc-line); border-radius: 4px; padding: 20px 22px; display: flex; flex-direction: column; gap: 10px; font-size: 15px; }
+  #fc-{{ section.id }} .fc-row { display: flex; justify-content: space-between; gap: 16px; }
+  #fc-{{ section.id }} .fc-row-total { font-weight: 500; font-size: 17px; }
+  #fc-{{ section.id }} .fc-add { width: 100%; min-height: 56px; border: 0; border-radius: 4px; background: var(--fc-ink); color: #fff; font: inherit; font-size: 16px; font-weight: 500; cursor: pointer; }
+  #fc-{{ section.id }} .fc-add:disabled { opacity: .5; cursor: not-allowed; }
+  #fc-{{ section.id }} .fc-swatch-btn { width: 100%; min-height: 48px; margin-top: 10px; border: 1px solid var(--fc-ink); border-radius: 4px; background: transparent; color: var(--fc-ink); font: inherit; font-size: 15px; font-weight: 500; cursor: pointer; }
+  #fc-{{ section.id }} .fc-swatch-btn:disabled { opacity: .5; cursor: not-allowed; }
+  #fc-{{ section.id }} .fc-small { font-size: 14px; line-height: 1.5; color: var(--fc-muted); margin: 12px 0 0; }
+  #fc-{{ section.id }} .fc-note { font-size: 13px; color: var(--fc-muted); margin: 8px 0 0; }
+  #fc-{{ section.id }} .fc-empty { background: var(--fc-card); border: 1px solid var(--fc-line); border-radius: 4px; padding: 20px 22px; font-size: 15px; line-height: 1.6; }
+  #fc-{{ section.id }} .fc-soon { font-size: 15px; line-height: 1.6; background: var(--fc-card); border: 1px solid var(--fc-line); border-left: 3px solid var(--fc-ink); border-radius: 4px; padding: 14px 16px; }
+  #fc-{{ section.id }} .fc-soon p { margin: 0; }
+  #fc-{{ section.id }} .fc-preview-flag { font-size: 12px; background: #fff4d6; border: 1px solid #ecd28a; border-radius: 4px; padding: 6px 10px; }
+  #fc-{{ section.id }} .fc-plain { display: grid; gap: 8px; }
+  #fc-{{ section.id }} .fc-plain label { display: flex; gap: 10px; align-items: center; padding: 10px 14px; border: 1px solid var(--fc-line); border-radius: 4px; background: var(--fc-card); font-size: 14px; cursor: pointer; }
+  #fc-{{ section.id }} .fc-details { background: var(--fc-card); border-top: 1px solid var(--fc-line); }
+  #fc-{{ section.id }} .fc-details-inner { max-width: 1280px; margin: 0 auto; padding: 64px 32px; display: grid; grid-template-columns: 7fr 5fr; gap: 64px; }
+  #fc-{{ section.id }} h2 { font-family: var(--font-heading-family, inherit); font-weight: 500; font-size: 34px; margin: 0 0 20px; }
+  #fc-{{ section.id }} table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  #fc-{{ section.id }} th, #fc-{{ section.id }} td { border-top: 1px solid var(--fc-line); padding: 14px 0; vertical-align: top; text-align: left; }
+  #fc-{{ section.id }} th { font-weight: 500; width: 40%; padding-right: 16px; }
+  #fc-{{ section.id }} td { color: #3f3c38; }
+  #fc-{{ section.id }} .fc-pricing-text { font-size: 15px; line-height: 1.7; color: #3f3c38; }
+  #fc-{{ section.id }} .fc-pricing-text p { margin: 0 0 14px; }
+  #fc-{{ section.id }} .fc-link { font-size: 15px; font-weight: 500; color: var(--fc-ink); }
+  @media (max-width: 900px) {
+    #fc-{{ section.id }} .fc-layout, #fc-{{ section.id }} .fc-details-inner { grid-template-columns: 1fr; gap: 32px; }
+    #fc-{{ section.id }} .fc-media { position: static; }
+    #fc-{{ section.id }} .fc-inner { padding: 16px 16px 48px; }
+    #fc-{{ section.id }} .fc-details-inner { padding: 40px 16px; }
+    #fc-{{ section.id }} .fc-colours { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; }
+  }
+</style>
+
+<section id="fc-{{ section.id }}" data-fc-root>
+  <div class="fc-inner">
+    <nav class="fc-crumbs" aria-label="Breadcrumb">
+      {%- if section.settings.landing_url != blank -%}
+        <a href="{{ section.settings.landing_url }}">{{ section.settings.landing_label }}</a>
+        <span aria-hidden="true">/</span>
+      {%- endif -%}
+      <span>{{ product.type | default: product.title }}</span>
+    </nav>
+
+    <div class="fc-layout">
+      {%- comment -%} ── Media ── {%- endcomment -%}
+      <div class="fc-media">
+        <div class="fc-stage" data-fc-stage>
+          {%- if product.featured_image -%}
+            {%- assign main_alt = product.title | escape -%}
+            {{ product.featured_image | image_url: width: 1600 | image_tag: class: 'fc-main-image', widths: '600, 900, 1200, 1600', sizes: '(max-width: 900px) 100vw, 58vw', alt: main_alt, fetchpriority: 'high' }}
+          {%- else -%}
+            {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+          {%- endif -%}
+          <button type="button" class="fc-nav fc-nav-prev" data-fc-prev aria-label="Previous view" hidden>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+          </button>
+          <button type="button" class="fc-nav fc-nav-next" data-fc-next aria-label="Next view" hidden>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+          </button>
+          <span class="fc-view-label" data-fc-view-label hidden></span>
+          <span class="fc-generic" data-fc-generic hidden>{{ section.settings.generic_photo_note }}</span>
+        </div>
+        <div class="fc-views" role="group" aria-label="Views" data-fc-views></div>
+      </div>
+
+      {%- comment -%} ── Panel ── {%- endcomment -%}
+      <div class="fc-panel">
+        <div>
+          <h1 class="fc-title">{{ product.title }}</h1>
+          {%- if product.description != blank -%}
+            <div class="fc-desc">{{ product.description }}</div>
+          {%- endif -%}
+          <div class="fc-price">
+            {%- if show_prices -%}
+              <strong data-fc-price>{{ current.price | money | strip_html }}</strong>
+              <span>{{ section.settings.price_note }}</span>
+            {%- else -%}
+              <strong>{{ section.settings.no_price_text }}</strong>
+            {%- endif -%}
+          </div>
+        </div>
+
+        <hr class="fc-rule">
+
+        {%- if library_mode -%}
+          {%- if request.design_mode -%}
+            <p class="fc-preview-flag">Editor preview: fabrics marked “Not yet approved” are showing. They can’t be bought.</p>
+          {%- elsif preview and any_live == false and section.settings.coming_soon_note != blank -%}
+            <div class="fc-soon">{{ section.settings.coming_soon_note }}</div>
+          {%- endif -%}
+
+          {%- if visible_count == 0 -%}
+            <div class="fc-empty">
+              {{ section.settings.no_fabrics_text }}
+              {%- if section.settings.contact_url != blank %} <a class="fc-link" href="{{ section.settings.contact_url }}">{{ section.settings.contact_label }}</a>{% endif -%}
+            </div>
+          {%- else -%}
+            {%- form 'product', product, id: form_id, novalidate: 'novalidate', data-fc-form: '' -%}
+              <input type="hidden" name="id" value="{{ current.id }}" data-fc-id>
+              <input type="hidden" name="properties[Fabric]" value="" data-fc-prop-fabric>
+              <input type="hidden" name="properties[Supplier code]" value="" data-fc-prop-code>
+              <input type="hidden" name="properties[Swatch SKU]" value="" data-fc-prop-sku>
+
+              {%- comment -%} Step 1: fabric family {%- endcomment -%}
+              <div>
+                <span class="fc-step" id="fc-fam-label-{{ section.id }}"><span class="fc-step-num">1</span>{{ section.settings.family_label }}</span>
+                <div class="fc-tabs" role="tablist" aria-labelledby="fc-fam-label-{{ section.id }}">
+                  {%- for fam in family_list -%}
+                    {%- liquid
+                      assign fam_tier = ''
+                      for f in fabrics
+                        if f.fabric_family.value == fam
+                          assign fh = ',' | append: f.system.handle | append: ','
+                          if visible contains fh
+                            assign fam_tier = f.price_tier.value
+                            break
+                          endif
+                        endif
+                      endfor
+                      assign tier_price = ''
+                      assign tp_list = tier_prices | split: '|'
+                      for tp in tp_list
+                        assign tp_parts = tp | split: ':'
+                        if tp_parts[0] == fam_tier
+                          assign tier_price = tp_parts[1] | times: 1 | money_without_trailing_zeros | strip_html
+                          break
+                        endif
+                      endfor
+                    -%}
+                    <button type="button" role="tab" class="fc-tab" id="fc-tab-{{ section.id }}-{{ forloop.index }}"
+                      aria-controls="fc-pane-{{ section.id }}-{{ forloop.index }}"
+                      aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+                      tabindex="{% if forloop.first %}0{% else %}-1{% endif %}"
+                      data-fc-tab="{{ forloop.index }}">
+                      <span>{{ fam }}</span>
+                      <small>{{ fam_tier }}{% if tier_price != '' and show_prices %} · from {{ tier_price }}{% endif %}</small>
+                    </button>
+                  {%- endfor -%}
+                </div>
+              </div>
+
+              {%- comment -%} Step 2: colour {%- endcomment -%}
+              <div style="margin-top: 26px;">
+                <span class="fc-step"><span class="fc-step-num">2</span>{{ section.settings.colour_label }} <span style="font-weight:400;color:var(--fc-muted)">— <span data-fc-colour-name></span></span></span>
+                {%- for fam in family_list -%}
+                  {%- assign pane_index = forloop.index -%}
+                  <fieldset class="fc-colours" role="tabpanel" id="fc-pane-{{ section.id }}-{{ pane_index }}" aria-labelledby="fc-tab-{{ section.id }}-{{ pane_index }}" {% unless forloop.first %}hidden{% endunless %} data-fc-pane="{{ pane_index }}">
+                    <legend class="visually-hidden" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">{{ fam }} colours</legend>
+                    {%- for f in fabrics -%}
+                      {%- liquid
+                        if f.fabric_family.value != fam
+                          continue
+                        endif
+                        assign fh = ',' | append: f.system.handle | append: ','
+                        unless visible contains fh
+                          continue
+                        endunless
+                        assign chip_style = ''
+                        if f.swatch_image.value != blank
+                          assign chip_src = f.swatch_image.value | image_url: width: 160
+                          assign chip_style = 'background-image:url(' | append: chip_src | append: ');'
+                        elsif f.chip_colour.value != blank
+                          assign chip_style = 'background-color:' | append: f.chip_colour.value | append: ';'
+                        endif
+                        assign f_status = f.stock_status.value | default: 'Not yet approved'
+                      -%}
+                      <label class="fc-colour">
+                        <input type="radio" name="fc-fabric-{{ section.id }}" value="{{ f.system.handle }}" data-fc-fabric
+                          {% if f_status == 'Temporarily unavailable' %}disabled{% endif %}>
+                        <span class="fc-chip" style="{{ chip_style }}" aria-hidden="true"></span>
+                        <span class="fc-colour-name">{{ f.colour_name.value }}{% if f_status == 'Temporarily unavailable' %}<span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);"> (temporarily unavailable)</span>{% endif %}</span>
+                      </label>
+                    {%- endfor -%}
+                  </fieldset>
+                {%- endfor -%}
+
+                <div class="fc-card" data-fc-card>
+                  <span class="fc-card-chip" data-fc-card-chip></span>
+                  <div>
+                    <p class="fc-card-name" data-fc-card-name></p>
+                    <p class="fc-card-meta" data-fc-card-meta></p>
+                    <div class="fc-badges" data-fc-card-badges></div>
+                    <p class="fc-status" data-fc-card-status hidden></p>
+                  </div>
+                </div>
+              </div>
+
+              {%- comment -%} Step 3: size {%- endcomment -%}
+              {%- if size_idx >= 0 and single_size == false -%}
+                <fieldset style="margin-top: 26px;">
+                  <legend><span class="fc-step-num">3</span>{{ section.settings.size_label }}</legend>
+                  <div class="fc-sizes">
+                    {%- for s in sizes -%}
+                      <label class="fc-size">
+                        <input type="radio" name="fc-size-{{ section.id }}" value="{{ s | escape }}" data-fc-size {% if current.options[size_idx] == s %}checked{% endif %}>
+                        <span>{{ s }}</span>
+                      </label>
+                    {%- endfor -%}
+                  </div>
+                </fieldset>
+              {%- endif -%}
+
+              {%- if show_prices and single_size and frame != blank and metres != blank -%}
+                {%- assign frame_cents = frame | times: 100 | round -%}
+                <div class="fc-breakdown" style="margin-top: 26px;" data-fc-breakdown>
+                  <div class="fc-row"><span>Frame &amp; making</span><span>{{ frame_cents | money | strip_html }}</span></div>
+                  <div class="fc-row"><span>Fabric: {{ metres_display }} m × <span data-fc-ppm></span> (<span data-fc-tier></span>)</span><span data-fc-fabric-cost></span></div>
+                  <hr class="fc-rule">
+                  <div class="fc-row fc-row-total"><span>Total</span><span data-fc-total>{{ current.price | money | strip_html }}</span></div>
+                </div>
+              {%- endif -%}
+
+              <div style="margin-top: 26px;">
+                <button type="submit" name="add" class="fc-add" data-fc-add disabled>{{ section.settings.choose_text }}</button>
+                <p class="fc-small">
+                  Made to order{% if lead_time != blank %} · Lead time {{ lead_time }}{% endif %}<span data-fc-lead></span>.
+                  {% if section.settings.pattern_note != blank %}{{ section.settings.pattern_note }}{% endif %}
+                </p>
+              </div>
+            {%- endform -%}
+
+            {%- if swatch_product != blank and swatch_product.selected_or_first_available_variant -%}
+              <form method="post" action="{{ routes.cart_add_url }}" data-fc-swatch-form>
+                <input type="hidden" name="id" value="{{ swatch_product.selected_or_first_available_variant.id }}">
+                <input type="hidden" name="quantity" value="1">
+                <input type="hidden" name="properties[Fabric]" value="" data-fc-sw-fabric>
+                <input type="hidden" name="properties[Supplier code]" value="" data-fc-sw-code>
+                <input type="hidden" name="properties[Swatch SKU]" value="" data-fc-sw-sku>
+                <input type="hidden" name="properties[For]" value="{{ product.title | escape }}">
+                <button type="submit" class="fc-swatch-btn" data-fc-swatch-btn disabled>
+                  {{ section.settings.swatch_label }}{% if swatch_product.price > 0 %} — {{ swatch_product.price | money | strip_html }}{% endif %}
+                </button>
+              </form>
+            {%- endif -%}
+          {%- endif -%}
+
+        {%- else -%}
+          {%- comment -%} Fallback: product without the fabric library → plain variant list {%- endcomment -%}
+          {%- form 'product', product, id: form_id, novalidate: 'novalidate' -%}
+            <fieldset>
+              <legend>{{ section.settings.fabric_label }}</legend>
+              <div class="fc-plain">
+                {%- for variant in product.variants -%}
+                  <label>
+                    <input type="radio" name="id" value="{{ variant.id }}" {% if variant.id == current.id %}checked{% endif %} {% unless variant.available %}disabled{% endunless %} data-fc-plain data-price="{{ variant.price | money | strip_html | escape }}">
+                    <span>{{ variant.title }} · {{ variant.price | money | strip_html }}{% unless variant.available %} · Unavailable{% endunless %}</span>
+                  </label>
+                {%- endfor -%}
+              </div>
+            </fieldset>
+            <div style="margin-top: 26px;">
+              <button type="submit" name="add" class="fc-add" {% unless current.available %}disabled{% endunless %}>Add to basket</button>
+              <p class="fc-small">Made to order{% if lead_time != blank %} · Lead time {{ lead_time }}{% endif %}.</p>
+            </div>
+          {%- endform -%}
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+
+  <div class="fc-details">
+    <div class="fc-details-inner">
+      <div>
+        <h2>{{ section.settings.spec_heading }}</h2>
+        <table>
+          <tbody>
+            {%- if specs_raw != blank -%}
+              {%- assign spec_lines = specs_raw | newline_to_br | split: '<br />' -%}
+              {%- for line in spec_lines -%}
+                {%- assign l = line | strip -%}
+                {%- if l == blank -%}{%- continue -%}{%- endif -%}
+                {%- assign parts = l | split: '|' -%}
+                {%- if parts.size < 2 -%}{%- assign parts = l | split: ':' -%}{%- endif -%}
+                <tr>
+                  <th scope="row">{{ parts[0] | strip }}</th>
+                  <td>{{ parts[1] | strip }}</td>
+                </tr>
+              {%- endfor -%}
+            {%- endif -%}
+            {%- if metres != blank -%}
+              <tr><th scope="row">Fabric required</th><td>{{ metres_display }} m (plain fabric)</td></tr>
+            {%- endif -%}
+            {%- if lead_time != blank -%}
+              <tr><th scope="row">Lead time</th><td>{{ lead_time }}</td></tr>
+            {%- endif -%}
+            <tr data-fc-spec-fabric hidden><th scope="row">Your fabric</th><td data-fc-spec-fabric-text></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <h2>{{ section.settings.pricing_heading }}</h2>
+        <div class="fc-pricing-text">{{ section.settings.pricing_text }}</div>
+        {%- if section.settings.contact_url != blank -%}
+          <a class="fc-link" href="{{ section.settings.contact_url }}">{{ section.settings.contact_label }}</a>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+
+  {%- if library_mode and visible_count > 0 -%}
+  <script type="application/json" data-fc-data>
+    {
+      "sizeIdx": {{ size_idx }},
+      "showPrices": {{ show_prices | json }},
+      "soonButton": {{ section.settings.coming_soon_button | json }},
+      "soonNote": {{ section.settings.coming_soon_status | json }},
+      "tierIdx": {{ tier_idx }},
+      "labels": {{ view_labels | json }},
+      "variants": [
+        {%- for v in product.variants -%}
+          {%- liquid
+            assign v_ppm = v.metafields.custom.fabric_price_per_metre.value
+            assign v_ppm_str = ''
+            assign v_fabric_str = ''
+            if v_ppm != blank
+              assign v_ppm_cents = v_ppm | times: 100 | round
+              assign v_ppm_str = v_ppm_cents | money | strip_html
+              if metres != blank
+                assign v_fabric_cents = v_ppm | times: metres | times: 100 | round
+                assign v_fabric_str = v_fabric_cents | money | strip_html
+              endif
+            endif
+          -%}
+          {"id": {{ v.id }}, "options": {{ v.options | json }}, "price": {{ v.price | money | strip_html | json }}, "available": {{ v.available | json }}, "ppm": {{ v_ppm_str | json }}, "fabricCost": {{ v_fabric_str | json }}}{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      ],
+      "images": [
+        {%- for img in product.images limit: 60 -%}
+          {"src": {{ img | image_url: width: 1600 | json }}, "thumb": {{ img | image_url: width: 200 | json }}, "alt": {{ img.alt | default: '' | json }}}{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      ],
+      "fabrics": {
+        {%- assign first_out = true -%}
+        {%- for f in fabrics -%}
+          {%- liquid
+            assign fh = ',' | append: f.system.handle | append: ','
+            unless visible contains fh
+              continue
+            endunless
+            assign sw = ''
+            if f.swatch_image.value != blank
+              assign sw = f.swatch_image.value | image_url: width: 160
+            endif
+          -%}
+          {%- unless first_out %},{% endunless -%}{%- assign first_out = false -%}
+          {{ f.system.handle | json }}: {
+            "name": {{ f.display_name.value | json }},
+            "family": {{ f.fabric_family.value | json }},
+            "colour": {{ f.colour_name.value | json }},
+            "supplier": {{ f.supplier.value | default: '' | json }},
+            "collection": {{ f.collection.value | default: '' | json }},
+            "code": {{ f.supplier_code.value | default: '' | json }},
+            "sku": {{ f.swatch_sku.value | default: '' | json }},
+            "comp": {{ f.composition.value | default: '' | json }},
+            "badges": {{ f.badges.value | default: '' | json }},
+            "tier": {{ f.price_tier.value | json }},
+            "status": {{ f.stock_status.value | default: 'Not yet approved' | json }},
+            "lead": {{ f.lead_time_note.value | default: '' | json }},
+            "chip": {{ f.chip_colour.value | default: '' | json }},
+            "swatch": {{ sw | json }}
+          }
+        {%- endfor -%}
+      }
+    }
+  </script>
+  {%- endif -%}
+</section>
+
+{%- if library_mode and visible_count > 0 -%}
+<script>
+  (function () {
+    var root = document.getElementById('fc-{{ section.id }}');
+    if (!root) return;
+    var D;
+    try { D = JSON.parse(root.querySelector('[data-fc-data]').textContent); } catch (e) { return; }
+    var $ = function (s) { return root.querySelector(s); };
+    var $$ = function (s) { return Array.prototype.slice.call(root.querySelectorAll(s)); };
+    function setText(s, t) { var el = $(s); if (el) el.textContent = t; }
+    function setVal(s, t) { var el = $(s); if (el) el.value = t; }
+
+    var state = { fabric: null, size: null };
+    var sizeInputs = $$('[data-fc-size]');
+    var checkedSize = sizeInputs.filter(function (i) { return i.checked; })[0];
+    if (D.sizeIdx >= 0) {
+      var firstVariant = D.variants[0];
+      state.size = checkedSize ? checkedSize.value : (firstVariant ? firstVariant.options[D.sizeIdx] : null);
+    }
+
+    /* ── Views ── */
+    var img = $('.fc-main-image'), stage = $('[data-fc-stage]'), viewsEl = $('[data-fc-views]');
+    var prevBtn = $('[data-fc-prev]'), nextBtn = $('[data-fc-next]'), labelEl = $('[data-fc-view-label]'), genericEl = $('[data-fc-generic]');
+    var views = [], viewIndex = 0;
+    function norm(s) { return String(s || '').toLowerCase().replace(/\s+/g, ''); }
+    function viewsFor(f) {
+      var tagged = [], untagged = [];
+      var code = norm(f && f.code);
+      D.images.forEach(function (im) {
+        var alt = (im.alt || '').trim();
+        if (alt.charAt(0) === '#') {
+          var sp = alt.indexOf(' ');
+          var tag = norm(sp > 0 ? alt.slice(1, sp) : alt.slice(1));
+          if (code && tag === code) tagged.push({ src: im.src, thumb: im.thumb, label: sp > 0 ? alt.slice(sp + 1).trim() : 'View', alt: (f.name || '') + ' — ' + (sp > 0 ? alt.slice(sp + 1).trim() : '') });
+        } else {
+          untagged.push(im);
+        }
+      });
+      if (tagged.length) return { list: tagged, generic: false };
+      var base = untagged.length ? untagged : D.images;
+      return {
+        list: base.map(function (im, n) {
+          var label = (D.labels[n] || '').trim() || ('View ' + (n + 1));
+          return { src: im.src, thumb: im.thumb, label: label, alt: im.alt || label };
+        }),
+        generic: true
+      };
+    }
+    function showView(i) {
+      if (!views.length || !img) return;
+      viewIndex = (i + views.length) % views.length;
+      var v = views[viewIndex];
+      if (img.getAttribute('src') !== v.src) {
+        if (stage) stage.classList.add('is-loading');
+        img.onload = function () { if (stage) stage.classList.remove('is-loading'); };
+        img.removeAttribute('srcset');
+        img.src = v.src;
+      }
+      img.alt = v.alt || '';
+      if (labelEl) { labelEl.textContent = v.label; labelEl.hidden = views.length < 2; }
+      if (prevBtn) prevBtn.hidden = views.length < 2;
+      if (nextBtn) nextBtn.hidden = views.length < 2;
+      $$('.fc-view').forEach(function (b, n) { b.setAttribute('aria-pressed', n === viewIndex ? 'true' : 'false'); });
+    }
+    function setViews(res) {
+      views = res.list || [];
+      if (genericEl) genericEl.hidden = !(res.generic && $$('[data-fc-fabric]').length > 0 && views.length > 0);
+      if (!viewsEl) return;
+      viewsEl.innerHTML = '';
+      viewsEl.hidden = views.length < 2;
+      views.forEach(function (v, n) {
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'fc-view';
+        b.setAttribute('aria-pressed', 'false');
+        b.setAttribute('aria-label', 'Show ' + v.label + ' view');
+        var t = document.createElement('img');
+        t.src = v.thumb; t.alt = ''; t.loading = 'lazy'; t.width = 76; t.height = 66;
+        var s = document.createElement('span'); s.textContent = v.label;
+        b.appendChild(t); b.appendChild(s);
+        b.addEventListener('click', function () { showView(n); });
+        viewsEl.appendChild(b);
+        var pre = new Image(); pre.src = v.src;
+      });
+      showView(Math.min(viewIndex, Math.max(views.length - 1, 0)));
+    }
+    if (prevBtn) prevBtn.addEventListener('click', function () { showView(viewIndex - 1); });
+    if (nextBtn) nextBtn.addEventListener('click', function () { showView(viewIndex + 1); });
+    var touchX = null;
+    if (stage) {
+      stage.addEventListener('touchstart', function (e) { touchX = e.touches[0].clientX; }, { passive: true });
+      stage.addEventListener('touchend', function (e) {
+        if (touchX === null) return;
+        var dx = e.changedTouches[0].clientX - touchX;
+        if (Math.abs(dx) > 40) showView(viewIndex + (dx < 0 ? 1 : -1));
+        touchX = null;
+      });
+    }
+
+    /* ── Tabs ── */
+    var tabs = $$('[data-fc-tab]');
+    function selectTab(tab, focus) {
+      tabs.forEach(function (t) {
+        var on = t === tab;
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+        t.tabIndex = on ? 0 : -1;
+        var pane = document.getElementById(t.getAttribute('aria-controls'));
+        if (pane) pane.hidden = !on;
+      });
+      if (focus) tab.focus();
+    }
+    tabs.forEach(function (t, n) {
+      t.addEventListener('click', function () {
+        selectTab(t);
+        // pick the first selectable colour in this family
+        var pane = document.getElementById(t.getAttribute('aria-controls'));
+        var inp = pane && pane.querySelector('[data-fc-fabric]:not(:disabled)');
+        if (inp) { inp.checked = true; chooseFabric(inp.value); }
+      });
+      t.addEventListener('keydown', function (e) {
+        var k = e.key, j = null;
+        if (k === 'ArrowRight') j = (n + 1) % tabs.length;
+        else if (k === 'ArrowLeft') j = (n - 1 + tabs.length) % tabs.length;
+        else if (k === 'Home') j = 0;
+        else if (k === 'End') j = tabs.length - 1;
+        if (j !== null) { e.preventDefault(); selectTab(tabs[j], true); }
+      });
+    });
+
+    /* ── Selection ── */
+    function findVariant() {
+      var f = D.fabrics[state.fabric];
+      if (!f) return null;
+      return D.variants.filter(function (v) {
+        if (v.options[D.tierIdx] !== f.tier) return false;
+        if (D.sizeIdx >= 0 && state.size !== null && v.options[D.sizeIdx] !== state.size) return false;
+        return true;
+      })[0] || null;
+    }
+
+    function render() {
+      var f = D.fabrics[state.fabric];
+      var v = findVariant();
+      var add = $('[data-fc-add]'), swBtn = $('[data-fc-swatch-btn]');
+      if (!f) return;
+
+      // fabric card
+      var chipStyle = f.swatch ? 'background-image:url(' + f.swatch + ')' : (f.chip ? 'background-color:' + f.chip : '');
+      var cardChip = $('[data-fc-card-chip]'); if (cardChip) cardChip.setAttribute('style', chipStyle);
+      setText('[data-fc-colour-name]', f.colour);
+      setText('[data-fc-card-name]', f.name);
+      var meta = [];
+      if (f.supplier) meta.push(f.supplier + (f.collection ? ' · ' + f.collection : ''));
+      if (f.code) meta.push('Code ' + f.code);
+      if (f.comp) meta.push(f.comp);
+      setText('[data-fc-card-meta]', meta.join('\n'));
+      var metaEl = $('[data-fc-card-meta]'); if (metaEl) metaEl.style.whiteSpace = 'pre-line';
+      var badgesEl = $('[data-fc-card-badges]');
+      if (badgesEl) {
+        badgesEl.innerHTML = '';
+        var tierB = document.createElement('span'); tierB.className = 'fc-badge fc-badge-tier'; tierB.textContent = f.tier; badgesEl.appendChild(tierB);
+        (Array.isArray(f.badges) ? f.badges : []).forEach(function (b) {
+          var s = document.createElement('span'); s.className = 'fc-badge'; s.textContent = b; badgesEl.appendChild(s);
+        });
+      }
+      var st = $('[data-fc-card-status]');
+      if (st) {
+        var note = '';
+        if (f.status === 'Not yet approved') note = D.soonNote || '';
+        else if (f.status === 'Temporarily unavailable') note = 'Temporarily unavailable.';
+        if (f.lead) note += (note ? ' ' : '') + f.lead;
+        st.textContent = note; st.hidden = !note;
+      }
+      setText('[data-fc-lead]', f.lead ? ' · ' + f.lead : '');
+      var specRow = $('[data-fc-spec-fabric]');
+      if (specRow) { specRow.hidden = false; setText('[data-fc-spec-fabric-text]', f.name + (f.code ? ' (' + f.code + ')' : '') + (f.comp ? ' · ' + f.comp : '')); }
+
+      // properties for the order
+      setVal('[data-fc-prop-fabric]', f.name);
+      setVal('[data-fc-prop-code]', f.code);
+      setVal('[data-fc-prop-sku]', f.sku);
+      setVal('[data-fc-sw-fabric]', f.name);
+      setVal('[data-fc-sw-code]', f.code);
+      setVal('[data-fc-sw-sku]', f.sku);
+
+      var sellable = f.status === 'Live' || f.status === 'Not yet approved';
+      if (swBtn) swBtn.disabled = !(f.status === 'Live');
+
+      if (v) {
+        setVal('[data-fc-id]', v.id);
+        if (D.showPrices) {
+          setText('[data-fc-price]', v.price);
+          setText('[data-fc-total]', v.price);
+        }
+        setText('[data-fc-ppm]', v.ppm);
+        setText('[data-fc-tier]', f.tier);
+        setText('[data-fc-fabric-cost]', v.fabricCost);
+        var bd = $('[data-fc-breakdown]'); if (bd) bd.hidden = !v.ppm;
+        if (add) {
+          var ok = v.available && f.status === 'Live';
+          add.disabled = !ok;
+          add.textContent = ok ? 'Add to basket — ' + v.price
+            : (f.status === 'Not yet approved' ? (D.soonButton || 'Coming soon') : 'Unavailable in this fabric');
+        }
+        try {
+          var url = new URL(window.location.href);
+          url.searchParams.set('variant', v.id);
+          url.searchParams.set('fabric', state.fabric);
+          window.history.replaceState({}, '', url.toString());
+        } catch (e) {}
+      } else if (add) {
+        add.disabled = true;
+        add.textContent = 'Not available in this size';
+      }
+      setViews(viewsFor(f));
+    }
+
+    function chooseFabric(handle) {
+      if (!D.fabrics[handle]) return;
+      state.fabric = handle;
+      render();
+    }
+
+    $$('[data-fc-fabric]').forEach(function (inp) {
+      inp.addEventListener('change', function () { if (inp.checked) chooseFabric(inp.value); });
+    });
+    sizeInputs.forEach(function (inp) {
+      inp.addEventListener('change', function () { if (inp.checked) { state.size = inp.value; render(); } });
+    });
+
+    // Initial fabric: ?fabric=<handle>, else the first selectable one
+    var start = null;
+    try { start = new URL(window.location.href).searchParams.get('fabric'); } catch (e) {}
+    var startInput = start ? root.querySelector('[data-fc-fabric][value="' + start.replace(/"/g, '') + '"]:not(:disabled)') : null;
+    if (!startInput) startInput = root.querySelector('[data-fc-fabric]:not(:disabled)');
+    if (startInput) {
+      startInput.checked = true;
+      var pane = startInput.closest('[data-fc-pane]');
+      var tab = pane && document.getElementById(pane.getAttribute('aria-labelledby'));
+      if (tab) selectTab(tab);
+      chooseFabric(startInput.value);
+    } else {
+      setViews(viewsFor(null));
+    }
+
+    // Don't submit without a fabric
+    var form = $('[data-fc-form]') || $('form[action*="/cart/add"]');
+    if (form) form.addEventListener('submit', function (e) { if (!state.fabric) e.preventDefault(); });
+  })();
+</script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Furniture configurator",
+  "tag": "div",
+  "class": "section-furniture-configurator",
+  "settings": [
+    { "type": "color", "id": "background", "label": "Background", "default": "#f6f3ee" },
+    { "type": "url", "id": "landing_url", "label": "Furniture landing page link", "info": "Used in the breadcrumb" },
+    { "type": "text", "id": "landing_label", "label": "Breadcrumb label", "default": "Furniture" },
+    { "type": "text", "id": "view_labels", "label": "View names for untagged photos", "default": "Front, Side, Back, Detail", "info": "Fabric-specific photos are named by their alt text, e.g. '#LF2282C/001 Side'" },
+    { "type": "text", "id": "generic_photo_note", "label": "Label on photos not in the chosen fabric", "default": "Shown in a sample fabric" },
+    { "type": "text", "id": "price_note", "label": "Text next to price", "default": "incl. VAT · in your chosen fabric" },
+    { "type": "header", "content": "Fabric picker" },
+    { "type": "text", "id": "family_label", "label": "Step 1 heading", "default": "Choose a fabric" },
+    { "type": "text", "id": "colour_label", "label": "Step 2 heading", "default": "Choose a colour" },
+    { "type": "text", "id": "size_label", "label": "Step 3 heading", "default": "Choose a size" },
+    { "type": "text", "id": "fabric_label", "label": "Heading for products without the fabric library", "default": "Choose your option" },
+    { "type": "text", "id": "choose_text", "label": "Button text before a fabric is chosen", "default": "Choose a fabric" },
+    { "type": "checkbox", "id": "show_unapproved", "label": "Show unapproved fabrics (showcase)", "default": false, "info": "Shows fabrics marked 'Not yet approved' to everyone, as a showcase: they can't be bought. Products tagged 'fabric-preview' always show them. Turn off once colours are Live." },
+    { "type": "header", "content": "Before ordering opens" },
+    { "type": "checkbox", "id": "prices_before_live", "label": "Show prices before any colour is Live", "default": false },
+    { "type": "text", "id": "no_price_text", "label": "Price text before ordering opens", "default": "Coming soon" },
+    { "type": "richtext", "id": "coming_soon_note", "label": "Note shown before ordering opens", "default": "<p>Ordering opens soon. Explore our fabrics and colours now, and get in touch if you'd like to reserve this piece.</p>" },
+    { "type": "text", "id": "coming_soon_button", "label": "Button text before ordering opens", "default": "Coming soon" },
+    { "type": "text", "id": "coming_soon_status", "label": "Fabric note before ordering opens", "default": "Available to order soon." },
+    { "type": "richtext", "id": "no_fabrics_text", "label": "Text when no fabrics are available", "default": "<p>Fabrics for this piece are being finalised.</p>" },
+    { "type": "header", "content": "Swatches" },
+    { "type": "product", "id": "swatch_product", "label": "Swatch product", "info": "Leave blank to use the product with handle 'furniture-fabric-swatch'" },
+    { "type": "text", "id": "swatch_label", "label": "Swatch button text", "default": "Order a swatch of this fabric" },
+    { "type": "header", "content": "Details" },
+    { "type": "textarea", "id": "pattern_note", "label": "Note under the button", "default": "Fabric quantity is for plain fabrics; patterned fabrics may need more to match the repeat, and we'll confirm before making." },
+    { "type": "text", "id": "spec_heading", "label": "Specification heading", "default": "Specification" },
+    { "type": "text", "id": "pricing_heading", "label": "Pricing heading", "default": "How the price works" },
+    { "type": "richtext", "id": "pricing_text", "label": "Pricing text", "default": "<p>Every fabric belongs to a price tier: Core, Premium or Designer. Your price is the frame and making cost plus the fabric this piece needs at that tier's price per metre.</p><p>Not sure about a colour? Order a swatch first, and we'll post you a cutting of the exact fabric.</p>" },
+    { "type": "url", "id": "contact_url", "label": "Contact link" },
+    { "type": "text", "id": "contact_label", "label": "Contact link text", "default": "Ask us about another fabric" }
+  ]
+}
+{% endschema %}

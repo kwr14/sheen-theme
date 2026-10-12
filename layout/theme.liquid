@@ -1,0 +1,321 @@
+<!doctype html>
+<html class="no-js" lang="{{ shop.locale }}">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-167244247-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-167244247-1');
+    </script>
+    <meta name="google-site-verification" content="B0vwK4GcmkuuqtLIeDZijvfnIvYHTQAuFzZ9VuHWPRg">
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "LocalBusiness",
+        "name": "Sheen Upholstery LTD",
+        "image": "",
+        "@id": "",
+        "url": "https://www.sheenupholstery.com/",
+        "telephone": "02088786474",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "358 Upper Richmond Road West",
+          "addressLocality": "London",
+          "postalCode": "SW14 7JT",
+          "addressCountry": "GB"
+        },
+        "openingHoursSpecification": {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday"
+          ],
+          "opens": "09:00",
+          "closes": "18:00"
+        }
+      }
+    </script>
+    <link rel="stylesheet" href="https://obscure-escarpment-2240.herokuapp.com/stylesheets/bcpo-front.css">
+    <script>
+      var bcpo_product={{ product | json }}; {% if product.metafields.bcpo.bcpo_data %}var bcpo_data={{ product.metafields.bcpo.bcpo_data }};{% endif %} {% if shop.metafields.bcpo.bcpo_settings %}var bcpo_settings={{ shop.metafields.bcpo.bcpo_settings }};{% endif %}var bcpo_cdn = "{{'bcpo_cdn'|asset_url}}";var inventory_quantity = [];{% for v in product.variants %}inventory_quantity.push({{v.inventory_quantity}});{% endfor %}if(bcpo_product) { for (var i = 0; i < bcpo_product.variants.length; i += 1) { bcpo_product.variants[i].inventory_quantity = inventory_quantity[i]; }}window.bcpo = window.bcpo || {}; bcpo.cart = {{cart | json}};
+    </script>
+
+    <meta name="google-site-verification" content="9T3HQqwQCLawIRuZnTZNvKBUD72RhxunYT661f5x9js">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="{{ settings.color_button }}">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <meta name="format-detection" content="telephone=no">
+
+    {%- if settings.favicon -%}
+      <link rel="shortcut icon" href="{{ settings.favicon | img_url: '32x32' }}" type="image/png">
+    {%- endif -%}
+
+    {% include 'seo-title' %}
+    <title>{{ seo_title }}</title>
+
+    {%- if page_description -%}
+      <meta name="description" content="{{ page_description | escape }}">
+    {%- endif -%}
+
+    {% include 'social-meta-tags' %}
+
+    {% include 'font-face' %}
+    {{ 'theme.scss.css' | asset_url | stylesheet_tag }}
+
+    {% style %}
+      .collection-item__title {
+        font-size: {{ settings.type_collection_size | times: 0.8 }}px;
+      }
+
+      @media screen and (min-width: 769px) {
+        .collection-item__title {
+          font-size: {{ settings.type_collection_size }}px;
+        }
+      }
+    {% endstyle %}
+
+    <script>
+      document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+
+      window.theme = window.theme || {};
+      theme.strings = {
+        addToCart: {{ 'products.product.add_to_cart' | t | json }},
+        soldOut: {{ 'products.product.sold_out' | t | json }},
+        unavailable: {{ 'products.product.unavailable' | t | json }},
+        stockLabel: {{ 'products.product.stock_label' | t: count: '[count]' | json }},
+        willNotShipUntil: {{ 'products.product.will_not_ship_until' | t: date: '[date]' | json }},
+        willBeInStockAfter: {{ 'products.product.will_be_in_stock_after' | t: date: '[date]' | json }},
+        waitingForStock: {{ 'products.product.waiting_for_stock' | t | json }},
+        savePrice: {{ 'products.general.save_html' | t: saved_amount: '[saved_amount]' | json }},
+        cartEmpty: {{ 'cart.general.empty' | t | json }},
+        cartTermsConfirmation: {{ 'cart.general.terms_confirm' | t | json }}
+      };
+      theme.settings = {
+        dynamicVariantsEnable: true,
+        dynamicVariantType: {{ settings.variant_type | json }},
+        cartType: {{ settings.cart_type | json }},
+        currenciesEnabled: {{ settings.enable_currencies | json }},
+        nativeMultiCurrency: {{ shop.enabled_currencies.size }} > 1 ? true : false,
+        moneyFormat: {{ shop.money_format | json }},
+        saveType: {{ settings.product_save_type | json }},
+        recentlyViewedEnabled: false,
+        predictiveSearch: {{ settings.predictive_search_enabled }},
+        predictiveSearchType: {{ settings.search_type | json }},
+        inventoryThreshold: {{ settings.inventory_threshold }},
+        quickView: {{ settings.quick_shop_enable }},
+        themeName: 'Impulse',
+        themeVersion: "2.5.1"
+      };
+    </script>
+
+    {% render 'header-scripts.zipifypages', renderctx: 'thm' %}
+    {{ content_for_header }}
+
+    <script src="{{ 'vendor-scripts-v5.js' | asset_url | split: '?' | first }}" defer="defer"></script>
+
+    {% if settings.enable_currencies %}
+      {% unless shop.enabled_currencies.size > 1 %}
+        <script src="/services/javascripts/currencies.js" defer="defer"></script>
+        <script src="{{ 'currencies.jquery.min.js' | asset_url | split: '?' | first }}" defer="defer"></script>
+      {% endunless %}
+      <link rel="stylesheet" href="{{ 'currency-flags.css' | asset_url }}">
+    {% endif %}
+
+    <script src="{{ 'theme.js' | asset_url }}" defer="defer"></script>
+
+    {%- if request.page_type contains 'customers/' -%}
+      <script src="{{ 'shopify_common.js' | shopify_asset_url }}" defer="defer"></script>
+    {%- endif -%}
+
+    {% render 'pagefly-header' %}
+    <!-- Gem_Page_Header_Script -->
+    {% include 'gem-app-header-scripts' %}
+    <!-- End_Gem_Page_Header_Script -->
+    <!-- Algolia head -->
+    {{ 'algolia_config.js' | asset_url | script_tag }}
+
+    <script type="text/template" id="template_algolia_money_format">
+      {% include 'algolia_money_format' %}
+    </script>
+    <script type="text/template" id="template_algolia_current_collection_id">
+      {% include 'algolia_current_collection_id' %}
+    </script>
+    <script type="text/template" id="template_algolia_autocomplete">
+      {% include 'algolia_autocomplete.hogan' %}
+    </script>
+    <script type="text/template" id="template_algolia_autocomplete.css">
+      {% include 'algolia_autocomplete.css.hogan' %}
+    </script>
+    <script type="text/template" id="template_algolia_autocomplete_pages_empty">
+      {% include 'algolia_autocomplete_pages_empty.hogan' %}
+    </script>
+    <script type="text/template" id="template_algolia_autocomplete_page">
+      {% include 'algolia_autocomplete_page.hogan' %}
+    </script>
+    <script type="text/template" id="template_algolia_autocomplete_collection">
+      {% include 'algolia_autocomplete_collection.hogan' %}
+    </script>
+    <script type="text/template" id="template_algolia_autocomplete_collections_empty">
+      {% include 'algolia_autocomplete_collections_empty.hogan' %}
+    </script>
+    <script type="text/template" id="template_algolia_autocomplete_article">
+      {% include 'algolia_autocomplete_article.hogan' %}
+    </script>
+    <script type="text/template" id="template_algolia_autocomplete_articles_empty">
+      {% include 'algolia_autocomplete_articles_empty.hogan' %}
+    </script>
+    <script type="text/template" id="template_algolia_autocomplete_product">
+      {% include 'algolia_autocomplete_product.hogan' %}
+    </script>
+    <script type="text/template" id="template_algolia_autocomplete_products_empty">
+      {% include 'algolia_autocomplete_products_empty.hogan' %}
+    </script>
+    <script type="text/template" id="template_algolia_autocomplete_footer">
+      {% include 'algolia_autocomplete_footer.hogan' %}
+    </script>
+    <script type="text/template" id="template_algolia_instant_search">
+      {% include 'algolia_instant_search.hogan' %}
+    </script>
+    <script type="text/template" id="template_algolia_instant_search.css">
+      {% include 'algolia_instant_search.css.hogan' %}
+    </script>
+    <script type="text/template" id="template_algolia_instant_search_stats">
+      {% include 'algolia_instant_search_stats.hogan' %}
+    </script>
+    <script type="text/template" id="template_algolia_instant_search_facet_show_more">
+      {% include 'algolia_instant_search_facet_show_more.hogan' %}
+    </script>
+    <script type="text/template" id="template_algolia_instant_search_facet_item">
+      {% include 'algolia_instant_search_facet_item.hogan' %}
+    </script>
+    <script type="text/template" id="template_algolia_instant_search_current_refined_values_item">
+      {% include 'algolia_instant_search_current_refined_values_item.hogan' %}
+    </script>
+    <script type="text/template" id="template_algolia_instant_search_product">
+      {% include 'algolia_instant_search_product.hogan' %}
+    </script>
+    <script type="text/template" id="template_algolia_instant_search_no_result">
+      {% include 'algolia_instant_search_no_result.hogan' %}
+    </script>
+    {{ 'algolia_dependency_font-awesome-4-4-0.min.css' | asset_url | stylesheet_tag }}
+    <script src="{{ 'algolia_externals.js' | asset_url }}" defer></script>
+    {{ 'algolia_init.js' | asset_url | script_tag }}
+    <script src="{{ 'algolia_analytics.js' | asset_url }}" defer></script>
+    <script src="{{ 'algolia_translations.js' | asset_url }}" defer></script>
+    <script src="{{ 'algolia_helpers.js' | asset_url }}" defer></script>
+    <script src="{{ 'algolia_autocomplete.js' | asset_url }}" defer></script>
+    <script src="{{ 'algolia_facets.js' | asset_url }}" defer></script>
+    <script src="{{ 'algolia_sort_orders.js' | asset_url }}" defer></script>
+    <script src="{{ 'algolia_instant_search.js' | asset_url }}" defer></script>
+    <!-- /Algolia head -->
+  </head>
+
+  <body
+    class="template-{{ template | replace: '.', ' ' | truncatewords: 1, '' | handle }}{% if settings.enable_currencies %} currencies-enabled{% endif %}"
+    data-transitions="false"
+  >
+    {% comment %}
+      Enable below script if page transitions enabled
+    {% endcomment %}
+    {% comment %}
+      <script type="text/javascript">window.setTimeout(function() { document.body.className += " loaded"; }, 25);</script>
+    {% endcomment %}
+
+    <script type="text/javascript">
+      (function(window, document, dataLayerName, id) {
+      window[dataLayerName]=window[dataLayerName]||[],window[dataLayerName].push({start:(new Date).getTime(),event:"stg.start"});var scripts=document.getElementsByTagName('script')[0],tags=document.createElement('script');
+      function stgCreateCookie(a,b,c){var d="";if(c){var e=new Date;e.setTime(e.getTime()+24*c*60*60*1e3),d="; expires="+e.toUTCString()}document.cookie=a+"="+b+d+"; path=/"}
+      var isStgDebug=(window.location.href.match("stg_debug")||document.cookie.match("stg_debug"))&&!window.location.href.match("stg_disable_debug");stgCreateCookie("stg_debug",isStgDebug?1:"",isStgDebug?14:-1);
+      var qP=[];dataLayerName!=="dataLayer"&&qP.push("data_layer_name="+dataLayerName),isStgDebug&&qP.push("stg_debug");var qPString=qP.length>0?("?"+qP.join("&")):"";
+      tags.async=!0,tags.src="https://sheenupholstrey.containers.piwik.pro/"+id+".js"+qPString,scripts.parentNode.insertBefore(tags,scripts);
+      !function(a,n,i){a[n]=a[n]||{};for(var c=0;c<i.length;c++)!function(i){a[n][i]=a[n][i]||{},a[n][i].api=a[n][i].api||function(){var a=[].slice.call(arguments,0);"string"==typeof a[0]&&window[dataLayerName].push({event:n+"."+i+":"+a[0],parameters:[].slice.call(arguments,1)})}}(i[c])}(window,"ppms",["tm","cm"]);
+      })(window, document, 'dataLayer', 'ee41cda1-e58a-4aa2-a15d-16d7eb983a12');
+    </script>
+
+    <a class="in-page-link visually-hidden skip-link" href="#MainContent">
+      {{- 'general.accessibility.skip_to_content' | t -}}
+    </a>
+
+    <div id="PageContainer" class="page-container">
+      <div class="transition-body">
+        {% section 'header' %}
+
+        <main class="main-content" id="MainContent">
+          {{ content_for_layout }}
+        </main>
+
+        {% section 'footer-promotions' %}
+        {% section 'footer' %}
+      </div>
+    </div>
+
+    {% section 'newsletter-popup' %}
+
+    {%- if settings.cart_type == 'drawer' -%}
+      {%- include 'ajax-cart-template' -%}
+    {%- endif -%}
+
+    {%- if settings.enable_currencies -%}
+      {%- include 'currency-modal' -%}
+    {%- endif -%}
+
+    {% comment %}
+      Custom markup for slider arrows using theme icons
+    {% endcomment %}
+    <div class="hide">
+      <button
+        id="prevArrowTemplate"
+        class="slick-prev"
+        aria-label="{{ 'general.pagination.previous' | t }}"
+        type="button"
+      >
+        <svg
+          aria-hidden="true"
+          focusable="false"
+          role="presentation"
+          class="icon icon-chevron-left"
+          viewBox="0 0 284.49 498.98"
+        >
+          <path d="M249.49 0a35 35 0 0 1 24.75 59.75L84.49 249.49l189.75 189.74a35.002 35.002 0 1 1-49.5 49.5L10.25 274.24a35 35 0 0 1 0-49.5L224.74 10.25A34.89 34.89 0 0 1 249.49 0z"/>
+        </svg>
+        <span class="icon__fallback-text">{{ 'general.pagination.previous' | t }}</span>
+      </button>
+      <button id="nextArrowTemplate" class="slick-next" aria-label="{{ 'general.pagination.next' | t }}" type="button">
+        <svg
+          aria-hidden="true"
+          focusable="false"
+          role="presentation"
+          class="icon icon-chevron-right"
+          viewBox="0 0 284.49 498.98"
+        >
+          <path d="M35 498.98a35 35 0 0 1-24.75-59.75l189.74-189.74L10.25 59.75a35.002 35.002 0 0 1 49.5-49.5l214.49 214.49a35 35 0 0 1 0 49.5L59.75 488.73A34.89 34.89 0 0 1 35 498.98z"/>
+        </svg>
+        <span class="icon__fallback-text">{{ 'general.pagination.next' | t }}</span>
+      </button>
+    </div>
+
+    {%- if settings.predictive_search_enabled -%}
+      {%- include 'predictive-template' -%}
+    {%- endif -%}
+
+    {% include 'video-modal' %}
+    {% include 'photoswipe-template' %}
+    {% if template contains 'product' %}
+      {% include 'recently-viewed-product-template' %}
+    {% endif %}
+    <!-- Gem_Page_Footer_Script -->
+    {% include 'gem-app-footer-scripts' %}
+    <!-- End_Gem_Page_Footer_Script -->
+    {% render 'banana-stand-footer' %}
+    {% render 'page-footer.zipifypages', renderctx: 'thm', ocuapp: ocuapp %}
+  </body>
+</html>

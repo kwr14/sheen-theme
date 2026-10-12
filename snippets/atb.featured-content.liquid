@@ -1,0 +1,226 @@
+{% comment %}
+ATB-SCHEMA{
+  "name": "Rich text",
+  "class": "index-section",
+  "max_blocks": 2,
+  "id": "featured-content",
+  "banner": "",
+  "icon": "",
+  "tags": "",
+  "description": "",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section ID",
+      "info": "Enter a unique ID with only letters and numbers, no spaces",
+      "default": ""
+    },
+    {
+      "type": "text",
+      "id": "atb_title",
+      "label": "Heading",
+      "info": ""
+    },
+    {
+      "type": "wysiwyg",
+      "id": "atb_text",
+      "label": "Text",
+      "default": "<p>A sentence or two introducing your brand, what you sell, and what makes your brand compelling to customers.</p>",
+      "info": ""
+    },
+    {
+      "type": "select",
+      "id": "atb_align_text",
+      "label": "Text alignment",
+      "default": "left",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Centered"
+        }
+      ],
+      "info": ""
+    },
+    {
+      "type": "checkbox",
+      "id": "atb_narrow_column",
+      "label": "Narrow column",
+      "info": ""
+    },
+    {
+      "type": "checkbox",
+      "id": "atb_enlarge_text",
+      "label": "Enlarge text",
+      "default": true,
+      "info": ""
+    },
+    {
+      "type": "checkbox",
+      "id": "atb_divider",
+      "label": "Show section divider",
+      "default": false,
+      "info": ""
+    },
+    {
+      "type": "select",
+      "id": "block_type",
+      "label": "Block Type",
+      "info": "",
+      "default": "",
+      "options": [
+        {
+          "value": "text",
+          "label": "text"
+        },
+        {
+          "value": "page",
+          "label": "page"
+        }
+      ],
+      "repeatable": "block"
+    },
+    {
+      "type": "text",
+      "id": "blocks",
+      "label": "Block ID",
+      "info": "Enter a unique ID with only letters and numbers, no spaces",
+      "default": "",
+      "repeatable": "block"
+    },
+    {
+      "type": "checkbox",
+      "id": "block_enlarge_text",
+      "label": "Enlarge text",
+      "default": false,
+      "repeatable": "block",
+      "info": "",
+      "conditional": "block_type:text"
+    },
+    {
+      "id": "block_home_page_richtext",
+      "type": "wysiwyg",
+      "label": "Text",
+      "default": "<p>Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store.</p>",
+      "repeatable": "block",
+      "info": "",
+      "conditional": "block_type:text"
+    },
+    {
+      "id": "block_home_page_content",
+      "type": "page",
+      "label": "Page",
+      "repeatable": "block",
+      "info": "",
+      "conditional": "block_type:page"
+    }
+  ],
+  "warnings": [
+    "repeating checkbox fields may not be properly handled"
+  ]
+}ATB-SCHEMA
+{% endcomment %}
+
+
+{%- include 'atb-render' field:'section_id' -%}
+{%- assign section_id = val -%}
+{%- include 'atb-render' field:'atb_title' -%}
+{%- assign atb_title = val -%}
+{%- include 'atb-render' field:'atb_text' -%}
+{%- assign atb_text = val -%}
+{%- include 'atb-render' field:'atb_align_text' -%}
+{%- assign atb_align_text = val -%}
+{%- include 'atb-render' field:'atb_narrow_column' -%}
+{%- assign atb_narrow_column = val -%}
+{%- include 'atb-render' field:'atb_enlarge_text' -%}
+{%- assign atb_enlarge_text = val -%}
+{%- include 'atb-render' field:'atb_divider' -%}
+{%- assign atb_divider = val -%}
+{%- include 'atb-render' field:'block_type' -%}
+{%- assign block_type = val -%}
+{%- include 'atb-render' field:'blocks' -%}
+{%- assign blocks = val -%}
+{%- include 'atb-render' field:'block_enlarge_text' -%}
+{%- assign block_enlarge_text = val -%}
+{%- include 'atb-render' field:'block_home_page_richtext' -%}
+{%- assign block_home_page_richtext = val -%}
+{%- include 'atb-render' field:'block_home_page_content' -%}
+{%- assign block_home_page_content = val -%}
+{%- if atb_narrow_column == blank -%}
+{%- assign atb_narrow_column = false -%}
+{%- else -%}
+{%- assign atb_narrow_column = true -%}
+{%- endif -%}
+{%- if atb_enlarge_text == blank -%}
+{%- assign atb_enlarge_text = false -%}
+{%- else -%}
+{%- assign atb_enlarge_text = true -%}
+{%- endif -%}
+{%- if atb_divider == blank -%}
+{%- assign atb_divider = false -%}
+{%- else -%}
+{%- assign atb_divider = true -%}
+{%- endif -%}
+{%- assign no_image = images['no_image_comparison'] -%}
+
+<section id="shopify-section-{{section_id}}" class="shopify-section index-section">
+{% if atb_divider %}<div class="section--divider">{% endif %}
+
+<div
+  data-section-id="{{ section_id }}"
+  data-section-type="featured-content-section"
+  class="text-{{ atb_align_text }}">
+
+  <div class="page-width">
+    <div class="grid">
+      <div class="grid__item{% if atb_narrow_column %} medium-up--three-quarters medium-up--push-one-eighth{% endif %}">
+        {% if atb_title != blank %}
+          <h2>{{ atb_title }}</h2>
+        {% endif %}
+
+        {% if atb_text != blank %}
+          <div class="rte">
+            {% if atb_enlarge_text %}<div class="enlarge-text">{% endif %}
+            {{ atb_text }}
+            {% if atb_enlarge_text %}</div>{% endif %}
+          </div>
+        {% endif %}
+
+        {% for block0 in blocks %}
+{%- if block_enlarge_text[forloop.index0] == blank -%}
+{%- assign my_checkbox0 = false -%}
+{%- else -%}
+{%- assign my_checkbox0 = true -%}
+{%- endif -%}
+          <div class="rte" {{ block.shopify_attributes }}>
+            {% case block_type[forloop.index0] %}
+              {% when 'page' %}
+                {% if block_home_page_content[forloop.index0] != blank %}
+                  {{ pages[block_home_page_content[forloop.index0]].content }}
+                {% else %}
+                  {{ 'home_page.onboarding.no_content' | t }}
+                {% endif %}
+              {% when 'text' %}
+                {% if block_home_page_richtext[forloop.index0] != blank %}
+                  {% if my_checkbox0 %}<div class="enlarge-text">{% endif %}
+                  {{ block_home_page_richtext[forloop.index0] }}
+                  {% if my_checkbox0 %}</div>{% endif %}
+                {% else %}
+                  {{ 'home_page.onboarding.no_content' | t }}
+                {% endif %}
+            {% endcase %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if atb_divider %}</div>{% endif %}
+
+
+</section>

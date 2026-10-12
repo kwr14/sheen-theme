@@ -1,0 +1,25 @@
+{% if linklists[block_menu[forloop.index0]].links.size > 0 %}
+  {% if block_show_footer_title[forloop.index0] %}
+    <p class="h4 footer__title small--hide">
+      {{ linklists[block_menu[forloop.index0]].title }}
+    </p>
+    <button type="button" class="h4 footer__title collapsible-trigger collapsible-trigger-btn medium-up--hide" aria-controls="Footer-{{ blocks[forloop.index0] }}">
+      {{ linklists[block_menu[forloop.index0]].title }}
+      {% include 'atb-collapsible-icons'   %}
+    </button>
+  {% endif %}
+  <div
+    {% if block_show_footer_title[forloop.index0] %}
+      id="Footer-{{ blocks[forloop.index0] }}" class="collapsible-content collapsible-content--small"
+    {% endif %}>
+    <div class="collapsible-content__inner">
+      <div class="footer__collapsible{% unless block_show_footer_title[forloop.index0] %} footer_collapsible--disabled{% endunless %}">
+        <ul class="no-bullets site-footer__linklist">
+          {% for link in linklists[block_menu[forloop.index0]].links %}
+            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+{% endif %}

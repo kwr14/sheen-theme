@@ -1,0 +1,167 @@
+{% comment %}
+  Furniture landing section — Sheen Upholstery
+  Shows one card per furniture piece (sofa, armchair, headboard…).
+  Cards come from the furniture collection (one product per type by default);
+  each links to the product, whose page uses the furniture configurator.
+  "From" price = the cheapest fabric variant (product.price_min).
+  Install: see furniture-theme/README.md
+{% endcomment %}
+
+<style>
+  #fl-{{ section.id }} {
+    --fl-bg: {{ section.settings.background }};
+    --fl-card: #ffffff;
+    --fl-ink: #111111;
+    --fl-muted: #5a5650;
+    --fl-line: #e3ded6;
+    --fl-soft: #ede8e0;
+    background: var(--fl-bg);
+    color: var(--fl-ink);
+    padding: 64px 0 72px;
+  }
+  #fl-{{ section.id }} * { box-sizing: border-box; }
+  #fl-{{ section.id }} .fl-inner { max-width: 1280px; margin: 0 auto; padding: 0 32px; }
+  #fl-{{ section.id }} .fl-eyebrow { font-size: 13px; letter-spacing: .18em; font-weight: 500; color: var(--fl-muted); text-transform: uppercase; margin: 0 0 16px; }
+  #fl-{{ section.id }} .fl-title { font-family: var(--font-heading-family, inherit); font-weight: 500; font-size: clamp(36px, 5vw, 60px); line-height: 1.05; margin: 0 0 16px; max-width: 860px; }
+  #fl-{{ section.id }} .fl-intro { font-size: 18px; line-height: 1.6; color: var(--fl-muted); max-width: 640px; margin: 0 0 48px; }
+  #fl-{{ section.id }} .fl-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
+  #fl-{{ section.id }} .fl-card { display: flex; flex-direction: column; background: var(--fl-card); border: 1px solid var(--fl-line); border-radius: 4px; overflow: hidden; color: var(--fl-ink); text-decoration: none; transition: border-color .15s; }
+  #fl-{{ section.id }} .fl-card:hover, #fl-{{ section.id }} .fl-card:focus-visible { border-color: var(--fl-ink); }
+  #fl-{{ section.id }} .fl-media { aspect-ratio: 4 / 3; background: var(--fl-soft); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  #fl-{{ section.id }} .fl-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  #fl-{{ section.id }} .fl-media svg { width: 70%; height: auto; fill: #cfc7ba; }
+  #fl-{{ section.id }} .fl-body { padding: 24px 28px 28px; display: flex; flex-direction: column; gap: 6px; }
+  #fl-{{ section.id }} .fl-type { font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--fl-muted); }
+  #fl-{{ section.id }} .fl-name { font-family: var(--font-heading-family, inherit); font-size: 30px; font-weight: 500; line-height: 1.15; margin: 0; }
+  #fl-{{ section.id }} .fl-from { font-size: 16px; }
+  #fl-{{ section.id }} .fl-count { font-size: 14px; color: var(--fl-muted); }
+  #fl-{{ section.id }} .fl-cta { margin-top: 14px; font-size: 15px; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; }
+  #fl-{{ section.id }} .fl-steps { margin-top: 72px; padding-top: 48px; border-top: 1px solid var(--fl-line); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 48px; }
+  #fl-{{ section.id }} .fl-num { font-family: var(--font-heading-family, inherit); font-size: 40px; line-height: 1; margin-bottom: 10px; }
+  #fl-{{ section.id }} .fl-step-title { font-size: 18px; font-weight: 500; margin: 0 0 8px; }
+  #fl-{{ section.id }} .fl-step-text { font-size: 15px; line-height: 1.6; color: var(--fl-muted); margin: 0; }
+  @media (max-width: 900px) {
+    #fl-{{ section.id }} .fl-grid, #fl-{{ section.id }} .fl-steps { grid-template-columns: 1fr; gap: 24px; }
+    #fl-{{ section.id }} { padding: 40px 0 56px; }
+    #fl-{{ section.id }} .fl-inner { padding: 0 16px; }
+  }
+</style>
+
+<section id="fl-{{ section.id }}" aria-labelledby="fl-title-{{ section.id }}">
+  <div class="fl-inner">
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="fl-eyebrow">{{ section.settings.eyebrow }}</p>
+    {%- endif -%}
+    <h1 class="fl-title" id="fl-title-{{ section.id }}">{{ section.settings.heading }}</h1>
+    {%- if section.settings.intro != blank -%}
+      <div class="fl-intro">{{ section.settings.intro }}</div>
+    {%- endif -%}
+
+    {%- liquid
+      assign coll = section.settings.collection
+      if coll == blank
+        assign coll = collections['furniture']
+      endif
+      assign seen = ','
+      assign shown = 0
+    -%}
+    <div class="fl-grid">
+      {%- for piece in coll.products limit: 50 -%}
+        {%- if shown >= section.settings.max_cards %}{% break %}{% endif -%}
+        {%- assign type_key = piece.type | default: piece.title | downcase -%}
+        {%- assign key = ',' | append: type_key | append: ',' -%}
+        {%- if section.settings.one_per_type and seen contains key %}{% continue %}{% endif -%}
+        {%- assign seen = seen | append: type_key | append: ',' -%}
+        {%- assign shown = shown | plus: 1 -%}
+        <a class="fl-card" href="{{ piece.url }}">
+          <div class="fl-media">
+            {%- if piece.featured_image -%}
+              {%- assign img_alt = piece.featured_image.alt | default: piece.title | escape -%}
+              {{ piece.featured_image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '400, 600, 900', sizes: '(max-width: 900px) 100vw, 33vw', alt: img_alt }}
+            {%- else -%}
+              {{ 'product-1' | placeholder_svg_tag }}
+            {%- endif -%}
+          </div>
+          <div class="fl-body">
+            <span class="fl-type">{{ piece.type }}</span>
+            <h2 class="fl-name">{{ piece.title }}</h2>
+            {%- liquid
+              assign lib = piece.metafields.custom.fabrics.value
+              assign fabric_count = 0
+              if lib != blank
+                for f in lib
+                  if f.stock_status.value == 'Live'
+                    assign fabric_count = fabric_count | plus: 1
+                  endif
+                endfor
+              else
+                assign fabric_count = piece.variants.size
+              endif
+            -%}
+            {%- if fabric_count > 0 or section.settings.prices_before_live -%}
+              <span class="fl-from">From {{ piece.price_min | money }}</span>
+            {%- else -%}
+              <span class="fl-from">{{ section.settings.no_price_text }}</span>
+            {%- endif -%}
+            {%- if fabric_count > 0 -%}
+              <span class="fl-count">{{ fabric_count }} {% if fabric_count == 1 %}fabric{% else %}fabrics{% endif %} to choose from</span>
+            {%- endif -%}
+            <span class="fl-cta">{{ section.settings.cta_label }}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </span>
+          </div>
+        </a>
+      {%- else -%}
+        <p class="fl-intro">Furniture is coming soon.</p>
+      {%- endfor -%}
+    </div>
+
+    {%- if section.settings.show_steps -%}
+      <div class="fl-steps">
+        <div>
+          <div class="fl-num">01</div>
+          <h3 class="fl-step-title">{{ section.settings.step1_title }}</h3>
+          <p class="fl-step-text">{{ section.settings.step1_text }}</p>
+        </div>
+        <div>
+          <div class="fl-num">02</div>
+          <h3 class="fl-step-title">{{ section.settings.step2_title }}</h3>
+          <p class="fl-step-text">{{ section.settings.step2_text }}</p>
+        </div>
+        <div>
+          <div class="fl-num">03</div>
+          <h3 class="fl-step-title">{{ section.settings.step3_title }}</h3>
+          <p class="fl-step-text">{{ section.settings.step3_text }}</p>
+        </div>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Furniture landing",
+  "tag": "div",
+  "class": "section-furniture-landing",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "New · Made-to-order furniture" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Furniture upholstered in the fabric you choose" },
+    { "type": "richtext", "id": "intro", "label": "Intro", "default": "<p>Pick a piece, choose from our curated fabric shortlist and watch the price update as you go. Every piece is made to order by our upholsterers.</p>" },
+    { "type": "collection", "id": "collection", "label": "Furniture collection", "info": "Leave blank to use the collection with handle 'furniture'" },
+    { "type": "checkbox", "id": "one_per_type", "label": "Show one product per type", "default": true, "info": "e.g. one sofa, one armchair, one headboard" },
+    { "type": "range", "id": "max_cards", "label": "Maximum cards", "min": 1, "max": 12, "step": 1, "default": 6 },
+    { "type": "text", "id": "cta_label", "label": "Card link text", "default": "Configure yours" },
+    { "type": "color", "id": "background", "label": "Background", "default": "#f6f3ee" },
+    { "type": "checkbox", "id": "prices_before_live", "label": "Show 'From' prices before any colour is Live", "default": false },
+    { "type": "text", "id": "no_price_text", "label": "Card text before ordering opens", "default": "Coming soon" },
+    { "type": "header", "content": "How it works" },
+    { "type": "checkbox", "id": "show_steps", "label": "Show 'how it works' steps", "default": true },
+    { "type": "text", "id": "step1_title", "label": "Step 1 title", "default": "Choose a piece" },
+    { "type": "textarea", "id": "step1_text", "label": "Step 1 text", "default": "Sofa, armchair or headboard, each built to order to our specification." },
+    { "type": "text", "id": "step2_title", "label": "Step 2 title", "default": "Pick your fabric" },
+    { "type": "textarea", "id": "step2_text", "label": "Step 2 text", "default": "Select from a shortlist chosen for each piece. The price updates with the fabric's price per metre." },
+    { "type": "text", "id": "step3_title", "label": "Step 3 title", "default": "We make it for you" },
+    { "type": "textarea", "id": "step3_text", "label": "Step 3 text", "default": "Your piece is upholstered to order in our London workshop." }
+  ]
+}
+{% endschema %}

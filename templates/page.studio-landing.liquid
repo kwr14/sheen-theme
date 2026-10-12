@@ -1,0 +1,15 @@
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+{% layout none %}
+
+<body>
+<link href="//studios.cdn.theshoppad.net/pagestudio/blocks.css?v=1&shop={{ shop.permanent_domain }}" rel="stylesheet" type="text/css"/><script src="//studios.cdn.theshoppad.net/pagestudio/pagestudio.dist.js?v={{ page.metafields.global.version | default: 3 }}"></script><div class="studioengine">{{ page.content }}</div>
+</body>
+
+<style>
+body {
+    margin: 0;
+    width: 100% !important;
+    background: white !important;
+}
+</style>

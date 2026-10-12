@@ -1,0 +1,13 @@
+{% if block_logo[forloop.index0] %}
+  {% style %}
+    .footer__logo a {
+      height: {{ block_desktop_logo_height[forloop.index0] }}px;
+    }
+  {% endstyle %}
+  {%- assign footer_logo_size = block_desktop_logo_height[forloop.index0] | prepend: 'x' -%}
+  <div class="footer__logo">
+    <a href="{{ routes.root_url }}">
+      <img src="{{ block_logo[forloop.index0] | img_url: footer_logo_size, scale: 2 }}" alt="{{ block_logo[forloop.index0].alt | default: shop.name }}">
+    </a>
+  </div>
+{% endif %}

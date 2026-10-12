@@ -1,0 +1,101 @@
+<!doctype html>
+<html class="no-js" lang="{{ shop.locale }}">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="{{ settings.color_button }}">
+  <link rel="canonical" href="{{ canonical_url }}">
+
+  {%- if settings.favicon -%}
+    <link rel="shortcut icon" href="{{ settings.favicon | img_url: '32x32' }}" type="image/png" />
+  {%- endif -%}
+
+  {%- assign formatted_initial_value = gift_card.initial_value | money_without_trailing_zeros: gift_card.currency -%}
+  {%- assign formatted_initial_value_stripped = formatted_initial_value | strip_html -%}
+  <title>{{ 'gift_cards.issued.title_html' | t: value: formatted_initial_value_stripped, shop: shop.name }}</title>
+
+  <meta name="description" content="{{ 'gift_cards.issued.subtext' | t }}">
+
+  {%- include 'social-meta-tags' -%}
+
+  {% include 'font-face' %}
+  {{ 'theme.scss.css' | asset_url | stylesheet_tag }}
+  {{ 'gift-card.scss.css' | asset_url | stylesheet_tag }}
+
+  <script>
+    document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+  </script>
+
+  <script src="{{ 'vendor-scripts-v5.js' | asset_url | split: '?' | first }}" defer="defer"></script>
+  {{ 'vendor/qrcode.js' | shopify_asset_url | script_tag }}
+
+  {{ content_for_header }}
+  <!-- Algolia head -->
+    {{ 'algolia_config.js' | asset_url | script_tag }}
+
+
+
+
+
+
+<script type="text/template" id="template_algolia_money_format">{% include 'algolia_money_format' %}</script>
+<script type="text/template" id="template_algolia_current_collection_id">{% include 'algolia_current_collection_id' %}</script>
+<script type="text/template" id="template_algolia_autocomplete">{% include 'algolia_autocomplete.hogan' %}</script>
+<script type="text/template" id="template_algolia_autocomplete.css">{% include 'algolia_autocomplete.css.hogan' %}</script>
+<script type="text/template" id="template_algolia_autocomplete_pages_empty">{% include 'algolia_autocomplete_pages_empty.hogan' %}</script>
+<script type="text/template" id="template_algolia_autocomplete_page">{% include 'algolia_autocomplete_page.hogan' %}</script>
+<script type="text/template" id="template_algolia_autocomplete_collection">{% include 'algolia_autocomplete_collection.hogan' %}</script>
+<script type="text/template" id="template_algolia_autocomplete_collections_empty">{% include 'algolia_autocomplete_collections_empty.hogan' %}</script>
+<script type="text/template" id="template_algolia_autocomplete_article">{% include 'algolia_autocomplete_article.hogan' %}</script>
+<script type="text/template" id="template_algolia_autocomplete_articles_empty">{% include 'algolia_autocomplete_articles_empty.hogan' %}</script>
+<script type="text/template" id="template_algolia_autocomplete_product">{% include 'algolia_autocomplete_product.hogan' %}</script>
+<script type="text/template" id="template_algolia_autocomplete_products_empty">{% include 'algolia_autocomplete_products_empty.hogan' %}</script>
+<script type="text/template" id="template_algolia_autocomplete_footer">{% include 'algolia_autocomplete_footer.hogan' %}</script>
+<script type="text/template" id="template_algolia_instant_search">{% include 'algolia_instant_search.hogan' %}</script>
+<script type="text/template" id="template_algolia_instant_search.css">{% include 'algolia_instant_search.css.hogan' %}</script>
+<script type="text/template" id="template_algolia_instant_search_stats">{% include 'algolia_instant_search_stats.hogan' %}</script>
+<script type="text/template" id="template_algolia_instant_search_facet_show_more">{% include 'algolia_instant_search_facet_show_more.hogan' %}</script>
+<script type="text/template" id="template_algolia_instant_search_facet_item">{% include 'algolia_instant_search_facet_item.hogan' %}</script>
+<script type="text/template" id="template_algolia_instant_search_current_refined_values_item">{% include 'algolia_instant_search_current_refined_values_item.hogan' %}</script>
+<script type="text/template" id="template_algolia_instant_search_product">{% include 'algolia_instant_search_product.hogan' %}</script>
+<script type="text/template" id="template_algolia_instant_search_no_result">{% include 'algolia_instant_search_no_result.hogan' %}</script>
+{{ 'algolia_dependency_font-awesome-4-4-0.min.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'algolia_externals.js' | asset_url }}" defer></script>
+{{ 'algolia_init.js' | asset_url | script_tag }}
+<script src="{{ 'algolia_analytics.js' | asset_url }}" defer></script>
+<script src="{{ 'algolia_translations.js' | asset_url }}" defer></script>
+<script src="{{ 'algolia_helpers.js' | asset_url }}" defer></script>
+<script src="{{ 'algolia_autocomplete.js' | asset_url }}" defer></script>
+<script src="{{ 'algolia_facets.js' | asset_url }}" defer></script>
+<script src="{{ 'algolia_sort_orders.js' | asset_url }}" defer></script>
+<script src="{{ 'algolia_instant_search.js' | asset_url }}" defer></script>
+  <!-- /Algolia head -->
+
+</head>
+
+<body class="template-giftcard">
+
+  <div id="PageContainer">
+
+    <div class="page-width">
+
+      {% section 'giftcard-header' %}
+
+      <main class="giftcard" role="main">
+        {{ content_for_layout }}
+      </main>
+
+      <footer class="giftcard__footer">
+        {% if gift_card.pass_url %}
+          <a class="add-to-apple-wallet" href="{{ gift_card.pass_url }}">
+            <img src="{{ 'gift-card/add-to-apple-wallet.svg' | shopify_asset_url }}" width="120" height="40" alt="{{ 'gift_cards.issued.add_to_apple_wallet' | t }}">
+          </a>
+        {% endif %}
+      </footer>
+    </div>
+
+  </div>
+
+</body>
+</html>
