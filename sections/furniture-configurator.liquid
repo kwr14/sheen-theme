@@ -288,7 +288,7 @@
             {%- assign main_alt = product.title | escape -%}
             {{ product.featured_image | image_url: width: 1600 | image_tag: class: 'fc-main-image', widths: '600, 900, 1200, 1600', sizes: '(max-width: 900px) 100vw, 58vw', alt: main_alt, fetchpriority: 'high' }}
           {%- else -%}
-            {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+            <img class="fc-main-image" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{ product.title | escape }}" width="800" height="700">
           {%- endif -%}
           <button type="button" class="fc-nav fc-nav-prev" data-fc-prev aria-label="Previous view" hidden>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
@@ -541,6 +541,11 @@
     {
       "sizeIdx": {{ size_idx }},
       "showPrices": {{ show_prices | json }},
+      "productType": {{ product.type | json }},
+      "illustration": {% if section.settings.show_illustration == false %}false{% else %}true{% endif %},
+      "illusLabel": {{ section.settings.illustration_label | default: 'Your colour' | json }},
+      "illusNote": {{ section.settings.illustration_note | default: 'Illustration · colour is indicative' | json }},
+      "photoNote": {{ section.settings.generic_photo_note | json }},
       "soonButton": {{ section.settings.coming_soon_button | json }},
       "soonNote": {{ section.settings.coming_soon_status | json }},
       "tierIdx": {{ tier_idx }},
@@ -606,6 +611,7 @@
 </section>
 
 {%- if library_mode and visible_count > 0 -%}
+<script src="{{ 'furniture-illustration.js' | asset_url }}"></script>
 <script>
   (function () {
     var root = document.getElementById('fc-{{ section.id }}');
@@ -645,13 +651,17 @@
       });
       if (tagged.length) return { list: tagged, generic: false };
       var base = untagged.length ? untagged : D.images;
-      return {
-        list: base.map(function (im, n) {
-          var label = (D.labels[n] || '').trim() || ('View ' + (n + 1));
-          return { src: im.src, thumb: im.thumb, label: label, alt: im.alt || label };
-        }),
-        generic: true
-      };
+      var list = base.map(function (im, n) {
+        var label = (D.labels[n] || '').trim() || ('View ' + (n + 1));
+        return { src: im.src, thumb: im.thumb, label: label, alt: im.alt || label, note: f ? D.photoNote : '' };
+      });
+      var I = window.SheenFurnitureIllustration;
+      if (f && D.illustration && I && (f.chip || f.swatch)) {
+        var pic = I.render({ kind: I.kindFor(D.productType), colour: f.chip || '#b9ae9c', family: f.family });
+        list.unshift({ src: pic, thumb: pic, label: D.illusLabel || 'Your colour',
+                       alt: (f.name || '') + ' — illustration', note: D.illusNote || '' });
+      }
+      return { list: list, generic: true };
     }
     function showView(i) {
       if (!views.length || !img) return;
@@ -664,6 +674,8 @@
         img.src = v.src;
       }
       img.alt = v.alt || '';
+      if (genericEl) { genericEl.textContent = v.note || ''; genericEl.hidden = !v.note; }
+      var ph = stage && stage.querySelector('.placeholder-svg'); if (ph) ph.remove();
       if (labelEl) { labelEl.textContent = v.label; labelEl.hidden = views.length < 2; }
       if (prevBtn) prevBtn.hidden = views.length < 2;
       if (nextBtn) nextBtn.hidden = views.length < 2;
@@ -671,7 +683,6 @@
     }
     function setViews(res) {
       views = res.list || [];
-      if (genericEl) genericEl.hidden = !(res.generic && $$('[data-fc-fabric]').length > 0 && views.length > 0);
       if (!viewsEl) return;
       viewsEl.innerHTML = '';
       viewsEl.hidden = views.length < 2;
@@ -823,6 +834,7 @@
 
     function chooseFabric(handle) {
       if (!D.fabrics[handle]) return;
+      if (state.fabric !== handle) viewIndex = 0;
       state.fabric = handle;
       render();
     }
@@ -867,6 +879,9 @@
     { "type": "text", "id": "landing_label", "label": "Breadcrumb label", "default": "Furniture" },
     { "type": "text", "id": "view_labels", "label": "View names for untagged photos", "default": "Front, Side, Back, Detail", "info": "Fabric-specific photos are named by their alt text, e.g. '#LF2282C/001 Side'" },
     { "type": "text", "id": "generic_photo_note", "label": "Label on photos not in the chosen fabric", "default": "Shown in a sample fabric" },
+    { "type": "checkbox", "id": "show_illustration", "label": "Show an illustration in the chosen colour", "default": true, "info": "Used when a colour has no photos of its own (alt text '#CODE View')" },
+    { "type": "text", "id": "illustration_label", "label": "Illustration view name", "default": "Your colour" },
+    { "type": "text", "id": "illustration_note", "label": "Label on the illustration", "default": "Illustration · colour is indicative" },
     { "type": "text", "id": "price_note", "label": "Text next to price", "default": "incl. VAT · in your chosen fabric" },
     { "type": "header", "content": "Fabric picker" },
     { "type": "text", "id": "family_label", "label": "Step 1 heading", "default": "Choose a fabric" },
