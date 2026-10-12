@@ -5,7 +5,7 @@
   Used by sections/furniture-configurator.liquid when a colour has no photos yet.
 
   window.SheenFurnitureIllustration.render({ kind, colour, family }) → data: URI (SVG)
-  window.SheenFurnitureIllustration.kindFor(productType)            → 'sofa' | 'armchair' | 'headboard' | 'footstool'
+  window.SheenFurnitureIllustration.kindFor(productType)            → 'sofa' | 'curved-sofa' | 'armchair' | 'tub-chair' | 'headboard' | 'footstool'
 */
 (function () {
   function clamp(n) { return Math.max(0, Math.min(255, Math.round(n))); }
@@ -29,6 +29,8 @@
   function kindFor(type) {
     var t = String(type || '').toLowerCase();
     if (t.indexOf('headboard') > -1) return 'headboard';
+    if (t.indexOf('curved') > -1) return 'curved-sofa';
+    if (t.indexOf('tub') > -1 || t.indexOf('barrel') > -1) return 'tub-chair';
     if (t.indexOf('footstool') > -1 || t.indexOf('ottoman') > -1 || t.indexOf('pouf') > -1) return 'footstool';
     if (t.indexOf('armchair') > -1 || t.indexOf('chair') > -1) return 'armchair';
     return 'sofa';
@@ -70,6 +72,23 @@
     function r(x, y, w, h, rx, fill) {
       return '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="' + rx + '" fill="' + fill + '"/>' +
              '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="' + rx + '" ' + t + '/>';
+    }
+    function pth(d, fill) {
+      return '<path d="' + d + '" fill="' + fill + '"/><path d="' + d + '" ' + t + '/>';
+    }
+    if (kind === 'curved-sofa') {
+      return pth('M100 470 A300 240 0 0 1 700 470 Z', dark) +            // curved back, outer
+        pth('M165 470 A235 175 0 0 1 635 470 Z', main) +                 // inner back
+        pth('M225 470 A175 80 0 0 1 575 470 Z', lite) +                  // seat
+        r(100, 440, 600, 112, 56, main) +                                // rounded front
+        '<rect x="130" y="546" width="540" height="14" rx="7" fill="' + leg + '"/>';
+    }
+    if (kind === 'tub-chair') {
+      return pth('M245 455 A155 215 0 0 1 555 455 Z', dark) +            // wraparound back
+        pth('M290 455 A110 165 0 0 1 510 455 Z', main) +                 // inner back
+        r(290, 405, 220, 58, 28, lite) +                                 // seat cushion
+        r(245, 430, 310, 118, 58, main) +                                // rounded front
+        '<rect x="272" y="540" width="14" height="40" rx="4" fill="' + leg + '"/><rect x="514" y="540" width="14" height="40" rx="4" fill="' + leg + '"/>';
     }
     if (kind === 'headboard') {
       var hb = r(190, 150, 420, 300, 18, main);
