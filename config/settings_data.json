@@ -1448,7 +1448,37 @@
           "step2_text": "Select from a shortlist chosen for each piece. The price updates with the fabric's price per metre.",
           "step3_title": "We make it for you",
           "step3_text": "Your piece is upholstered to order by our upholsterers."
-        }
+        },
+        "blocks": {
+          "stools": {
+            "type": "coming_soon",
+            "settings": {
+              "type_label": "Stools",
+              "title": "Footstools & Ottomans",
+              "link": "shopify://pages/footstools-ottomans",
+              "illustration": "footstool",
+              "badge": "Coming soon",
+              "text": "Made to order in the fabric you choose, to match your sofa or armchair.",
+              "cta_label": "Find out more"
+            }
+          },
+          "curtains": {
+            "type": "coming_soon",
+            "settings": {
+              "type_label": "Curtains & Blinds",
+              "title": "Made-to-measure curtains & blinds",
+              "link": "shopify://pages/curtains-blinds",
+              "illustration": "curtains",
+              "badge": "Coming soon",
+              "text": "Curtains and blinds made in our workroom, in fabrics from our collections.",
+              "cta_label": "Find out more"
+            }
+          }
+        },
+        "block_order": [
+          "stools",
+          "curtains"
+        ]
       }
     },
     "content_for_index": [
