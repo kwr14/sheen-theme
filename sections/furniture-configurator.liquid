@@ -663,9 +663,15 @@
       });
       var I = window.SheenFurnitureIllustration;
       if (f && D.illustration && I && (f.chip || f.swatch)) {
-        var pic = I.render({ kind: I.kindFor(D.productType), colour: f.chip || '#b9ae9c', family: f.family });
-        list.unshift({ src: pic, thumb: pic, label: D.illusLabel || 'Your colour',
-                       alt: (f.name || '') + ' — illustration', note: D.illusNote || '' });
+        // Drawings in the chosen colour: front, angle, side (or close-up) and in a room
+        var kind = I.kindFor(D.productType);
+        var shots = I.viewsFor ? I.viewsFor(kind) : [{ view: 'front', label: D.illusLabel || 'Your colour' }];
+        var drawn = shots.map(function (v) {
+          var pic = I.render({ kind: kind, colour: f.chip || '#b9ae9c', family: f.family, view: v.view });
+          return { src: pic, thumb: pic, label: v.label,
+                   alt: (f.name || '') + ' — ' + v.label.toLowerCase() + ' (illustration)', note: D.illusNote || '' };
+        });
+        list = drawn.concat(list);
       }
       return { list: list, generic: true };
     }
@@ -886,7 +892,7 @@
     { "type": "text", "id": "view_labels", "label": "View names for untagged photos", "default": "Front, Side, Back, Detail", "info": "Fabric-specific photos are named by their alt text, e.g. '#LF2282C/001 Side'" },
     { "type": "text", "id": "generic_photo_note", "label": "Label on photos not in the chosen fabric", "default": "Shown in a sample fabric" },
     { "type": "checkbox", "id": "show_illustration", "label": "Show an illustration in the chosen colour", "default": true, "info": "Used when a colour has no photos of its own (alt text '#CODE View')" },
-    { "type": "text", "id": "illustration_label", "label": "Illustration view name", "default": "Your colour" },
+    { "type": "text", "id": "illustration_label", "label": "Illustration view name", "default": "Your colour", "info": "Only used if the drawing script can't provide its own views (Front, Angle, Side, In a room)." },
     { "type": "text", "id": "illustration_note", "label": "Label on the illustration", "default": "Illustration · colour is indicative" },
     { "type": "text", "id": "price_note", "label": "Text next to price", "default": "incl. VAT · in your chosen fabric" },
     { "type": "header", "content": "Fabric picker" },
