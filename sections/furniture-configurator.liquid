@@ -551,6 +551,7 @@
       "illustration": {% if section.settings.show_illustration == false %}false{% else %}true{% endif %},
       "illusLabel": {{ section.settings.illustration_label | default: 'Your colour' | json }},
       "illusNote": {{ section.settings.illustration_note | default: 'Illustration · colour is indicative' | json }},
+      "renderNote": {{ section.settings.render_note | default: 'Rendered image · colour is indicative' | json }},
       "photoNote": {{ section.settings.generic_photo_note | json }},
       "soonButton": {{ section.settings.coming_soon_button | json }},
       "soonNote": {{ section.settings.coming_soon_status | json }},
@@ -618,6 +619,7 @@
 
 {%- if library_mode and visible_count > 0 -%}
 <script src="{{ 'furniture-illustration.js' | asset_url }}"></script>
+<script src="{{ 'furniture-renders.js' | asset_url }}"></script>
 <script>
   (function () {
     var root = document.getElementById('fc-{{ section.id }}');
@@ -663,9 +665,15 @@
       });
       var I = window.SheenFurnitureIllustration;
       if (f && D.illustration && I && (f.chip || f.swatch)) {
-        var pic = I.render({ kind: I.kindFor(D.productType), colour: f.chip || '#b9ae9c', family: f.family });
-        list.unshift({ src: pic, thumb: pic, label: D.illusLabel || 'Your colour',
-                       alt: (f.name || '') + ' — illustration', note: D.illusNote || '' });
+        // Drawings in the chosen colour: front, angle, side (or close-up) and in a room
+        var kind = I.kindFor(D.productType);
+        var shots = I.viewsFor ? I.viewsFor(kind) : [{ view: 'front', label: D.illusLabel || 'Your colour' }];
+        var drawn = shots.map(function (v) {
+          var pic = I.render({ kind: kind, colour: f.chip || '#b9ae9c', family: f.family, view: v.view });
+          return { src: pic, thumb: pic, label: v.label, drawn: true,
+                   alt: (f.name || '') + ' — ' + v.label.toLowerCase() + ' (illustration)', note: D.illusNote || '' };
+        });
+        list = drawn.concat(list);
       }
       return { list: list, generic: true };
     }
@@ -836,6 +844,28 @@
         add.textContent = 'Not available in this size';
       }
       setViews(viewsFor(f));
+      upgradeViews(f, state.fabric);
+    }
+
+    // Swap the drawings for realistic renders tinted to the chosen colour (assets/furniture-renders.js)
+    var renderToken = 0;
+    function upgradeViews(f, handle) {
+      var R = window.SheenRenders, I = window.SheenFurnitureIllustration;
+      if (!f || !D.illustration || !R || !I) return;
+      var res = viewsFor(f);
+      if (!res.generic) return;                       // the colour has its own photos
+      var kind = I.kindFor(D.productType);
+      if (!R.has(kind)) return;
+      var token = ++renderToken;
+      R.views(kind, f.family, f.chip || '#b9ae9c').then(function (shots) {
+        if (token !== renderToken || state.fabric !== handle) return;
+        var list = shots.map(function (s) {
+          return { src: s.src, thumb: s.src, label: s.label,
+                   alt: (f.name || '') + ' — ' + s.label.toLowerCase(), note: D.renderNote || '' };
+        });
+        var photos = res.list.filter(function (v) { return !v.drawn; });
+        setViews({ list: list.concat(photos), generic: true });
+      }).catch(function () { /* keep the drawings */ });
     }
 
     function chooseFabric(handle) {
@@ -886,8 +916,9 @@
     { "type": "text", "id": "view_labels", "label": "View names for untagged photos", "default": "Front, Side, Back, Detail", "info": "Fabric-specific photos are named by their alt text, e.g. '#LF2282C/001 Side'" },
     { "type": "text", "id": "generic_photo_note", "label": "Label on photos not in the chosen fabric", "default": "Shown in a sample fabric" },
     { "type": "checkbox", "id": "show_illustration", "label": "Show an illustration in the chosen colour", "default": true, "info": "Used when a colour has no photos of its own (alt text '#CODE View')" },
-    { "type": "text", "id": "illustration_label", "label": "Illustration view name", "default": "Your colour" },
+    { "type": "text", "id": "illustration_label", "label": "Illustration view name", "default": "Your colour", "info": "Only used if the drawing script can't provide its own views (Front, Angle, Side, In a room)." },
     { "type": "text", "id": "illustration_note", "label": "Label on the illustration", "default": "Illustration · colour is indicative" },
+    { "type": "text", "id": "render_note", "label": "Label on the 3D renders", "default": "Rendered image · colour is indicative" },
     { "type": "text", "id": "price_note", "label": "Text next to price", "default": "incl. VAT · in your chosen fabric" },
     { "type": "header", "content": "Fabric picker" },
     { "type": "text", "id": "family_label", "label": "Step 1 heading", "default": "Choose a fabric" },

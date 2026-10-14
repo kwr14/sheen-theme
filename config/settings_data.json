@@ -1489,7 +1489,8 @@
               "category": "sofas",
               "name": "Curved or cocoon sofa",
               "drawing": "curved-sofa",
-              "link": "shopify://products/curved-sofa"
+              "link": "shopify://products/curved-sofa",
+              "render": "fr-curved-sofa-card.jpg"
             }
           },
           "style-02": {
@@ -1498,7 +1499,8 @@
               "category": "sofas",
               "name": "Deep-seat modular / corner with chaise",
               "drawing": "modular-sofa",
-              "link": "shopify://products/modular-sofa"
+              "link": "shopify://products/modular-sofa",
+              "render": "fr-modular-sofa-card.jpg"
             }
           },
           "style-03": {
@@ -1507,7 +1509,8 @@
               "category": "sofas",
               "name": "English roll-arm (country house)",
               "drawing": "roll-arm-sofa",
-              "link": "shopify://products/roll-arm-sofa"
+              "link": "shopify://products/roll-arm-sofa",
+              "render": "fr-roll-arm-sofa-card.jpg"
             }
           },
           "style-04": {
@@ -1516,7 +1519,8 @@
               "category": "armchairs",
               "name": "Curved tub / barrel chair",
               "drawing": "tub-chair",
-              "link": "shopify://products/tub-chair"
+              "link": "shopify://products/tub-chair",
+              "render": "fr-tub-chair-card.jpg"
             }
           },
           "style-05": {
@@ -1525,7 +1529,8 @@
               "category": "armchairs",
               "name": "Swivel armchair",
               "drawing": "swivel-chair",
-              "link": "shopify://products/swivel-armchair"
+              "link": "shopify://products/swivel-armchair",
+              "render": "fr-swivel-chair-card.jpg"
             }
           },
           "style-06": {
@@ -1534,7 +1539,8 @@
               "category": "armchairs",
               "name": "Wingback / country-house armchair",
               "drawing": "wingback-chair",
-              "link": "shopify://products/wingback-armchair"
+              "link": "shopify://products/wingback-armchair",
+              "render": "fr-wingback-chair-card.jpg"
             }
           },
           "style-07": {
@@ -1543,7 +1549,8 @@
               "category": "headboards",
               "name": "Tall fluted / channelled",
               "drawing": "fluted-headboard",
-              "link": "shopify://products/headboard-double"
+              "link": "shopify://products/headboard-double",
+              "render": "fr-headboard-card.jpg"
             }
           },
           "style-08": {
@@ -1552,7 +1559,8 @@
               "category": "headboards",
               "name": "Scalloped / arched / curved",
               "drawing": "scalloped-headboard",
-              "link": "shopify://products/scalloped-headboard"
+              "link": "shopify://products/scalloped-headboard",
+              "render": "fr-scalloped-headboard-card.jpg"
             }
           },
           "style-09": {
@@ -1561,7 +1569,8 @@
               "category": "headboards",
               "name": "Slim wing headboard",
               "drawing": "wing-headboard",
-              "link": "shopify://products/wing-headboard"
+              "link": "shopify://products/wing-headboard",
+              "render": "fr-wing-headboard-card.jpg"
             }
           },
           "style-10": {
@@ -1570,7 +1579,8 @@
               "category": "footstools",
               "name": "Rectangular storage ottoman",
               "drawing": "storage-ottoman",
-              "link": "shopify://products/storage-footstool"
+              "link": "shopify://products/storage-footstool",
+              "render": "fr-storage-ottoman-card.jpg"
             }
           },
           "style-11": {
@@ -1579,7 +1589,8 @@
               "category": "footstools",
               "name": "Round drum footstool / pouffe",
               "drawing": "round-footstool",
-              "link": "shopify://products/round-footstool"
+              "link": "shopify://products/round-footstool",
+              "render": "fr-round-footstool-card.jpg"
             }
           },
           "style-12": {
@@ -1588,7 +1599,8 @@
               "category": "footstools",
               "name": "Bench / end-of-bed footstool",
               "drawing": "bench-footstool",
-              "link": "shopify://products/bench-footstool"
+              "link": "shopify://products/bench-footstool",
+              "render": "fr-bench-footstool-card.jpg"
             }
           },
           "style-13": {
@@ -1597,7 +1609,8 @@
               "category": "curtains",
               "name": "Pencil pleat",
               "drawing": "pencil-pleat",
-              "link": "shopify://products/pencil-pleat-curtains"
+              "link": "shopify://products/pencil-pleat-curtains",
+              "render": "fr-pencil-pleat-card.jpg"
             }
           },
           "style-14": {
@@ -1606,7 +1619,8 @@
               "category": "curtains",
               "name": "Wave heading",
               "drawing": "wave-curtain",
-              "link": "shopify://products/wave-curtains"
+              "link": "shopify://products/wave-curtains",
+              "render": "fr-wave-curtain-card.jpg"
             }
           },
           "style-15": {
@@ -1615,7 +1629,8 @@
               "category": "curtains",
               "name": "Pinch / Euro pleat",
               "drawing": "pinch-pleat",
-              "link": "shopify://products/pinch-pleat-curtains"
+              "link": "shopify://products/pinch-pleat-curtains",
+              "render": "fr-pinch-pleat-card.jpg"
             }
           },
           "style-16": {
@@ -1624,7 +1639,8 @@
               "category": "blinds",
               "name": "Roman blind",
               "drawing": "roman-blind",
-              "link": "shopify://products/roman-blind"
+              "link": "shopify://products/roman-blind",
+              "render": "fr-roman-blind-card.jpg"
             }
           },
           "style-17": {
@@ -1633,7 +1649,8 @@
               "category": "blinds",
               "name": "Roller blind",
               "drawing": "roller-blind",
-              "link": "shopify://products/roller-blind"
+              "link": "shopify://products/roller-blind",
+              "render": "fr-roller-blind-card.jpg"
             }
           },
           "style-18": {
@@ -1642,7 +1659,8 @@
               "category": "blinds",
               "name": "Austrian blind",
               "drawing": "austrian-blind",
-              "link": "shopify://products/austrian-blind"
+              "link": "shopify://products/austrian-blind",
+              "render": "fr-austrian-blind-card.jpg"
             }
           }
         },

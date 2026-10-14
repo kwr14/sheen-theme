@@ -4,7 +4,9 @@
   chosen fabric colour, with a light texture hint for the fabric family.
   Used by sections/furniture-configurator.liquid when a colour has no photos yet.
 
-  window.SheenFurnitureIllustration.render({ kind, colour, family }) → data: URI (SVG)
+  window.SheenFurnitureIllustration.render({ kind, colour, family, view }) → data: URI (SVG)
+      view: 'front' (default), 'angle', 'side', 'detail' (curtains/blinds) or 'room'
+  window.SheenFurnitureIllustration.viewsFor(kind) → [{ view, label }] the views that suit that kind
   window.SheenFurnitureIllustration.kindFor(productType)            → a drawing kind, e.g. 'sofa', 'curved-sofa',
       'modular-sofa', 'roll-arm-sofa', 'armchair', 'tub-chair', 'swivel-chair', 'wingback-chair', 'headboard',
       'scalloped-headboard', 'wing-headboard', 'footstool', 'storage-ottoman', 'round-footstool', 'bench-footstool',
@@ -177,19 +179,247 @@
       '<rect x="125" y="528" width="14" height="72" rx="4" fill="' + leg + '"/><rect x="661" y="528" width="14" height="72" rx="4" fill="' + leg + '"/>';
   }
 
-  function render(opts) {
-    var colour = toHex(parseHex(opts && opts.colour));
-    var kind = (opts && opts.kind) || 'sofa';
+  /* ── Views: front, angle, side, close-up and in a room ───────────────────────────── */
+
+  var WALL = '#efebe5', FLOOR = '#e2dcd2', WOOD = '#5b4636';
+
+  function group(kind) {
+    if (/curtain|pleat/.test(kind)) return 'curtain';
+    if (/blind/.test(kind)) return 'blind';
+    if (/headboard/.test(kind)) return 'headboard';
+    if (/footstool|ottoman/.test(kind)) return 'footstool';
+    if (/chair/.test(kind) || kind === 'armchair') return 'chair';
+    return 'sofa';
+  }
+
+  function defs(family, colour) {
+    return '<defs>' + texture(family, colour) +
+      '<radialGradient id="shadow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#000" stop-opacity=".22"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>' +
+      '<filter id="dk"><feComponentTransfer><feFuncR type="linear" slope=".72"/><feFuncG type="linear" slope=".72"/><feFuncB type="linear" slope=".72"/></feComponentTransfer></filter>' +
+      '<linearGradient id="glass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#eef3f6"/><stop offset="1" stop-color="#cfdbe3"/></linearGradient>' +
+      '</defs>';
+  }
+
+  function wrap(inner, family, colour) {
     var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 700" width="800" height="700">' +
-      '<defs>' + texture(opts && opts.family, colour) +
-      '<radialGradient id="shadow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#000" stop-opacity=".22"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient></defs>' +
-      '<rect width="800" height="700" fill="#efebe5"/>' +
-      '<rect y="560" width="800" height="140" fill="#e2dcd2"/>' +
-      (STYLE_TPL[kind] ? styleDrawing(kind, colour) :
-        '<ellipse cx="400" cy="600" rx="330" ry="26" fill="url(#shadow)"/>' + piece(kind, colour)) +
-      '</svg>';
+      defs(family, colour) + inner + '</svg>';
     return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
   }
 
-  window.SheenFurnitureIllustration = { render: render, kindFor: kindFor, shade: shade };
+  function backdrop() {
+    return '<rect width="800" height="700" fill="' + WALL + '"/><rect y="560" width="800" height="140" fill="' + FLOOR + '"/>';
+  }
+
+  // The piece seen from the front, on an 800 x 700 canvas, floor at y = 560
+  function frontPiece(kind, colour) {
+    return STYLE_TPL[kind] ? styleDrawing(kind, colour) :
+      '<ellipse cx="400" cy="600" rx="330" ry="26" fill="url(#shadow)"/>' + piece(kind, colour);
+  }
+
+  // Three-quarter view: the front face turned slightly, with depth drawn behind it
+  function anglePiece(kind, colour) {
+    var face = frontPiece(kind, colour), out = '';
+    var steps = 7, dx = 9, dy = -6;
+    for (var k = steps; k >= 1; k--) {
+      out += '<g filter="url(#dk)" transform="translate(' + (k * dx) + ',' + (k * dy) + ')">' + face + '</g>';
+    }
+    out += face;
+    return '<ellipse cx="430" cy="604" rx="350" ry="30" fill="url(#shadow)"/>' +
+      '<g transform="translate(400 560) skewY(-5) scale(.86 1) translate(-400 -560)">' + out + '</g>';
+  }
+
+  // Side profiles, drawn per type of piece
+  function sidePiece(kind, c) {
+    var main = c, dark = shade(c, -0.18), darker = shade(c, -0.3), lite = shade(c, 0.12);
+    var t = 'fill="url(#tex)"';
+    function r(x, y, w, h, rx, fill) {
+      return '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="' + rx + '" fill="' + fill + '"/>' +
+             '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="' + rx + '" ' + t + '/>';
+    }
+    function p(d, fill) { return '<path d="' + d + '" fill="' + fill + '"/><path d="' + d + '" ' + t + '/>'; }
+    function legs(x1, x2, top, h) {
+      return '<rect x="' + x1 + '" y="' + top + '" width="16" height="' + h + '" rx="4" fill="' + WOOD + '"/>' +
+             '<rect x="' + x2 + '" y="' + top + '" width="16" height="' + h + '" rx="4" fill="' + WOOD + '"/>';
+    }
+    var g = group(kind), shadowEl = '<ellipse cx="400" cy="600" rx="280" ry="22" fill="url(#shadow)"/>';
+    if (g === 'headboard') {
+      var hbTop = kind === 'wing-headboard' ? 150 : 130;
+      var hb = kind === 'scalloped-headboard'
+        ? p('M150 560 V160 Q150 128 182 128 Q200 128 200 150 V560 Z', main)
+        : r(150, hbTop, 54, 430, 14, main);
+      if (kind === 'wing-headboard') hb += p('M204 170 L268 196 V560 H204 Z', dark);
+      return shadowEl + hb +
+        r(196, 420, 470, 80, 18, '#f4f1ec') + r(214, 384, 150, 52, 24, '#fbfaf8') +
+        r(196, 494, 470, 54, 8, dark) + legs(214, 630, 546, 20);
+    }
+    if (g === 'footstool') {
+      if (kind === 'round-footstool') {
+        return shadowEl + r(240, 410, 320, 150, 6, main) + '<ellipse cx="400" cy="410" rx="160" ry="18" fill="' + lite + '"/>';
+      }
+      if (kind === 'bench-footstool') {
+        return shadowEl + r(250, 420, 300, 64, 22, main) + r(258, 480, 284, 16, 4, dark) + legs(268, 516, 494, 70);
+      }
+      return shadowEl + r(230, 400, 340, 46, 14, lite) + r(236, 440, 328, 104, 6, main) +
+        '<rect x="236" y="540" width="328" height="12" fill="' + WOOD + '"/>';
+    }
+    // seating: sofas and chairs
+    var tall = kind === 'wingback-chair' ? 150 : (g === 'chair' ? 210 : 230);
+    var depth = g === 'chair' ? 330 : 380, x0 = 400 - depth / 2;
+    var out = shadowEl;
+    if (kind === 'curved-sofa' || kind === 'tub-chair') {
+      out += p('M' + x0 + ' 520 Q' + (x0 - 10) + ' ' + (tall - 10) + ' ' + (x0 + 70) + ' ' + tall + ' Q' + (x0 + 120) + ' ' + (tall + 10) + ' ' + (x0 + 110) + ' 420 L' + (x0 + depth) + ' 420 Q' + (x0 + depth + 20) + ' 470 ' + (x0 + depth) + ' 520 Z', main) +
+        r(x0 + 90, 400, depth - 100, 46, 22, lite);
+    } else {
+      out += p('M' + x0 + ' 520 L' + (x0 + 10) + ' ' + (tall + 20) + ' Q' + (x0 + 14) + ' ' + tall + ' ' + (x0 + 40) + ' ' + tall + ' L' + (x0 + 92) + ' ' + (tall + 8) + ' Q' + (x0 + 112) + ' ' + (tall + 14) + ' ' + (x0 + 106) + ' ' + (tall + 40) + ' L' + (x0 + 96) + ' 420 Z', dark) +
+        r(x0 + 60, 396, depth - 64, 54, 24, lite) +
+        r(x0, 440, depth, 86, 14, main);
+      if (kind === 'roll-arm-sofa') {
+        out += r(x0 + 34, 346, depth - 50, 52, 26, main);                 // rolled arm along the side
+      } else if (kind === 'wingback-chair') {
+        out += r(x0 + 40, 360, depth - 60, 34, 16, main) +
+          p('M' + (x0 + 30) + ' ' + (tall + 30) + ' Q' + (x0 + 120) + ' ' + (tall + 20) + ' ' + (x0 + 128) + ' ' + (tall + 90) + ' L' + (x0 + 110) + ' 366 L' + (x0 + 40) + ' 366 Z', main);  // wing
+      } else {
+        out += r(x0 + 40, 360, depth - 60, 34, 16, main);
+      }
+    }
+    if (kind === 'swivel-chair') {
+      out += '<rect x="392" y="526" width="16" height="22" fill="#6d6a64"/><ellipse cx="400" cy="556" rx="90" ry="10" fill="#6d6a64"/>';
+    } else if (kind === 'modular-sofa' || kind === 'curved-sofa') {
+      out += '<rect x="' + (x0 + 14) + '" y="522" width="' + (depth - 28) + '" height="16" rx="6" fill="' + WOOD + '"/>';
+    } else {
+      out += legs(x0 + 18, x0 + depth - 34, 522, 38);
+    }
+    return out;
+  }
+
+  // Curtains and blinds: a close-up of the fabric and heading
+  function detailPiece(kind, c) {
+    var main = c, dark = shade(c, -0.2), lite = shade(c, 0.14), out = '';
+    var t = '<rect width="800" height="700" fill="url(#tex)"/>';
+    if (group(kind) === 'blind') {
+      out += '<rect width="800" height="700" fill="' + main + '"/>';
+      if (kind === 'roman-blind') {
+        for (var y = 120; y < 700; y += 120) {
+          out += '<path d="M0 ' + y + ' H800 V' + (y + 40) + ' Q400 ' + (y + 80) + ' 0 ' + (y + 40) + ' Z" fill="' + dark + '" opacity=".55"/>';
+        }
+      } else if (kind === 'austrian-blind') {
+        for (var x = 0; x < 800; x += 200) {
+          out += '<path d="M' + x + ' 420 Q' + (x + 100) + ' 600 ' + (x + 200) + ' 420 V700 H' + x + ' Z" fill="' + WALL + '"/>' +
+                 '<path d="M' + x + ' 420 Q' + (x + 100) + ' 600 ' + (x + 200) + ' 420" stroke="' + dark + '" stroke-width="14" fill="none"/>';
+        }
+        for (var gx = 20; gx < 800; gx += 40) out += '<line x1="' + gx + '" y1="0" x2="' + gx + '" y2="430" stroke="' + dark + '" stroke-opacity=".35" stroke-width="6"/>';
+      } else {
+        out += '<rect x="0" y="0" width="800" height="70" fill="#8f8a80"/><rect x="0" y="600" width="800" height="22" rx="10" fill="#8f8a80"/>';
+      }
+      return out + t;
+    }
+    // curtains: vertical folds
+    var step = kind === 'pencil-pleat' ? 50 : (kind === 'wave-curtain' ? 130 : 90);
+    out += '<rect width="800" height="700" fill="' + main + '"/>';
+    for (var fx = 0; fx < 800; fx += step) {
+      out += '<rect x="' + fx + '" y="0" width="' + (step * 0.45) + '" height="700" fill="' + dark + '" opacity=".35"/>' +
+             '<rect x="' + (fx + step * 0.55) + '" y="0" width="' + (step * 0.18) + '" height="700" fill="' + lite + '" opacity=".35"/>';
+    }
+    if (kind === 'pinch-pleat') {
+      for (var px = 30; px < 800; px += 180) out += '<path d="M' + px + ' 0 h44 l-12 120 h-20 z" fill="' + dark + '"/>';
+    } else if (kind === 'pencil-pleat') {
+      out += '<rect x="0" y="0" width="800" height="90" fill="' + dark + '" opacity=".35"/>';
+      for (var qx = 0; qx < 800; qx += 12) out += '<line x1="' + qx + '" y1="0" x2="' + qx + '" y2="90" stroke="' + dark + '" stroke-width="3"/>';
+    } else {
+      out += '<rect x="0" y="0" width="800" height="26" fill="#6d6a64"/>';
+    }
+    return out + t;
+  }
+
+  // Room furniture around the piece
+  function plant(x, y) {
+    return '<path d="M' + (x - 34) + ' ' + y + ' h68 l-10 70 h-48 z" fill="#b8a48c"/>' +
+      '<g fill="#6f7f5a"><ellipse cx="' + x + '" cy="' + (y - 60) + '" rx="22" ry="62"/><ellipse cx="' + (x - 34) + '" cy="' + (y - 40) + '" rx="16" ry="48" transform="rotate(-24 ' + (x - 34) + ' ' + (y - 40) + ')"/><ellipse cx="' + (x + 34) + '" cy="' + (y - 44) + '" rx="16" ry="50" transform="rotate(26 ' + (x + 34) + ' ' + (y - 44) + ')"/></g>';
+  }
+  function floorLamp(x) {
+    return '<rect x="' + (x - 3) + '" y="200" width="6" height="400" fill="#3b3a37"/><ellipse cx="' + x + '" cy="600" rx="34" ry="6" fill="#3b3a37"/>' +
+      '<path d="M' + (x - 50) + ' 200 h100 l-22 -70 h-56 z" fill="#f3eee6"/>' +
+      '<ellipse cx="' + x + '" cy="210" rx="120" ry="60" fill="#fff8e6" opacity=".35"/>';
+  }
+  function sideTable(x, lamp) {
+    var s = '<rect x="' + (x - 50) + '" y="500" width="100" height="10" rx="3" fill="#7a6248"/><rect x="' + (x - 44) + '" y="510" width="8" height="90" fill="#7a6248"/><rect x="' + (x + 36) + '" y="510" width="8" height="90" fill="#7a6248"/>';
+    if (lamp) s += '<rect x="' + (x - 4) + '" y="440" width="8" height="60" fill="#3b3a37"/><path d="M' + (x - 34) + ' 440 h68 l-14 -48 h-40 z" fill="#f3eee6"/>';
+    return s;
+  }
+  function art(x, y, w, h) {
+    return '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" fill="#3b3a37"/>' +
+      '<rect x="' + (x + 8) + '" y="' + (y + 8) + '" width="' + (w - 16) + '" height="' + (h - 16) + '" fill="#f6f2ea"/>' +
+      '<circle cx="' + (x + w * 0.42) + '" cy="' + (y + h * 0.45) + '" r="' + (Math.min(w, h) * 0.22) + '" fill="#c99a6b"/>' +
+      '<rect x="' + (x + w * 0.5) + '" y="' + (y + h * 0.5) + '" width="' + (w * 0.3) + '" height="' + (h * 0.28) + '" fill="#6f7f5a"/>';
+  }
+  function windowFrame(x, y, w, h) {
+    return '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" fill="#f6f3ee"/>' +
+      '<rect x="' + (x + 10) + '" y="' + (y + 10) + '" width="' + (w - 20) + '" height="' + (h - 20) + '" fill="url(#glass)"/>' +
+      '<line x1="' + (x + w / 2) + '" y1="' + y + '" x2="' + (x + w / 2) + '" y2="' + (y + h) + '" stroke="#f6f3ee" stroke-width="8"/>';
+  }
+  function roomShell(floorY) {
+    var boards = '';
+    for (var bx = -40; bx < 800; bx += 90) boards += '<line x1="' + bx + '" y1="' + floorY + '" x2="' + (bx - 60) + '" y2="700" stroke="#b9a385" stroke-width="2" opacity=".5"/>';
+    return '<rect width="800" height="700" fill="#ece6dc"/>' +
+      '<rect y="' + floorY + '" width="800" height="' + (700 - floorY) + '" fill="#cdb79a"/>' + boards +
+      '<rect y="' + (floorY - 14) + '" width="800" height="14" fill="#f6f2ea"/>';
+  }
+  function placed(markup, s, cx, floorAt) {
+    // markup is drawn with its floor at y=560 and centre x=400
+    var tx = cx - 400 * s, ty = floorAt - 560 * s;
+    return '<g transform="translate(' + tx.toFixed(1) + ' ' + ty.toFixed(1) + ') scale(' + s + ')">' + markup + '</g>';
+  }
+
+  function roomScene(kind, colour) {
+    var g = group(kind), out = '';
+    if (g === 'curtain' || g === 'blind') {
+      out += roomShell(500);
+      if (g === 'curtain') out += placed(frontPiece(kind, colour), 1, 400, 424);
+      else out += placed(frontPiece(kind, colour), 0.86, 400, 410);
+      out += placed('<ellipse cx="400" cy="600" rx="330" ry="26" fill="url(#shadow)"/>' + piece('sofa', '#b8b0a4'), 0.5, 400, 640) +
+        plant(110, 610) + floorLamp(690) +
+        '<rect x="250" y="630" width="300" height="50" rx="6" fill="#d9cfc0" opacity=".8"/>';
+      return out;
+    }
+    if (g === 'headboard') {
+      out += roomShell(520) + art(320, 60, 160, 110) +
+        '<ellipse cx="400" cy="660" rx="330" ry="34" fill="#d9cfc0"/>' +
+        sideTable(120, true) + sideTable(680, true) +
+        placed(frontPiece(kind, colour), 0.72, 400, 650);
+      return out;
+    }
+    out += roomShell(470) + art(300, 70, 200, 140) + windowFrame(40, 70, 150, 260) +
+      '<ellipse cx="400" cy="640" rx="360" ry="44" fill="#d9cfc0"/><ellipse cx="400" cy="640" rx="330" ry="36" fill="none" stroke="#c6b8a4" stroke-width="3"/>' +
+      plant(80, 600) + floorLamp(720) + sideTable(620, false);
+    var s = g === 'footstool' ? 0.62 : (g === 'chair' ? 0.66 : 0.6);
+    out += placed(frontPiece(kind, colour), s, g === 'footstool' ? 400 : 380, 630);
+    if (g === 'sofa') out += '<rect x="330" y="640" width="140" height="10" rx="3" fill="#7a6248"/><rect x="340" y="650" width="8" height="30" fill="#7a6248"/><rect x="452" y="650" width="8" height="30" fill="#7a6248"/>';
+    return out;
+  }
+
+  // One view as a data: URI. opts: { kind, colour, family, view: 'front'|'angle'|'side'|'detail'|'room' }
+  function render(opts) {
+    var colour = toHex(parseHex(opts && opts.colour));
+    var kind = (opts && opts.kind) || 'sofa';
+    var family = opts && opts.family;
+    var view = (opts && opts.view) || 'front';
+    var inner;
+    if (view === 'room') inner = roomScene(kind, colour);
+    else if (view === 'detail') inner = detailPiece(kind, colour);
+    else if (view === 'angle') inner = backdrop() + anglePiece(kind, colour);
+    else if (view === 'side') inner = backdrop() + sidePiece(kind, colour);
+    else inner = backdrop() + frontPiece(kind, colour);
+    return wrap(inner, family, colour);
+  }
+
+  // The views that suit a kind of piece, in order
+  function viewsFor(kind) {
+    var g = group(kind);
+    if (g === 'curtain' || g === 'blind') {
+      return [{ view: 'front', label: 'Front' }, { view: 'detail', label: 'Close-up' }, { view: 'room', label: 'In a room' }];
+    }
+    return [{ view: 'front', label: 'Front' }, { view: 'angle', label: 'Angle' }, { view: 'side', label: 'Side' }, { view: 'room', label: 'In a room' }];
+  }
+
+  window.SheenFurnitureIllustration = { render: render, kindFor: kindFor, viewsFor: viewsFor, shade: shade };
 })();
