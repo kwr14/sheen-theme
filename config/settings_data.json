@@ -1479,6 +1479,202 @@
           "stools",
           "curtains"
         ]
+      },
+      "furniture-styles": {
+        "type": "furniture-styles",
+        "blocks": {
+          "style-01": {
+            "type": "style",
+            "settings": {
+              "category": "sofas",
+              "name": "Curved or cocoon sofa",
+              "drawing": "curved-sofa",
+              "link": "shopify://products/curved-sofa"
+            }
+          },
+          "style-02": {
+            "type": "style",
+            "settings": {
+              "category": "sofas",
+              "name": "Deep-seat modular / corner with chaise",
+              "drawing": "modular-sofa",
+              "link": "shopify://products/modular-sofa"
+            }
+          },
+          "style-03": {
+            "type": "style",
+            "settings": {
+              "category": "sofas",
+              "name": "English roll-arm (country house)",
+              "drawing": "roll-arm-sofa",
+              "link": "shopify://products/roll-arm-sofa"
+            }
+          },
+          "style-04": {
+            "type": "style",
+            "settings": {
+              "category": "armchairs",
+              "name": "Curved tub / barrel chair",
+              "drawing": "tub-chair",
+              "link": "shopify://products/tub-chair"
+            }
+          },
+          "style-05": {
+            "type": "style",
+            "settings": {
+              "category": "armchairs",
+              "name": "Swivel armchair",
+              "drawing": "swivel-chair",
+              "link": "shopify://products/swivel-armchair"
+            }
+          },
+          "style-06": {
+            "type": "style",
+            "settings": {
+              "category": "armchairs",
+              "name": "Wingback / country-house armchair",
+              "drawing": "wingback-chair",
+              "link": "shopify://products/wingback-armchair"
+            }
+          },
+          "style-07": {
+            "type": "style",
+            "settings": {
+              "category": "headboards",
+              "name": "Tall fluted / channelled",
+              "drawing": "fluted-headboard",
+              "link": "shopify://products/headboard-double"
+            }
+          },
+          "style-08": {
+            "type": "style",
+            "settings": {
+              "category": "headboards",
+              "name": "Scalloped / arched / curved",
+              "drawing": "scalloped-headboard",
+              "link": "shopify://products/scalloped-headboard"
+            }
+          },
+          "style-09": {
+            "type": "style",
+            "settings": {
+              "category": "headboards",
+              "name": "Slim wing headboard",
+              "drawing": "wing-headboard",
+              "link": "shopify://products/wing-headboard"
+            }
+          },
+          "style-10": {
+            "type": "style",
+            "settings": {
+              "category": "footstools",
+              "name": "Rectangular storage ottoman",
+              "drawing": "storage-ottoman",
+              "link": "shopify://products/storage-footstool"
+            }
+          },
+          "style-11": {
+            "type": "style",
+            "settings": {
+              "category": "footstools",
+              "name": "Round drum footstool / pouffe",
+              "drawing": "round-footstool",
+              "link": "shopify://products/round-footstool"
+            }
+          },
+          "style-12": {
+            "type": "style",
+            "settings": {
+              "category": "footstools",
+              "name": "Bench / end-of-bed footstool",
+              "drawing": "bench-footstool",
+              "link": "shopify://products/bench-footstool"
+            }
+          },
+          "style-13": {
+            "type": "style",
+            "settings": {
+              "category": "curtains",
+              "name": "Pencil pleat",
+              "drawing": "pencil-pleat",
+              "link": "shopify://products/pencil-pleat-curtains"
+            }
+          },
+          "style-14": {
+            "type": "style",
+            "settings": {
+              "category": "curtains",
+              "name": "Wave heading",
+              "drawing": "wave-curtain",
+              "link": "shopify://products/wave-curtains"
+            }
+          },
+          "style-15": {
+            "type": "style",
+            "settings": {
+              "category": "curtains",
+              "name": "Pinch / Euro pleat",
+              "drawing": "pinch-pleat",
+              "link": "shopify://products/pinch-pleat-curtains"
+            }
+          },
+          "style-16": {
+            "type": "style",
+            "settings": {
+              "category": "blinds",
+              "name": "Roman blind",
+              "drawing": "roman-blind",
+              "link": "shopify://products/roman-blind"
+            }
+          },
+          "style-17": {
+            "type": "style",
+            "settings": {
+              "category": "blinds",
+              "name": "Roller blind",
+              "drawing": "roller-blind",
+              "link": "shopify://products/roller-blind"
+            }
+          },
+          "style-18": {
+            "type": "style",
+            "settings": {
+              "category": "blinds",
+              "name": "Austrian blind",
+              "drawing": "austrian-blind",
+              "link": "shopify://products/austrian-blind"
+            }
+          }
+        },
+        "block_order": [
+          "style-01",
+          "style-02",
+          "style-03",
+          "style-04",
+          "style-05",
+          "style-06",
+          "style-07",
+          "style-08",
+          "style-09",
+          "style-10",
+          "style-11",
+          "style-12",
+          "style-13",
+          "style-14",
+          "style-15",
+          "style-16",
+          "style-17",
+          "style-18"
+        ],
+        "settings": {
+          "eyebrow": "New · Made-to-order furniture",
+          "heading": "Furniture upholstered in the fabric you choose",
+          "intro": "<p>Pick a piece, choose from our curated fabric shortlist and watch the price update as you go. Every piece is made to order by our upholsterers.</p>",
+          "menu_label": "Product types",
+          "cta_label": "Choose your fabric",
+          "default_link": "",
+          "background": "#f3f1ec"
+        }
       }
     },
     "content_for_index": [
