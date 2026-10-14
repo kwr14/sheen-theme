@@ -1,0 +1,187 @@
+{% comment %}
+  Furniture styles page (Sheen Upholstery): the /pages/furniture landing page.
+  A quick menu of product types, then one row of style cards per type
+  (drawing + name), each linking to Contact Us by default.
+  Cards are "Style" blocks: pick the product type, name, drawing (or upload an image)
+  and link in the theme editor. Types with no cards are left out of the page and menu.
+  Drawings live in snippets/furniture-style-drawing.liquid.
+{% endcomment %}
+
+{%- liquid
+  assign cat_keys = 'sofas,armchairs,headboards,footstools,curtains,blinds' | split: ','
+  assign cat_names = 'Sofas|Armchairs|Headboards|Footstools & ottomans|Curtains|Blinds' | split: '|'
+  assign default_link = section.settings.default_link | default: '/pages/contact-us'
+-%}
+
+<style>
+  #fs-{{ section.id }} {
+    --fs-bg: {{ section.settings.background }};
+    --fs-ink: #23262b;
+    --fs-muted: #646a70;
+    --fs-line: #d9d5cc;
+    --fs-card: #fbfaf7;
+    --fs-plate: #ece8e1;
+    --fs-accent: #4f5d3a;
+    background: var(--fs-bg);
+    color: var(--fs-ink);
+    padding: 56px 0 80px;
+  }
+  #fs-{{ section.id }} .fs-inner { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+  #fs-{{ section.id }} .fs-eyebrow { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--fs-accent); margin: 0 0 14px; }
+  #fs-{{ section.id }} .fs-title { font-family: var(--font-heading-family, inherit); font-weight: 400; font-size: clamp(36px, 5.5vw, 60px); line-height: 1.04; margin: 0; max-width: 860px; text-wrap: balance; }
+  #fs-{{ section.id }} .fs-intro { color: var(--fs-muted); font-size: 17px; line-height: 1.6; max-width: 640px; margin: 18px 0 0; }
+  #fs-{{ section.id }} .fs-intro p { margin: 0; }
+  #fs-{{ section.id }} .fs-menu { display: flex; flex-wrap: wrap; gap: 8px; margin: 32px 0 0; padding: 20px 0 0; border-top: 1px solid var(--fs-line); list-style: none; }
+  #fs-{{ section.id }} .fs-menu a { display: inline-block; font-size: 14px; letter-spacing: .02em; color: var(--fs-ink); text-decoration: none; border: 1px solid var(--fs-line); border-radius: 999px; padding: 7px 16px; background: var(--fs-card); transition: border-color .15s, background .15s; }
+  #fs-{{ section.id }} .fs-menu a:hover, #fs-{{ section.id }} .fs-menu a:focus-visible { border-color: var(--fs-ink); outline: none; }
+  #fs-{{ section.id }} .fs-type { padding-top: 56px; scroll-margin-top: 120px; }
+  #fs-{{ section.id }} .fs-type-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
+  #fs-{{ section.id }} .fs-type-head h2 { font-family: var(--font-heading-family, inherit); font-weight: 400; font-size: clamp(28px, 4vw, 38px); margin: 0; }
+  #fs-{{ section.id }} .fs-top { font-size: 13px; color: var(--fs-muted); text-decoration: none; }
+  #fs-{{ section.id }} .fs-top:hover { color: var(--fs-ink); }
+  #fs-{{ section.id }} .fs-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
+  #fs-{{ section.id }} .fs-card { display: flex; flex-direction: column; background: var(--fs-card); border: 1px solid var(--fs-line); border-radius: 4px; overflow: hidden; color: var(--fs-ink); text-decoration: none; transition: border-color .15s; min-width: 0; }
+  #fs-{{ section.id }} .fs-card:hover, #fs-{{ section.id }} .fs-card:focus-visible { border-color: var(--fs-ink); outline: none; }
+  #fs-{{ section.id }} .fs-plate { background: var(--fs-plate); aspect-ratio: 4 / 3; max-width: 100%; overflow: hidden; }
+  #fs-{{ section.id }} .fs-plate svg, #fs-{{ section.id }} .fs-plate img { width: 100%; height: 100%; display: block; object-fit: cover; }
+  #fs-{{ section.id }} .fs-body { padding: 18px 22px 22px; display: flex; flex-direction: column; gap: 8px; }
+  #fs-{{ section.id }} .fs-label { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--fs-muted); }
+  #fs-{{ section.id }} .fs-name { font-family: var(--font-heading-family, inherit); font-weight: 400; font-size: 24px; line-height: 1.2; margin: 0; text-wrap: balance; }
+  #fs-{{ section.id }} .fs-cta { margin-top: 6px; font-size: 15px; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; }
+  @media (max-width: 900px) {
+    #fs-{{ section.id }} { padding: 36px 0 56px; }
+    #fs-{{ section.id }} .fs-inner { padding: 0 16px; }
+    #fs-{{ section.id }} .fs-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    #fs-{{ section.id }} .fs-type { padding-top: 40px; }
+  }
+  @media (max-width: 560px) {
+    #fs-{{ section.id }} .fs-grid { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (prefers-reduced-motion: reduce) { #fs-{{ section.id }} * { transition: none !important; } }
+</style>
+
+<section id="fs-{{ section.id }}" aria-labelledby="fs-title-{{ section.id }}">
+  <div class="fs-inner" id="fs-top-{{ section.id }}">
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="fs-eyebrow">{{ section.settings.eyebrow }}</p>
+    {%- endif -%}
+    <h1 class="fs-title" id="fs-title-{{ section.id }}">{{ section.settings.heading }}</h1>
+    {%- if section.settings.intro != blank -%}
+      <div class="fs-intro">{{ section.settings.intro }}</div>
+    {%- endif -%}
+
+    {%- capture menu -%}
+      {%- for key in cat_keys -%}
+        {%- assign has = false -%}
+        {%- for block in section.blocks -%}
+          {%- if block.settings.category == key and block.settings.name != blank %}{% assign has = true %}{% break %}{% endif -%}
+        {%- endfor -%}
+        {%- if has -%}
+          <li><a href="#fs-{{ key }}">{{ cat_names[forloop.index0] }}</a></li>
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endcapture -%}
+    {%- if menu != blank -%}
+      <nav aria-label="{{ section.settings.menu_label | escape }}">
+        <ul class="fs-menu">{{ menu }}</ul>
+      </nav>
+    {%- endif -%}
+
+    {%- for key in cat_keys -%}
+      {%- assign cat_name = cat_names[forloop.index0] -%}
+      {%- capture cards -%}
+        {%- for block in section.blocks -%}
+          {%- if block.settings.category == key and block.settings.name != blank -%}
+            {%- assign link = block.settings.link | default: default_link -%}
+            <a class="fs-card" href="{{ link }}" {{ block.shopify_attributes }}>
+              <div class="fs-plate">
+                {%- if block.settings.image != blank -%}
+                  {%- assign img_alt = block.settings.image.alt | default: block.settings.name | escape -%}
+                  {{ block.settings.image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '400, 600, 900', sizes: '(max-width: 560px) 100vw, (max-width: 900px) 50vw, 33vw', alt: img_alt }}
+                {%- else -%}
+                  {%- render 'furniture-style-drawing', key: block.settings.drawing -%}
+                {%- endif -%}
+              </div>
+              <div class="fs-body">
+                <span class="fs-label">{{ cat_name }}</span>
+                <h3 class="fs-name">{{ block.settings.name }}</h3>
+                {%- if section.settings.cta_label != blank -%}
+                  <span class="fs-cta">{{ section.settings.cta_label }}
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                  </span>
+                {%- endif -%}
+              </div>
+            </a>
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endcapture -%}
+      {%- if cards != blank -%}
+        <section class="fs-type" id="fs-{{ key }}" aria-labelledby="fs-h-{{ key }}">
+          <div class="fs-type-head">
+            <h2 id="fs-h-{{ key }}">{{ cat_name }}</h2>
+            <a class="fs-top" href="#fs-top-{{ section.id }}">Back to top ↑</a>
+          </div>
+          <div class="fs-grid">{{ cards }}</div>
+        </section>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Furniture styles",
+  "tag": "div",
+  "class": "section-furniture-styles",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Made to order in the fabric you choose" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Furniture, curtains and blinds" },
+    { "type": "richtext", "id": "intro", "label": "Intro" },
+    { "type": "text", "id": "menu_label", "label": "Quick menu name (for screen readers)", "default": "Product types" },
+    { "type": "text", "id": "cta_label", "label": "Card link text", "default": "Enquire" },
+    { "type": "url", "id": "default_link", "label": "Default card link", "info": "Used when a card has no link of its own. Leave blank for Contact Us." },
+    { "type": "color", "id": "background", "label": "Background", "default": "#f3f1ec" }
+  ],
+  "blocks": [
+    {
+      "type": "style",
+      "name": "Style",
+      "settings": [
+        { "type": "select", "id": "category", "label": "Product type", "default": "sofas",
+          "options": [
+            { "value": "sofas", "label": "Sofas" },
+            { "value": "armchairs", "label": "Armchairs" },
+            { "value": "headboards", "label": "Headboards" },
+            { "value": "footstools", "label": "Footstools & ottomans" },
+            { "value": "curtains", "label": "Curtains" },
+            { "value": "blinds", "label": "Blinds" }
+          ] },
+        { "type": "text", "id": "name", "label": "Name" },
+        { "type": "select", "id": "drawing", "label": "Drawing (when no image)", "default": "curved-sofa",
+          "options": [
+            { "value": "curved-sofa", "label": "Curved sofa" },
+            { "value": "modular-sofa", "label": "Modular / corner sofa" },
+            { "value": "roll-arm-sofa", "label": "Roll-arm sofa" },
+            { "value": "tub-chair", "label": "Tub chair" },
+            { "value": "swivel-chair", "label": "Swivel armchair" },
+            { "value": "wingback-chair", "label": "Wingback armchair" },
+            { "value": "fluted-headboard", "label": "Fluted headboard" },
+            { "value": "scalloped-headboard", "label": "Scalloped headboard" },
+            { "value": "wing-headboard", "label": "Wing headboard" },
+            { "value": "storage-ottoman", "label": "Storage ottoman" },
+            { "value": "round-footstool", "label": "Round footstool" },
+            { "value": "bench-footstool", "label": "Bench footstool" },
+            { "value": "pencil-pleat", "label": "Pencil pleat curtains" },
+            { "value": "wave-curtain", "label": "Wave curtains" },
+            { "value": "pinch-pleat", "label": "Pinch pleat curtains" },
+            { "value": "roman-blind", "label": "Roman blind" },
+            { "value": "roller-blind", "label": "Roller blind" },
+            { "value": "austrian-blind", "label": "Austrian blind" }
+          ] },
+        { "type": "image_picker", "id": "image", "label": "Image", "info": "Optional. Replaces the drawing." },
+        { "type": "url", "id": "link", "label": "Link", "info": "Leave blank to use the section's default link (Contact Us)." }
+      ]
+    }
+  ]
+}
+{% endschema %}
