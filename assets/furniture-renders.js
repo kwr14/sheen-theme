@@ -60,7 +60,7 @@
       var shade = pair[0], mask = pair[1];
       var w = shade.naturalWidth, h = shade.naturalHeight;
       var c = document.createElement('canvas'); c.width = w; c.height = h;
-      var ctx = c.getContext('2d');
+      var ctx = c.getContext('2d', { willReadFrequently: true });
       ctx.drawImage(mask, 0, 0, w, h);
       var m = ctx.getImageData(0, 0, w, h).data;
       ctx.drawImage(shade, 0, 0, w, h);
