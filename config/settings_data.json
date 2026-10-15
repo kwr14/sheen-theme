@@ -191,41 +191,27 @@
       },
       "footer": {
         "type": "footer",
-        "blocks": {
-          "1494301487049": {
-            "type": "menu",
-            "settings": {
-              "show_footer_title": false,
-              "menu": "footer",
-              "container_width": 37
-            }
-          },
-          "1494292487693": {
-            "type": "newsletter",
-            "settings": {
-              "show_footer_title": true,
-              "title": "Sign up and save",
-              "text": "<p>Subscribe to get special offers, free giveaways, and once-in-a-lifetime deals.</p>",
-              "container_width": 62
-            }
-          },
-          "1494301487048": {
-            "type": "logo_social",
-            "disabled": true,
-            "settings": {
-              "desktop_logo_height": 50,
-              "container_width": 95
-            }
-          }
-        },
-        "block_order": [
-          "1494301487049",
-          "1494292487693",
-          "1494301487048"
-        ],
         "settings": {
+          "background": "#1c241f",
+          "text_color": "#efe9dc",
+          "accent": "#d9bd84",
+          "show_newsletter": true,
+          "news_eyebrow": "Sign up and save",
+          "news_heading": "New fabrics and offers, straight to your inbox",
+          "news_text": "Subscribe to get special offers, free giveaways and once-in-a-lifetime deals.",
+          "news_thanks": "Thanks for subscribing. We’ll be in touch soon.",
+          "tagline": "Upholstery and curtain fabrics from our shop in East Sheen, London.",
+          "shop_title": "Shop",
+          "shop_menu": "footer-shop",
+          "help_title": "Help",
+          "help_menu": "footer",
+          "visit_title": "Visit us",
+          "address": "<p>358 Upper Richmond Road West, East Sheen, London SW14 7JT</p>",
+          "hours": "Monday to Saturday, 9am to 6pm",
+          "phone": "020 8878 6474",
+          "email": "info@sheenupholstery.co.uk",
+          "map_url": "https://www.google.com/maps/search/?api=1&query=358+Upper+Richmond+Road+West+London+SW14+7JT",
           "show_payment_icons": true,
-          "show_copyright": true,
           "copyright_text": ""
         }
       },
