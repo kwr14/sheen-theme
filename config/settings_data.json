@@ -294,32 +294,32 @@
           "1499789718857-0": {
             "type": "collection",
             "settings": {
-              "collection": "designers-guild-fabrics",
-              "title": "Designers Guild Fabrics",
+              "collection": "harlequin",
+              "title": "Harlequin",
               "focal_point": "center center"
             }
           },
           "1499789718857-1": {
             "type": "collection",
             "settings": {
-              "collection": "royal-collection",
-              "title": "Royal Collection",
+              "collection": "sanderson-fabrics",
+              "title": "Sanderson",
               "focal_point": "center center"
             }
           },
           "1499789718857-2": {
             "type": "collection",
             "settings": {
-              "collection": "designers-guild-john-derian",
-              "title": "John Derian",
+              "collection": "zoffany",
+              "title": "Zoffany",
               "focal_point": "center center"
             }
           },
           "1499789718857-3": {
             "type": "collection",
             "settings": {
-              "collection": "designers-guild-wallpapers",
-              "title": "Designers Guild Wallpaper",
+              "collection": "scion",
+              "title": "Scion",
               "focal_point": "center center"
             }
           }
@@ -331,7 +331,7 @@
           "1499789718857-3"
         ],
         "settings": {
-          "title": "Shop our Designers Guild collections",
+          "title": "Shop by brand",
           "divider": true,
           "per_row": 4,
           "enable_gutter": true
@@ -584,33 +584,33 @@
             "type": "image",
             "settings": {
               "top_subheading": "",
-              "title": "Designers Guild &\nWilliam Yeoward fabrics",
+              "title": "Upholstery &\ncurtain fabrics",
               "title_size": 56,
               "subheading": "",
-              "link": "shopify://collections/designers-guild-fabrics",
-              "link_text": "Shop Designers Guild",
-              "link_2": "shopify://collections/fabrics",
-              "link_text_2": "Shop all fabrics",
+              "link": "shopify://collections/fabrics",
+              "link_text": "Shop fabrics",
+              "link_2": "shopify://pages/contact-us",
+              "link_text_2": "Contact us",
               "color_accent": "#000000",
               "text_align": "vertical-center horizontal-center",
-              "image": "shopify://shop_images/267699.jpg",
-              "focal_point": "top center"
+              "image": "shopify://shop_images/6_1.jpg",
+              "focal_point": "center center"
             }
           },
           "1578770356339": {
             "type": "image",
             "settings": {
               "top_subheading": "",
-              "title": "Designers Guild\ncurtain fabrics",
+              "title": "Harlequin, Sanderson\n& Zoffany",
               "title_size": 56,
               "subheading": "",
-              "link": "shopify://collections/designers-guild-curtains",
-              "link_text": "Shop curtain fabrics",
-              "link_2": "",
-              "link_text_2": "",
+              "link": "shopify://collections/harlequin",
+              "link_text": "Shop Harlequin",
+              "link_2": "shopify://collections/sanderson-fabrics",
+              "link_text_2": "Shop Sanderson",
               "color_accent": "rgba(0,0,0,0)",
               "text_align": "vertical-center horizontal-center",
-              "image": "shopify://shop_images/268101.jpg",
+              "image": "shopify://shop_images/3_2.jpg",
               "focal_point": "center center"
             }
           },
@@ -699,7 +699,8 @@
               "title": "Brand",
               "tag_list": "Designers Guild\nRoyal Collection\nWilliam Yeoward\nChristian Lacroix\nHoward Hodgkin\nDesigners Guild Essentials\nJohn Derian \nRalph Lauren",
               "collapsed": false
-            }
+            },
+            "disabled": true
           },
           "1578001315713": {
             "type": "tags_group",
@@ -1011,7 +1012,8 @@
               "color_tint": "#000000",
               "color_tint_opacity": 8,
               "framed": true
-            }
+            },
+            "disabled": true
           },
           "1578037176062": {
             "type": "banner",
@@ -1298,7 +1300,8 @@
               "text_align": "vertical-center horizontal-center",
               "image": "shopify://shop_images/3_2.jpg",
               "focal_point": "center center"
-            }
+            },
+            "disabled": true
           },
           "160338008400bcdcb0-1": {
             "type": "image",
@@ -1332,7 +1335,8 @@
               "text_align": "vertical-center horizontal-center",
               "image": "shopify://shop_images/6_1.jpg",
               "focal_point": "center center"
-            }
+            },
+            "disabled": true
           },
           "522de276-262b-4922-9067-7fc5df45602e": {
             "type": "image",
@@ -1763,7 +1767,8 @@
           "piece-1",
           "piece-2",
           "piece-3"
-        ]
+        ],
+        "disabled": true
       }
     },
     "content_for_index": [
