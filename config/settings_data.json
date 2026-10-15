@@ -211,8 +211,7 @@
           "phone": "020 8878 6474",
           "email": "info@sheenupholstery.co.uk",
           "map_url": "https://www.google.com/maps/search/?api=1&query=358+Upper+Richmond+Road+West+London+SW14+7JT",
-          "show_payment_icons": true,
-          "copyright_text": ""
+          "show_payment_icons": true
         }
       },
       "collection-template": {
