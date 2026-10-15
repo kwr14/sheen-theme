@@ -208,7 +208,10 @@
           "hours": "Monday to Saturday, 9am to 6pm",
           "phone": "020 8878 6474",
           "email": "info@sheenupholstery.co.uk",
-          "show_payment_icons": true
+          "show_payment_icons": true,
+          "shop_menu": "footer-shop",
+          "help_menu": "footer",
+          "map_url": "https://www.google.com/maps/search/?api=1&query=358+Upper+Richmond+Road+West+London+SW14+7JT"
         }
       },
       "collection-template": {
@@ -1900,35 +1903,7 @@
         },
         "footer": {
           "type": "footer",
-          "blocks": {
-            "1494301487048": {
-              "type": "logo_social",
-              "settings": {
-                "container_width": 95
-              }
-            },
-            "1494301487049": {
-              "type": "menu",
-              "settings": {
-                "menu": "footer",
-                "container_width": 25
-              }
-            },
-            "1494292487693": {
-              "type": "newsletter",
-              "settings": {
-                "container_width": 33
-              }
-            }
-          },
-          "block_order": [
-            "1494301487049",
-            "1494292487693",
-            "1494301487048"
-          ],
-          "settings": {
-            "show_payment_icons": false
-          }
+          "settings": {}
         },
         "collection-template": {
           "type": "collection-template",
@@ -2497,35 +2472,7 @@
         },
         "footer": {
           "type": "footer",
-          "blocks": {
-            "1494301487048": {
-              "type": "logo_social",
-              "settings": {
-                "container_width": 95
-              }
-            },
-            "1494301487049": {
-              "type": "menu",
-              "settings": {
-                "menu": "footer",
-                "container_width": 25
-              }
-            },
-            "1494292487693": {
-              "type": "newsletter",
-              "settings": {
-                "container_width": 30
-              }
-            }
-          },
-          "block_order": [
-            "1494301487049",
-            "1494292487693",
-            "1494301487048"
-          ],
-          "settings": {
-            "show_payment_icons": false
-          }
+          "settings": {}
         },
         "collection-template": {
           "type": "collection-template",
@@ -3159,33 +3106,7 @@
         },
         "footer": {
           "type": "footer",
-          "blocks": {
-            "1494292487693": {
-              "type": "newsletter",
-              "settings": {}
-            },
-            "1526406521795": {
-              "type": "menu",
-              "settings": {
-                "menu": "footer",
-                "container_width": 25
-              }
-            },
-            "1525444454442": {
-              "type": "logo_social",
-              "settings": {
-                "container_width": 95
-              }
-            }
-          },
-          "block_order": [
-            "1494292487693",
-            "1526406521795",
-            "1525444454442"
-          ],
-          "settings": {
-            "show_payment_icons": true
-          }
+          "settings": {}
         },
         "collection-template": {
           "type": "collection-template",
