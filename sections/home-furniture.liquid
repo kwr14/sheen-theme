@@ -25,6 +25,7 @@
     #hf-{{ sid }} .hf-inner { grid-template-columns: minmax(0, 1fr); gap: 36px; padding: 56px 16px; }
     #hf-{{ sid }} .hf-piece:first-child { grid-column: 1 / -1; grid-row: auto; aspect-ratio: 4 / 3; }
     #hf-{{ sid }} .hf-grid { grid-template-rows: none; gap: 12px; }
+    #hf-{{ sid }} .hf-piece:not(:first-child) .hf-cap { display: none; }
   }
   @media (prefers-reduced-motion: reduce) { #hf-{{ sid }} * { transition: none !important; } }
 </style>
