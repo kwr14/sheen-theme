@@ -202,15 +202,12 @@
           "news_thanks": "Thanks for subscribing. We’ll be in touch soon.",
           "tagline": "Upholstery and curtain fabrics from our shop in East Sheen, London.",
           "shop_title": "Shop",
-          "shop_menu": "footer-shop",
           "help_title": "Help",
-          "help_menu": "footer",
           "visit_title": "Visit us",
           "address": "<p>358 Upper Richmond Road West, East Sheen, London SW14 7JT</p>",
           "hours": "Monday to Saturday, 9am to 6pm",
           "phone": "020 8878 6474",
           "email": "info@sheenupholstery.co.uk",
-          "map_url": "https://www.google.com/maps/search/?api=1&query=358+Upper+Richmond+Road+West+London+SW14+7JT",
           "show_payment_icons": true
         }
       },
