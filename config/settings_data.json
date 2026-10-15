@@ -1379,7 +1379,7 @@
         "settings": {
           "section_height": "650px",
           "mobile_height": "auto",
-          "parallax": true,
+          "parallax": false,
           "style": "minimal",
           "autoplay": true,
           "autoplay_speed": 6
@@ -1726,11 +1726,12 @@
         "settings": {
           "eyebrow": "New · Made to order",
           "heading": "Furniture made for the room you have",
-          "text": "#efe9dc",
           "button_label": "Explore furniture",
           "button_link": "shopify://pages/furniture",
           "background": "#1c241f",
-          "accent": "#d9bd84"
+          "accent": "#d9bd84",
+          "text_color": "#efe9dc",
+          "text": "<p>Sofas, armchairs, headboards, footstools, curtains and blinds, each made to order in the fabric you choose.</p>"
         },
         "blocks": {
           "piece-1": {

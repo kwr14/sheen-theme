@@ -6,14 +6,14 @@
 
 {%- assign sid = section.id -%}
 <style>
-  #hf-{{ sid }} { background: {{ section.settings.background }}; color: {{ section.settings.text }}; }
+  #hf-{{ sid }} { background: {{ section.settings.background }}; color: {{ section.settings.text_color }}; }
   #hf-{{ sid }} * { box-sizing: border-box; }
   #hf-{{ sid }} .hf-inner { max-width: 1280px; margin: 0 auto; padding: 88px 32px; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 64px; align-items: center; }
   #hf-{{ sid }} .hf-eyebrow { font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: {{ section.settings.accent }}; margin: 0 0 20px; font-weight: 500; }
-  #hf-{{ sid }} .hf-h { font-family: var(--font-heading-family, inherit); font-weight: 300; font-size: clamp(36px, 4.6vw, 64px); line-height: 1; letter-spacing: -.015em; margin: 0; color: {{ section.settings.text }}; text-transform: none; text-wrap: balance; }
-  #hf-{{ sid }} .hf-text { font-size: 17px; line-height: 1.65; color: {{ section.settings.text }}; opacity: .82; font-weight: 300; margin: 22px 0 0; max-width: 440px; }
+  #hf-{{ sid }} .hf-h { font-family: var(--font-heading-family, inherit); font-weight: 300; font-size: clamp(36px, 4.6vw, 64px); line-height: 1; letter-spacing: -.015em; margin: 0; color: {{ section.settings.text_color }}; text-transform: none; text-wrap: balance; }
+  #hf-{{ sid }} .hf-text { font-size: 17px; line-height: 1.65; color: {{ section.settings.text_color }}; opacity: .82; font-weight: 300; margin: 22px 0 0; max-width: 440px; }
   #hf-{{ sid }} .hf-text p { margin: 0; }
-  #hf-{{ sid }} .hf-btn { display: inline-flex; align-items: center; gap: 10px; min-height: 50px; padding: 0 28px; margin-top: 32px; border-radius: 999px; background: {{ section.settings.text }}; color: {{ section.settings.background }}; text-decoration: none; font-size: 14px; letter-spacing: .08em; text-transform: uppercase; transition: background .2s; }
+  #hf-{{ sid }} .hf-btn { display: inline-flex; align-items: center; gap: 10px; min-height: 50px; padding: 0 28px; margin-top: 32px; border-radius: 999px; background: {{ section.settings.text_color }}; color: {{ section.settings.background }}; text-decoration: none; font-size: 14px; letter-spacing: .08em; text-transform: uppercase; transition: background .2s; }
   #hf-{{ sid }} .hf-btn:hover, #hf-{{ sid }} .hf-btn:focus-visible { background: {{ section.settings.accent }}; color: {{ section.settings.background }}; }
   #hf-{{ sid }} .hf-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); gap: 16px; }
   #hf-{{ sid }} .hf-piece { position: relative; display: block; border-radius: 10px; overflow: hidden; background: #2a332d; aspect-ratio: 4 / 3; text-decoration: none; }
@@ -70,7 +70,7 @@
     { "type": "text", "id": "button_label", "label": "Button label", "default": "Explore furniture" },
     { "type": "url", "id": "button_link", "label": "Button link", "info": "Leave blank for the furniture page." },
     { "type": "color", "id": "background", "label": "Background", "default": "#1c241f" },
-    { "type": "color", "id": "text", "label": "Text", "default": "#efe9dc" },
+    { "type": "color", "id": "text_color", "label": "Text colour", "default": "#efe9dc" },
     { "type": "color", "id": "accent", "label": "Accent", "default": "#d9bd84" }
   ],
   "blocks": [
