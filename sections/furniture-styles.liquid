@@ -1,9 +1,9 @@
 {% comment %}
-  Furniture styles page (Sheen Upholstery): the /pages/furniture landing page.
-  A quick menu of product types, then one row of style cards per type
-  (drawing + name), each linking to Contact Us by default.
-  Cards are "Style" blocks: pick the product type, name, drawing (or upload an image)
-  and link in the theme editor. Types with no cards are left out of the page and menu.
+  Furniture styles page (Sheen Upholstery): the /pages/furniture landing page, "Room by Room" lookbook design.
+  Hero with a numbered index of product types, then one chapter per type:
+  a wide room scene and a strip of style cards. Hovering or focusing a card swaps the room scene to that piece.
+  Cards are "Style" blocks: product type, name, card image (upload, theme-asset render or drawing),
+  room image (upload or theme-asset render) and link. Types with no cards are left out of the page and index.
   Drawings live in snippets/furniture-style-drawing.liquid.
 {% endcomment %}
 
@@ -11,124 +11,228 @@
   assign cat_keys = 'sofas,armchairs,headboards,footstools,curtains,blinds' | split: ','
   assign cat_names = 'Sofas|Armchairs|Headboards|Footstools & ottomans|Curtains|Blinds' | split: '|'
   assign default_link = section.settings.default_link | default: '/pages/contact-us'
+  assign sid = section.id
 -%}
 
 <style>
-  #fs-{{ section.id }} {
-    --fs-bg: {{ section.settings.background }};
-    --fs-ink: #23262b;
-    --fs-muted: #646a70;
-    --fs-line: #d9d5cc;
-    --fs-card: #fbfaf7;
-    --fs-plate: #ece8e1;
-    --fs-accent: #4f5d3a;
-    background: var(--fs-bg);
-    color: var(--fs-ink);
-    padding: 56px 0 80px;
+  #rr-{{ sid }} {
+    --rr-bg: {{ section.settings.background }};
+    --rr-ink: {{ section.settings.text }};
+    --rr-soft: #c9c3b6;
+    --rr-muted: #9fa79f;
+    --rr-line: rgba(239, 233, 220, .16);
+    --rr-accent: {{ section.settings.accent }};
+    --rr-plate: #e9e5dd;
+    background: var(--rr-bg);
+    color: var(--rr-ink);
   }
-  #fs-{{ section.id }} .fs-inner { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
-  #fs-{{ section.id }} .fs-eyebrow { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--fs-accent); margin: 0 0 14px; }
-  #fs-{{ section.id }} .fs-title { font-family: var(--font-heading-family, inherit); font-weight: 400; font-size: clamp(36px, 5.5vw, 60px); line-height: 1.04; margin: 0; max-width: 860px; text-wrap: balance; }
-  #fs-{{ section.id }} .fs-intro { color: var(--fs-muted); font-size: 17px; line-height: 1.6; max-width: 640px; margin: 18px 0 0; }
-  #fs-{{ section.id }} .fs-intro p { margin: 0; }
-  #fs-{{ section.id }} .fs-menu { display: flex; flex-wrap: wrap; gap: 8px; margin: 32px 0 0; padding: 20px 0 0; border-top: 1px solid var(--fs-line); list-style: none; }
-  #fs-{{ section.id }} .fs-menu a { display: inline-block; font-size: 14px; letter-spacing: .02em; color: var(--fs-ink); text-decoration: none; border: 1px solid var(--fs-line); border-radius: 999px; padding: 7px 16px; background: var(--fs-card); transition: border-color .15s, background .15s; }
-  #fs-{{ section.id }} .fs-menu a:hover, #fs-{{ section.id }} .fs-menu a:focus-visible { border-color: var(--fs-ink); outline: none; }
-  #fs-{{ section.id }} .fs-type { padding-top: 56px; scroll-margin-top: 120px; }
-  #fs-{{ section.id }} .fs-type-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
-  #fs-{{ section.id }} .fs-type-head h2 { font-family: var(--font-heading-family, inherit); font-weight: 400; font-size: clamp(28px, 4vw, 38px); margin: 0; }
-  #fs-{{ section.id }} .fs-top { font-size: 13px; color: var(--fs-muted); text-decoration: none; }
-  #fs-{{ section.id }} .fs-top:hover { color: var(--fs-ink); }
-  #fs-{{ section.id }} .fs-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
-  #fs-{{ section.id }} .fs-card { display: flex; flex-direction: column; background: var(--fs-card); border: 1px solid var(--fs-line); border-radius: 4px; overflow: hidden; color: var(--fs-ink); text-decoration: none; transition: border-color .15s; min-width: 0; }
-  #fs-{{ section.id }} .fs-card:hover, #fs-{{ section.id }} .fs-card:focus-visible { border-color: var(--fs-ink); outline: none; }
-  #fs-{{ section.id }} .fs-plate { background: var(--fs-plate); aspect-ratio: 4 / 3; max-width: 100%; overflow: hidden; }
-  #fs-{{ section.id }} .fs-plate svg, #fs-{{ section.id }} .fs-plate img { width: 100%; height: 100%; display: block; object-fit: cover; }
-  #fs-{{ section.id }} .fs-body { padding: 18px 22px 22px; display: flex; flex-direction: column; gap: 8px; }
-  #fs-{{ section.id }} .fs-label { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--fs-muted); }
-  #fs-{{ section.id }} .fs-name { font-family: var(--font-heading-family, inherit); font-weight: 400; font-size: 24px; line-height: 1.2; margin: 0; text-wrap: balance; }
-  #fs-{{ section.id }} .fs-cta { margin-top: 6px; font-size: 15px; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; }
+  #rr-{{ sid }} * { box-sizing: border-box; }
+  #rr-{{ sid }} a { color: inherit; }
+  #rr-{{ sid }} .rr-wrap { max-width: 1280px; margin: 0 auto; padding: 0 32px; }
+  #rr-{{ sid }} .rr-hero { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: 64px; align-items: end; padding: 72px 0 88px; border-bottom: 1px solid var(--rr-line); }
+  #rr-{{ sid }} .rr-eyebrow { font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--rr-accent); margin: 0 0 22px; font-weight: 500; }
+  #rr-{{ sid }} .rr-h1 { font-family: var(--font-heading-family, inherit); font-weight: 300; font-size: clamp(44px, 6.4vw, 96px); line-height: .96; letter-spacing: -.02em; margin: 0; text-wrap: balance; color: var(--rr-ink); text-transform: none; }
+  #rr-{{ sid }} .rr-intro { font-size: 17px; line-height: 1.65; color: var(--rr-soft); font-weight: 300; margin: 28px 0 0; max-width: 480px; }
+  #rr-{{ sid }} .rr-intro p { margin: 0; }
+  #rr-{{ sid }} .rr-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--rr-line); }
+  #rr-{{ sid }} .rr-list a { display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; align-items: baseline; gap: 12px; padding: 16px 0; border-bottom: 1px solid var(--rr-line); text-decoration: none; font-size: 22px; font-weight: 300; transition: padding .25s ease, color .25s; }
+  #rr-{{ sid }} .rr-list a:hover, #rr-{{ sid }} .rr-list a:focus-visible { padding-left: 12px; color: var(--rr-accent); outline: none; }
+  #rr-{{ sid }} .rr-list small { font-size: 12px; letter-spacing: .14em; color: var(--rr-muted); font-weight: 400; }
+  #rr-{{ sid }} .rr-list em { font-style: normal; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--rr-muted); }
+  #rr-{{ sid }} .rr-cat { padding: 96px 0 0; scroll-margin-top: 110px; }
+  #rr-{{ sid }} .rr-band { position: relative; border-radius: 10px; overflow: hidden; aspect-ratio: 16 / 7; background: #2a332d; }
+  #rr-{{ sid }} .rr-band img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 58%; opacity: 0; transform: scale(1.04); transition: opacity .7s ease, transform 1.2s ease; }
+  #rr-{{ sid }} .rr-band img.is-on { opacity: 1; transform: none; }
+  #rr-{{ sid }} .rr-cap { position: absolute; left: 20px; top: 20px; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; background: rgba(28, 36, 31, .82); color: #efe9dc; padding: 8px 14px; border-radius: 999px; }
+  #rr-{{ sid }} .rr-row { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 48px; padding-top: 32px; align-items: start; }
+  #rr-{{ sid }} .rr-num { font-size: 13px; letter-spacing: .2em; color: var(--rr-accent); font-weight: 500; }
+  #rr-{{ sid }} .rr-h2 { font-family: var(--font-heading-family, inherit); font-weight: 300; font-size: clamp(36px, 4.4vw, 60px); line-height: 1; margin: 10px 0 14px; letter-spacing: -.015em; color: var(--rr-ink); text-transform: none; }
+  #rr-{{ sid }} .rr-sub { color: var(--rr-muted); font-size: 14px; letter-spacing: .08em; text-transform: uppercase; }
+  #rr-{{ sid }} .rr-top { display: inline-block; margin-top: 18px; font-size: 13px; color: var(--rr-muted); text-decoration: none; }
+  #rr-{{ sid }} .rr-top:hover { color: var(--rr-ink); }
+  #rr-{{ sid }} .rr-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+  #rr-{{ sid }} .rr-card { display: flex; flex-direction: column; gap: 12px; text-decoration: none; color: var(--rr-ink); min-width: 0; border-radius: 8px; outline: none; }
+  #rr-{{ sid }} .rr-thumb { aspect-ratio: 4 / 3; border-radius: 8px; overflow: hidden; background: var(--rr-plate); transition: transform .3s ease, box-shadow .3s ease; }
+  #rr-{{ sid }} .rr-thumb img, #rr-{{ sid }} .rr-thumb svg { width: 100%; height: 100%; object-fit: cover; display: block; }
+  #rr-{{ sid }} .rr-card:hover .rr-thumb, #rr-{{ sid }} .rr-card:focus-visible .rr-thumb { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(0, 0, 0, .35); }
+  #rr-{{ sid }} .rr-card.rr-on .rr-thumb { box-shadow: 0 0 0 2px var(--rr-accent); }
+  #rr-{{ sid }} .rr-name { font-family: inherit; font-size: 17px; line-height: 1.3; font-weight: 400; margin: 0; text-wrap: balance; color: var(--rr-ink); text-transform: none; letter-spacing: 0; }
+  #rr-{{ sid }} .rr-go { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--rr-accent); display: inline-flex; align-items: center; gap: 6px; }
+  #rr-{{ sid }} .rr-end { margin-top: 120px; padding: 72px 0 96px; border-top: 1px solid var(--rr-line); display: flex; justify-content: space-between; align-items: center; gap: 28px; flex-wrap: wrap; }
+  #rr-{{ sid }} .rr-end h2 { font-family: var(--font-heading-family, inherit); font-weight: 300; font-size: clamp(30px, 3.6vw, 48px); margin: 0; line-height: 1.05; color: var(--rr-ink); text-transform: none; }
+  #rr-{{ sid }} .rr-end p { margin: 12px 0 0; color: var(--rr-soft); font-weight: 300; }
+  #rr-{{ sid }} .rr-btn { display: inline-flex; align-items: center; min-height: 50px; padding: 0 28px; border-radius: 999px; background: var(--rr-ink); color: var(--rr-bg); text-decoration: none; font-size: 14px; letter-spacing: .08em; text-transform: uppercase; transition: background .2s; }
+  #rr-{{ sid }} .rr-btn:hover, #rr-{{ sid }} .rr-btn:focus-visible { background: var(--rr-accent); color: var(--rr-bg); }
   @media (max-width: 900px) {
-    #fs-{{ section.id }} { padding: 36px 0 56px; }
-    #fs-{{ section.id }} .fs-inner { padding: 0 16px; }
-    #fs-{{ section.id }} .fs-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-    #fs-{{ section.id }} .fs-type { padding-top: 40px; }
+    #rr-{{ sid }} .rr-hero { grid-template-columns: minmax(0, 1fr); gap: 40px; padding: 40px 0 56px; }
+    #rr-{{ sid }} .rr-row { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+    #rr-{{ sid }} .rr-band { aspect-ratio: 4 / 3; }
+    #rr-{{ sid }} .rr-cat { padding-top: 64px; }
+    #rr-{{ sid }} .rr-end { margin-top: 80px; padding: 56px 0 72px; }
   }
   @media (max-width: 560px) {
-    #fs-{{ section.id }} .fs-grid { grid-template-columns: minmax(0, 1fr); }
+    #rr-{{ sid }} .rr-wrap { padding: 0 16px; }
+    #rr-{{ sid }} .rr-strip { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 72%; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 8px; scrollbar-width: none; }
+    #rr-{{ sid }} .rr-card { scroll-snap-align: start; }
+    #rr-{{ sid }} .rr-list a { font-size: 19px; }
+    #rr-{{ sid }} .rr-cap { left: 12px; top: 12px; right: 12px; width: fit-content; max-width: calc(100% - 24px); font-size: 10px; letter-spacing: .12em; padding: 6px 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   }
-  @media (prefers-reduced-motion: reduce) { #fs-{{ section.id }} * { transition: none !important; } }
+  @media (prefers-reduced-motion: reduce) { #rr-{{ sid }} * { transition: none !important; } }
 </style>
 
-<section id="fs-{{ section.id }}" aria-labelledby="fs-title-{{ section.id }}">
-  <div class="fs-inner" id="fs-top-{{ section.id }}">
-    {%- if section.settings.eyebrow != blank -%}
-      <p class="fs-eyebrow">{{ section.settings.eyebrow }}</p>
-    {%- endif -%}
-    <h1 class="fs-title" id="fs-title-{{ section.id }}">{{ section.settings.heading }}</h1>
-    {%- if section.settings.intro != blank -%}
-      <div class="fs-intro">{{ section.settings.intro }}</div>
-    {%- endif -%}
-
-    {%- capture menu -%}
-      {%- for key in cat_keys -%}
-        {%- assign has = false -%}
-        {%- for block in section.blocks -%}
-          {%- if block.settings.category == key and block.settings.name != blank %}{% assign has = true %}{% break %}{% endif -%}
-        {%- endfor -%}
-        {%- if has -%}
-          <li><a href="#fs-{{ key }}">{{ cat_names[forloop.index0] }}</a></li>
+<div id="rr-{{ sid }}" class="rr">
+  <div class="rr-wrap">
+    <section class="rr-hero" id="rr-top-{{ sid }}" aria-labelledby="rr-title-{{ sid }}">
+      <div>
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="rr-eyebrow">{{ section.settings.eyebrow }}</p>
         {%- endif -%}
-      {%- endfor -%}
-    {%- endcapture -%}
-    {%- if menu != blank -%}
-      <nav aria-label="{{ section.settings.menu_label | escape }}">
-        <ul class="fs-menu">{{ menu }}</ul>
-      </nav>
-    {%- endif -%}
+        <h1 class="rr-h1" id="rr-title-{{ sid }}">{{ section.settings.heading }}</h1>
+        {%- if section.settings.intro != blank -%}
+          <div class="rr-intro">{{ section.settings.intro }}</div>
+        {%- endif -%}
+      </div>
 
-    {%- for key in cat_keys -%}
-      {%- assign cat_name = cat_names[forloop.index0] -%}
-      {%- capture cards -%}
-        {%- for block in section.blocks -%}
-          {%- if block.settings.category == key and block.settings.name != blank -%}
-            {%- assign link = block.settings.link | default: default_link -%}
-            <a class="fs-card" href="{{ link }}" {{ block.shopify_attributes }}>
-              <div class="fs-plate">
-                {%- if block.settings.image != blank -%}
-                  {%- assign img_alt = block.settings.image.alt | default: block.settings.name | escape -%}
-                  {{ block.settings.image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '400, 600, 900', sizes: '(max-width: 560px) 100vw, (max-width: 900px) 50vw, 33vw', alt: img_alt }}
-                {%- elsif block.settings.render != blank -%}
-                  <img src="{{ block.settings.render | asset_url }}" alt="{{ block.settings.name | escape }}" loading="lazy" width="1000" height="750">
-                {%- else -%}
-                  {%- render 'furniture-style-drawing', key: block.settings.drawing -%}
-                {%- endif -%}
-              </div>
-              <div class="fs-body">
-                <span class="fs-label">{{ cat_name }}</span>
-                <h3 class="fs-name">{{ block.settings.name }}</h3>
-                {%- if section.settings.cta_label != blank -%}
-                  <span class="fs-cta">{{ section.settings.cta_label }}
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-                  </span>
-                {%- endif -%}
-              </div>
-            </a>
+      {%- capture menu -%}
+        {%- assign n = 0 -%}
+        {%- for key in cat_keys -%}
+          {%- assign count = 0 -%}
+          {%- for block in section.blocks -%}
+            {%- if block.settings.category == key and block.settings.name != blank %}{% assign count = count | plus: 1 %}{% endif -%}
+          {%- endfor -%}
+          {%- if count > 0 -%}
+            {%- assign n = n | plus: 1 -%}
+            <li><a href="#rr-{{ key }}"><small>{% if n < 10 %}0{% endif %}{{ n }}</small><span>{{ cat_names[forloop.index0] }}</span><em>{{ count }} {% if count == 1 %}style{% else %}styles{% endif %}</em></a></li>
           {%- endif -%}
         {%- endfor -%}
       {%- endcapture -%}
-      {%- if cards != blank -%}
-        <section class="fs-type" id="fs-{{ key }}" aria-labelledby="fs-h-{{ key }}">
-          <div class="fs-type-head">
-            <h2 id="fs-h-{{ key }}">{{ cat_name }}</h2>
-            <a class="fs-top" href="#fs-top-{{ section.id }}">Back to top ↑</a>
+      {%- if menu != blank -%}
+        <nav aria-label="{{ section.settings.menu_label | escape }}">
+          <ul class="rr-list">{{ menu }}</ul>
+        </nav>
+      {%- endif -%}
+    </section>
+
+    {%- assign n = 0 -%}
+    {%- for key in cat_keys -%}
+      {%- assign cat_name = cat_names[forloop.index0] -%}
+      {%- assign count = 0 -%}
+      {%- assign first_name = '' -%}
+      {%- capture band -%}
+        {%- for block in section.blocks -%}
+          {%- if block.settings.category == key and block.settings.name != blank -%}
+            {%- if count == 0 %}{% assign first_name = block.settings.name %}{% endif -%}
+            {%- assign on = '' -%}
+            {%- if count == 0 %}{% assign on = 'is-on' %}{% endif -%}
+            {%- if block.settings.room_image != blank -%}
+              <img src="{{ block.settings.room_image | image_url: width: 1800 }}" srcset="{{ block.settings.room_image | image_url: width: 900 }} 900w, {{ block.settings.room_image | image_url: width: 1800 }} 1800w" sizes="(max-width: 1280px) 100vw, 1216px" class="{{ on }}" data-i="{{ count }}" alt="" loading="lazy" width="{{ block.settings.room_image.width }}" height="{{ block.settings.room_image.height }}">
+            {%- elsif block.settings.room != blank -%}
+              <img src="{{ block.settings.room | asset_url }}" class="{{ on }}" data-i="{{ count }}" alt="" loading="lazy" width="1000" height="750">
+            {%- endif -%}
+            {%- assign count = count | plus: 1 -%}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endcapture -%}
+
+      {%- if count > 0 -%}
+        {%- assign n = n | plus: 1 -%}
+        <section class="rr-cat" id="rr-{{ key }}" aria-labelledby="rr-h-{{ key }}">
+          {%- if band != blank -%}
+            <div class="rr-band">
+              {{ band }}
+              <span class="rr-cap">In the room · <span class="rr-cap-name">{{ first_name }}</span></span>
+            </div>
+          {%- endif -%}
+          <div class="rr-row">
+            <div>
+              <span class="rr-num">{% if n < 10 %}0{% endif %}{{ n }}</span>
+              <h2 class="rr-h2" id="rr-h-{{ key }}">{{ cat_name }}</h2>
+              <span class="rr-sub">{{ count }} {% if count == 1 %}style{% else %}styles{% endif %} · made to order</span><br>
+              <a class="rr-top" href="#rr-top-{{ sid }}">Back to top ↑</a>
+            </div>
+            <div class="rr-strip">
+              {%- assign i = 0 -%}
+              {%- for block in section.blocks -%}
+                {%- if block.settings.category == key and block.settings.name != blank -%}
+                  {%- assign link = block.settings.link | default: default_link -%}
+                  <a class="rr-card{% if i == 0 %} rr-on{% endif %}" href="{{ link }}" data-i="{{ i }}" data-name="{{ block.settings.name | escape }}" {{ block.shopify_attributes }}>
+                    <div class="rr-thumb">
+                      {%- if block.settings.image != blank -%}
+                        {%- assign img_alt = block.settings.image.alt | default: block.settings.name | escape -%}
+                        {{ block.settings.image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '400, 600, 900', sizes: '(max-width: 560px) 72vw, (max-width: 900px) 33vw, 300px', alt: img_alt }}
+                      {%- elsif block.settings.render != blank -%}
+                        <img src="{{ block.settings.render | asset_url }}" alt="{{ block.settings.name | escape }}" loading="lazy" width="1000" height="750">
+                      {%- else -%}
+                        {%- render 'furniture-style-drawing', key: block.settings.drawing -%}
+                      {%- endif -%}
+                    </div>
+                    <h3 class="rr-name">{{ block.settings.name }}</h3>
+                    {%- if section.settings.cta_label != blank -%}
+                      <span class="rr-go">{{ section.settings.cta_label }}
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                      </span>
+                    {%- endif -%}
+                  </a>
+                  {%- assign i = i | plus: 1 -%}
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
           </div>
-          <div class="fs-grid">{{ cards }}</div>
         </section>
       {%- endif -%}
     {%- endfor -%}
+
+    {%- if section.settings.end_heading != blank -%}
+      <section class="rr-end">
+        <div>
+          <h2>{{ section.settings.end_heading }}</h2>
+          {%- if section.settings.end_text != blank -%}<p>{{ section.settings.end_text }}</p>{%- endif -%}
+        </div>
+        {%- if section.settings.end_label != blank -%}
+          <a class="rr-btn" href="{{ section.settings.end_link | default: '/pages/contact-us' }}">{{ section.settings.end_label }}</a>
+        {%- endif -%}
+      </section>
+    {%- endif -%}
   </div>
-</section>
+</div>
+
+<script>
+  (function () {
+    function init(root) {
+      if (!root) return;
+      root.querySelectorAll('.rr-cat').forEach(function (cat) {
+        var imgs = cat.querySelectorAll('.rr-band img[data-i]');
+        var cards = cat.querySelectorAll('.rr-card');
+        var cap = cat.querySelector('.rr-cap-name');
+        cards.forEach(function (card) {
+          function show() {
+            var i = card.getAttribute('data-i');
+            var target = cat.querySelector('.rr-band img[data-i="' + i + '"]');
+            if (!target) return;
+            imgs.forEach(function (im) { im.classList.toggle('is-on', im === target); });
+            cards.forEach(function (c) { c.classList.toggle('rr-on', c === card); });
+            if (cap) cap.textContent = card.getAttribute('data-name');
+          }
+          card.addEventListener('mouseenter', show);
+          card.addEventListener('focus', show);
+        });
+        // warm the other room images once the chapter is near, so hover swaps are instant
+        if ('IntersectionObserver' in window) {
+          var io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (e) {
+              if (e.isIntersecting) { imgs.forEach(function (im) { im.loading = 'eager'; }); io.disconnect(); }
+            });
+          }, { rootMargin: '400px' });
+          io.observe(cat);
+        }
+      });
+    }
+    init(document.getElementById('rr-{{ sid }}'));
+    document.addEventListener('shopify:section:load', function (e) {
+      if (e.detail && e.detail.sectionId === '{{ sid }}') init(document.getElementById('rr-{{ sid }}'));
+    });
+  })();
+</script>
 
 {% schema %}
 {
@@ -136,13 +240,20 @@
   "tag": "div",
   "class": "section-furniture-styles",
   "settings": [
-    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Made to order in the fabric you choose" },
-    { "type": "text", "id": "heading", "label": "Heading", "default": "Furniture, curtains and blinds" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The furniture lookbook" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Made for the room you have" },
     { "type": "richtext", "id": "intro", "label": "Intro" },
-    { "type": "text", "id": "menu_label", "label": "Quick menu name (for screen readers)", "default": "Product types" },
-    { "type": "text", "id": "cta_label", "label": "Card link text", "default": "Enquire" },
+    { "type": "text", "id": "menu_label", "label": "Index name (for screen readers)", "default": "Product types" },
+    { "type": "text", "id": "cta_label", "label": "Card link text", "default": "Choose your fabric" },
     { "type": "url", "id": "default_link", "label": "Default card link", "info": "Used when a card has no link of its own. Leave blank for Contact Us." },
-    { "type": "color", "id": "background", "label": "Background", "default": "#f3f1ec" }
+    { "type": "color", "id": "background", "label": "Background", "default": "#1c241f" },
+    { "type": "color", "id": "text", "label": "Text", "default": "#efe9dc" },
+    { "type": "color", "id": "accent", "label": "Accent", "default": "#d9bd84" },
+    { "type": "header", "content": "Closing" },
+    { "type": "text", "id": "end_heading", "label": "Heading", "default": "Can’t see your room here?" },
+    { "type": "text", "id": "end_text", "label": "Text", "default": "Tell us about your space and we’ll suggest a style and fabric." },
+    { "type": "text", "id": "end_label", "label": "Button label", "default": "Contact us" },
+    { "type": "url", "id": "end_link", "label": "Button link", "info": "Leave blank for Contact Us." }
   ],
   "blocks": [
     {
@@ -180,8 +291,10 @@
             { "value": "roller-blind", "label": "Roller blind" },
             { "value": "austrian-blind", "label": "Austrian blind" }
           ] },
-        { "type": "image_picker", "id": "image", "label": "Image", "info": "Optional. Replaces the drawing." },
-        { "type": "text", "id": "render", "label": "Rendered image (theme asset)", "info": "File name of a 3D render in the theme's assets, e.g. fr-curved-sofa-card.jpg. Used when no image is chosen." },
+        { "type": "image_picker", "id": "image", "label": "Card image", "info": "Optional. Replaces the rendered image or drawing." },
+        { "type": "text", "id": "render", "label": "Card image (theme asset)", "info": "File name of a 3D render in the theme's assets, e.g. fr-curved-sofa-card.jpg. Used when no card image is chosen." },
+        { "type": "image_picker", "id": "room_image", "label": "Room image", "info": "Optional. A photo of the piece in a room, shown in the wide scene when the card is hovered." },
+        { "type": "text", "id": "room", "label": "Room image (theme asset)", "info": "File name of a room render in the theme's assets, e.g. fr-curved-sofa-room-card.jpg. Used when no room image is chosen." },
         { "type": "url", "id": "link", "label": "Link", "info": "Leave blank to use the section's default link (Contact Us)." }
       ]
     }
