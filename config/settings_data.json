@@ -36,8 +36,8 @@
     "color_image_overlay": "#000000",
     "color_image_overlay_opacity": 10,
     "color_image_overlay_text_shadow": 20,
-    "type_header_font_family": "tiemann_n4",
-    "type_header_spacing": "-25",
+    "type_header_font_family": "playfair_display_n4",
+    "type_header_spacing": "0",
     "type_header_base_size": 38,
     "type_header_line_height": 1,
     "type_header_capitalize": true,
@@ -294,32 +294,32 @@
           "1499789718857-0": {
             "type": "collection",
             "settings": {
-              "collection": "designers-guild-christian-lacroix",
-              "title": "",
+              "collection": "designers-guild-fabrics",
+              "title": "Designers Guild Fabrics",
               "focal_point": "center center"
             }
           },
           "1499789718857-1": {
             "type": "collection",
             "settings": {
-              "collection": "designers-guild-john-derian",
-              "title": "",
+              "collection": "royal-collection",
+              "title": "Royal Collection",
               "focal_point": "center center"
             }
           },
           "1499789718857-2": {
             "type": "collection",
             "settings": {
-              "collection": "royal-collection",
-              "title": "",
+              "collection": "designers-guild-john-derian",
+              "title": "John Derian",
               "focal_point": "center center"
             }
           },
           "1499789718857-3": {
             "type": "collection",
             "settings": {
-              "collection": "ralph-lauren",
-              "title": "",
+              "collection": "designers-guild-wallpapers",
+              "title": "Designers Guild Wallpaper",
               "focal_point": "center center"
             }
           }
@@ -331,7 +331,7 @@
           "1499789718857-3"
         ],
         "settings": {
-          "title": "Shop Our Designers Guild Collection",
+          "title": "Shop our Designers Guild collections",
           "divider": true,
           "per_row": 4,
           "enable_gutter": true
@@ -584,13 +584,13 @@
             "type": "image",
             "settings": {
               "top_subheading": "",
-              "title": "Shop Our Designers Guild\nWilliam Yeoward Fabrics",
-              "title_size": 80,
+              "title": "Designers Guild &\nWilliam Yeoward fabrics",
+              "title_size": 64,
               "subheading": "",
-              "link": "shopify://collections/designers-guild-william-yewoard",
-              "link_text": "Shop This",
+              "link": "shopify://collections/designers-guild-fabrics",
+              "link_text": "Shop Designers Guild",
               "link_2": "shopify://collections/fabrics",
-              "link_text_2": "Shop all Fabrics",
+              "link_text_2": "Shop all fabrics",
               "color_accent": "#000000",
               "text_align": "vertical-center horizontal-center",
               "image": "shopify://shop_images/267699.jpg",
@@ -601,11 +601,11 @@
             "type": "image",
             "settings": {
               "top_subheading": "",
-              "title": "Shop Our Designers Guild\nFabric Collection",
-              "title_size": 80,
+              "title": "Designers Guild\ncurtain fabrics",
+              "title_size": 64,
               "subheading": "",
-              "link": "shopify://collections/designers-guild-fabrics",
-              "link_text": "Click here",
+              "link": "shopify://collections/designers-guild-curtains",
+              "link_text": "Shop curtain fabrics",
               "link_2": "",
               "link_text_2": "",
               "color_accent": "rgba(0,0,0,0)",
@@ -629,7 +629,8 @@
               "text_align": "vertical-center horizontal-center",
               "image": "shopify://shop_images/Jbrown_Amalfi_Collection.jpg",
               "focal_point": "center center"
-            }
+            },
+            "disabled": true
           },
           "1578770389044": {
             "type": "image",
@@ -646,7 +647,8 @@
               "text_align": "vertical-center horizontal-center",
               "image": "shopify://shop_images/Maida_Vale_final_2_-_Copy.jpg",
               "focal_point": "center center"
-            }
+            },
+            "disabled": true
           }
         },
         "block_order": [
@@ -658,7 +660,7 @@
         "settings": {
           "section_height": "550px",
           "mobile_height": "auto",
-          "parallax": true,
+          "parallax": false,
           "style": "arrows",
           "autoplay": true,
           "autoplay_speed": 7
@@ -850,7 +852,7 @@
       "1525295772132": {
         "type": "featured-collection",
         "settings": {
-          "title": "Harlequin Fabrics collection",
+          "title": "Harlequin fabrics",
           "home_featured_products": "jbrown-fabrics-collection",
           "per_row": 4,
           "rows": 1,
@@ -1275,7 +1277,8 @@
         "settings": {
           "full_width": false,
           "space_around": true
-        }
+        },
+        "disabled": true
       },
       "160338008400bcdcb0": {
         "type": "slideshow",
@@ -1286,9 +1289,9 @@
               "top_subheading": "",
               "title": "Endless\npossibilities.",
               "title_size": 80,
-              "subheading": "",
+              "subheading": "Photo: Style Library",
               "link": "",
-              "link_text": "Photo@style library",
+              "link_text": "",
               "link_2": "",
               "link_text_2": "",
               "color_accent": "rgba(0,0,0,0)",
@@ -1301,11 +1304,11 @@
             "type": "image",
             "settings": {
               "top_subheading": "",
-              "title": "Dream it, we will\nhelp you realize it!",
+              "title": "Dream it, we will\nhelp you realise it!",
               "title_size": 80,
-              "subheading": "",
+              "subheading": "Photo: Style Library",
               "link": "",
-              "link_text": "Photo@style library",
+              "link_text": "",
               "link_2": "",
               "link_text_2": "",
               "color_accent": "rgba(0,0,0,0)",
@@ -1320,9 +1323,9 @@
               "top_subheading": "",
               "title": "Make your house\nfeel like a home",
               "title_size": 80,
-              "subheading": "",
+              "subheading": "Photo: Style Library",
               "link": "",
-              "link_text": "Photo@style library",
+              "link_text": "",
               "link_2": "",
               "link_text_2": "",
               "color_accent": "rgba(0,0,0,0)",
@@ -1337,9 +1340,9 @@
               "top_subheading": "",
               "title": "Choose from endless\noptions!",
               "title_size": 80,
-              "subheading": "",
+              "subheading": "Photo: Style Library",
               "link": "",
-              "link_text": "Photo@style library",
+              "link_text": "",
               "link_2": "",
               "link_text_2": "",
               "color_accent": "rgba(0,0,0,0)",
@@ -1352,11 +1355,11 @@
             "type": "image",
             "settings": {
               "top_subheading": "",
-              "title": "Upholstery is what\nwe breath",
+              "title": "Upholstery is what\nwe breathe",
               "title_size": 80,
-              "subheading": "",
+              "subheading": "Photo: Style Library",
               "link": "",
-              "link_text": "Photo@style library",
+              "link_text": "",
               "link_2": "",
               "link_text_2": "",
               "color_accent": "rgba(0,0,0,0)",
@@ -1717,12 +1720,56 @@
           "end_label": "Contact us",
           "end_link": ""
         }
+      },
+      "home_furniture": {
+        "type": "home-furniture",
+        "settings": {
+          "eyebrow": "New · Made to order",
+          "heading": "Furniture made for the room you have",
+          "text": "#efe9dc",
+          "button_label": "Explore furniture",
+          "button_link": "shopify://pages/furniture",
+          "background": "#1c241f",
+          "accent": "#d9bd84"
+        },
+        "blocks": {
+          "piece-1": {
+            "type": "piece",
+            "settings": {
+              "name": "Curved or cocoon sofa",
+              "render": "fr-curved-sofa-room-card.jpg",
+              "link": "shopify://products/curved-sofa"
+            }
+          },
+          "piece-2": {
+            "type": "piece",
+            "settings": {
+              "name": "Curved tub / barrel chair",
+              "render": "fr-tub-chair-room-card.jpg",
+              "link": "shopify://products/tub-chair"
+            }
+          },
+          "piece-3": {
+            "type": "piece",
+            "settings": {
+              "name": "Tall fluted / channelled",
+              "render": "fr-headboard-room-card.jpg",
+              "link": "shopify://products/headboard-double"
+            }
+          }
+        },
+        "block_order": [
+          "piece-1",
+          "piece-2",
+          "piece-3"
+        ]
       }
     },
     "content_for_index": [
       "1498163293234",
       "1499790633921",
       "1524769873765",
+      "home_furniture",
       "1525912530555",
       "1499789718857",
       "1525886124958",
