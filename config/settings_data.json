@@ -1483,7 +1483,9 @@
               "drawing": "curved-sofa",
               "link": "shopify://products/curved-sofa",
               "render": "fr-curved-sofa-card.jpg",
-              "room": "fr-curved-sofa-room-card.jpg"
+              "room": "fr-curved-sofa-room-card.jpg",
+              "image": "shopify://shop_images/sheen-curved-sofa-photo.jpg",
+              "room_image": "shopify://shop_images/sheen-curved-sofa-photo.jpg"
             }
           },
           "style-02": {
@@ -1494,7 +1496,9 @@
               "drawing": "modular-sofa",
               "link": "shopify://products/modular-sofa",
               "render": "fr-modular-sofa-card.jpg",
-              "room": "fr-modular-sofa-room-card.jpg"
+              "room": "fr-modular-sofa-room-card.jpg",
+              "image": "shopify://shop_images/sheen-modular-sofa-photo.jpg",
+              "room_image": "shopify://shop_images/sheen-modular-sofa-photo.jpg"
             }
           },
           "style-03": {
@@ -1505,7 +1509,9 @@
               "drawing": "roll-arm-sofa",
               "link": "shopify://products/roll-arm-sofa",
               "render": "fr-roll-arm-sofa-card.jpg",
-              "room": "fr-roll-arm-sofa-room-card.jpg"
+              "room": "fr-roll-arm-sofa-room-card.jpg",
+              "image": "shopify://shop_images/sheen-roll-arm-sofa-photo.jpg",
+              "room_image": "shopify://shop_images/sheen-roll-arm-sofa-photo.jpg"
             }
           },
           "style-04": {
@@ -1516,7 +1522,9 @@
               "drawing": "tub-chair",
               "link": "shopify://products/tub-chair",
               "render": "fr-tub-chair-card.jpg",
-              "room": "fr-tub-chair-room-card.jpg"
+              "room": "fr-tub-chair-room-card.jpg",
+              "image": "shopify://shop_images/sheen-tub-chair-photo.jpg",
+              "room_image": "shopify://shop_images/sheen-tub-chair-photo.jpg"
             }
           },
           "style-05": {
@@ -1527,7 +1535,9 @@
               "drawing": "swivel-chair",
               "link": "shopify://products/swivel-armchair",
               "render": "fr-swivel-chair-card.jpg",
-              "room": "fr-swivel-chair-room-card.jpg"
+              "room": "fr-swivel-chair-room-card.jpg",
+              "image": "shopify://shop_images/sheen-swivel-chair-photo.jpg",
+              "room_image": "shopify://shop_images/sheen-swivel-chair-photo.jpg"
             }
           },
           "style-06": {
@@ -1538,7 +1548,9 @@
               "drawing": "wingback-chair",
               "link": "shopify://products/wingback-armchair",
               "render": "fr-wingback-chair-card.jpg",
-              "room": "fr-wingback-chair-room-card.jpg"
+              "room": "fr-wingback-chair-room-card.jpg",
+              "image": "shopify://shop_images/sheen-wingback-chair-photo.jpg",
+              "room_image": "shopify://shop_images/sheen-wingback-chair-photo.jpg"
             }
           },
           "style-07": {
@@ -1549,7 +1561,9 @@
               "drawing": "fluted-headboard",
               "link": "shopify://products/headboard-double",
               "render": "fr-headboard-card.jpg",
-              "room": "fr-headboard-room-card.jpg"
+              "room": "fr-headboard-room-card.jpg",
+              "image": "shopify://shop_images/sheen-headboard-photo.jpg",
+              "room_image": "shopify://shop_images/sheen-headboard-photo.jpg"
             }
           },
           "style-08": {
@@ -1560,7 +1574,9 @@
               "drawing": "scalloped-headboard",
               "link": "shopify://products/scalloped-headboard",
               "render": "fr-scalloped-headboard-card.jpg",
-              "room": "fr-scalloped-headboard-room-card.jpg"
+              "room": "fr-scalloped-headboard-room-card.jpg",
+              "image": "shopify://shop_images/sheen-scalloped-headboard-photo.jpg",
+              "room_image": "shopify://shop_images/sheen-scalloped-headboard-photo.jpg"
             }
           },
           "style-09": {
@@ -1571,7 +1587,9 @@
               "drawing": "wing-headboard",
               "link": "shopify://products/wing-headboard",
               "render": "fr-wing-headboard-card.jpg",
-              "room": "fr-wing-headboard-room-card.jpg"
+              "room": "fr-wing-headboard-room-card.jpg",
+              "image": "shopify://shop_images/sheen-wing-headboard-photo.jpg",
+              "room_image": "shopify://shop_images/sheen-wing-headboard-photo.jpg"
             }
           },
           "style-10": {
@@ -1582,7 +1600,9 @@
               "drawing": "storage-ottoman",
               "link": "shopify://products/storage-footstool",
               "render": "fr-storage-ottoman-card.jpg",
-              "room": "fr-storage-ottoman-room-card.jpg"
+              "room": "fr-storage-ottoman-room-card.jpg",
+              "image": "shopify://shop_images/sheen-storage-ottoman-photo.jpg",
+              "room_image": "shopify://shop_images/sheen-storage-ottoman-photo.jpg"
             }
           },
           "style-11": {
@@ -1593,7 +1613,9 @@
               "drawing": "round-footstool",
               "link": "shopify://products/round-footstool",
               "render": "fr-round-footstool-card.jpg",
-              "room": "fr-round-footstool-room-card.jpg"
+              "room": "fr-round-footstool-room-card.jpg",
+              "image": "shopify://shop_images/sheen-round-footstool-photo.jpg",
+              "room_image": "shopify://shop_images/sheen-round-footstool-photo.jpg"
             }
           },
           "style-12": {
@@ -1604,7 +1626,9 @@
               "drawing": "bench-footstool",
               "link": "shopify://products/bench-footstool",
               "render": "fr-bench-footstool-card.jpg",
-              "room": "fr-bench-footstool-room-card.jpg"
+              "room": "fr-bench-footstool-room-card.jpg",
+              "image": "shopify://shop_images/sheen-bench-footstool-photo.jpg",
+              "room_image": "shopify://shop_images/sheen-bench-footstool-photo.jpg"
             }
           },
           "style-13": {
@@ -1615,7 +1639,9 @@
               "drawing": "pencil-pleat",
               "link": "shopify://products/pencil-pleat-curtains",
               "render": "fr-pencil-pleat-card.jpg",
-              "room": "fr-pencil-pleat-room-card.jpg"
+              "room": "fr-pencil-pleat-room-card.jpg",
+              "image": "shopify://shop_images/sheen-pencil-pleat-photo.jpg",
+              "room_image": "shopify://shop_images/sheen-pencil-pleat-photo.jpg"
             }
           },
           "style-14": {
@@ -1626,7 +1652,9 @@
               "drawing": "wave-curtain",
               "link": "shopify://products/wave-curtains",
               "render": "fr-wave-curtain-card.jpg",
-              "room": "fr-wave-curtain-room-card.jpg"
+              "room": "fr-wave-curtain-room-card.jpg",
+              "image": "shopify://shop_images/sheen-wave-curtain-photo.jpg",
+              "room_image": "shopify://shop_images/sheen-wave-curtain-photo.jpg"
             }
           },
           "style-15": {
@@ -1637,7 +1665,9 @@
               "drawing": "pinch-pleat",
               "link": "shopify://products/pinch-pleat-curtains",
               "render": "fr-pinch-pleat-card.jpg",
-              "room": "fr-pinch-pleat-room-card.jpg"
+              "room": "fr-pinch-pleat-room-card.jpg",
+              "image": "shopify://shop_images/sheen-pinch-pleat-photo.jpg",
+              "room_image": "shopify://shop_images/sheen-pinch-pleat-photo.jpg"
             }
           },
           "style-16": {
@@ -1648,7 +1678,9 @@
               "drawing": "roman-blind",
               "link": "shopify://products/roman-blind",
               "render": "fr-roman-blind-card.jpg",
-              "room": "fr-roman-blind-room-card.jpg"
+              "room": "fr-roman-blind-room-card.jpg",
+              "image": "shopify://shop_images/sheen-roman-blind-photo.jpg",
+              "room_image": "shopify://shop_images/sheen-roman-blind-photo.jpg"
             }
           },
           "style-17": {
@@ -1659,7 +1691,9 @@
               "drawing": "roller-blind",
               "link": "shopify://products/roller-blind",
               "render": "fr-roller-blind-card.jpg",
-              "room": "fr-roller-blind-room-card.jpg"
+              "room": "fr-roller-blind-room-card.jpg",
+              "image": "shopify://shop_images/sheen-roller-blind-photo.jpg",
+              "room_image": "shopify://shop_images/sheen-roller-blind-photo.jpg"
             }
           },
           "style-18": {
@@ -1670,7 +1704,9 @@
               "drawing": "austrian-blind",
               "link": "shopify://products/austrian-blind",
               "render": "fr-austrian-blind-card.jpg",
-              "room": "fr-austrian-blind-room-card.jpg"
+              "room": "fr-austrian-blind-room-card.jpg",
+              "image": "shopify://shop_images/sheen-austrian-blind-photo.jpg",
+              "room_image": "shopify://shop_images/sheen-austrian-blind-photo.jpg"
             }
           }
         },
