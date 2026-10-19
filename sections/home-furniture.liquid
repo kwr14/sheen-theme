@@ -1,0 +1,92 @@
+{% comment %}
+  Home page band introducing made-to-order furniture (Sheen Upholstery).
+  Dark band in the style of the /pages/furniture lookbook: text and button on one side,
+  up to three room images on the other. Each "Piece" block takes an image (upload) or a theme-asset render.
+{% endcomment %}
+
+{%- assign sid = section.id -%}
+<style>
+  #hf-{{ sid }} { background: {{ section.settings.background }}; color: {{ section.settings.text_color }}; }
+  #hf-{{ sid }} * { box-sizing: border-box; }
+  #hf-{{ sid }} .hf-inner { max-width: 1280px; margin: 0 auto; padding: 88px 32px; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 64px; align-items: center; }
+  #hf-{{ sid }} .hf-eyebrow { font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: {{ section.settings.accent }}; margin: 0 0 20px; font-weight: 500; }
+  #hf-{{ sid }} .hf-h { font-family: var(--font-heading-family, inherit); font-weight: 300; font-size: clamp(36px, 4.6vw, 64px); line-height: 1; letter-spacing: -.015em; margin: 0; color: {{ section.settings.text_color }}; text-transform: none; text-wrap: balance; }
+  #hf-{{ sid }} .hf-text { font-size: 17px; line-height: 1.65; color: {{ section.settings.text_color }}; opacity: .82; font-weight: 300; margin: 22px 0 0; max-width: 440px; }
+  #hf-{{ sid }} .hf-text p { margin: 0; }
+  #hf-{{ sid }} .hf-btn { display: inline-flex; align-items: center; gap: 10px; min-height: 50px; padding: 0 28px; margin-top: 32px; border-radius: 999px; background: {{ section.settings.text_color }}; color: {{ section.settings.background }}; text-decoration: none; font-size: 14px; letter-spacing: .08em; text-transform: uppercase; transition: background .2s; }
+  #hf-{{ sid }} .hf-btn:hover, #hf-{{ sid }} .hf-btn:focus-visible { background: {{ section.settings.accent }}; color: {{ section.settings.background }}; }
+  #hf-{{ sid }} .hf-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  #hf-{{ sid }} .hf-piece { position: relative; display: block; border-radius: 10px; overflow: hidden; background: #2a332d; aspect-ratio: 4 / 3; text-decoration: none; }
+  #hf-{{ sid }} .hf-piece:first-child { grid-row: span 2; aspect-ratio: auto; min-height: 100%; }
+  #hf-{{ sid }} .hf-piece img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 1s ease; }
+  #hf-{{ sid }} .hf-piece:hover img, #hf-{{ sid }} .hf-piece:focus-visible img { transform: scale(1.04); }
+  #hf-{{ sid }} .hf-cap { position: absolute; left: 12px; bottom: 12px; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; background: rgba(28, 36, 31, .82); color: #efe9dc; padding: 7px 12px; border-radius: 999px; }
+  @media (max-width: 900px) {
+    #hf-{{ sid }} .hf-inner { grid-template-columns: minmax(0, 1fr); gap: 36px; padding: 56px 16px; }
+    #hf-{{ sid }} .hf-piece:first-child { grid-column: 1 / -1; grid-row: auto; aspect-ratio: 4 / 3; }
+    #hf-{{ sid }} .hf-grid { grid-template-rows: none; gap: 12px; }
+    #hf-{{ sid }} .hf-piece:not(:first-child) .hf-cap { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) { #hf-{{ sid }} * { transition: none !important; } }
+</style>
+
+<div id="hf-{{ sid }}">
+  <div class="hf-inner">
+    <div>
+      {%- if section.settings.eyebrow != blank -%}<p class="hf-eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+      <h2 class="hf-h">{{ section.settings.heading }}</h2>
+      {%- if section.settings.text != blank -%}<div class="hf-text">{{ section.settings.text }}</div>{%- endif -%}
+      {%- if section.settings.button_label != blank -%}
+        <a class="hf-btn" href="{{ section.settings.button_link | default: '/pages/furniture' }}">{{ section.settings.button_label }}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+      {%- endif -%}
+    </div>
+    {%- if section.blocks.size > 0 -%}
+      <div class="hf-grid">
+        {%- for block in section.blocks limit: 3 -%}
+          <a class="hf-piece" href="{{ block.settings.link | default: '/pages/furniture' }}" {{ block.shopify_attributes }}>
+            {%- if block.settings.image != blank -%}
+              {{ block.settings.image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '400, 800, 1200', sizes: '(max-width: 900px) 100vw, 40vw', alt: block.settings.name }}
+            {%- elsif block.settings.render != blank -%}
+              <img src="{{ block.settings.render | asset_url }}" alt="{{ block.settings.name | escape }} in a room" loading="lazy" width="1000" height="750">
+            {%- endif -%}
+            {%- if block.settings.name != blank -%}<span class="hf-cap">{{ block.settings.name }}</span>{%- endif -%}
+          </a>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Furniture band",
+  "tag": "section",
+  "class": "section-home-furniture",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "New · Made to order" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Furniture made for the room you have" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Sofas, armchairs, headboards, footstools, curtains and blinds, each made to order in the fabric you choose.</p>" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Explore furniture" },
+    { "type": "url", "id": "button_link", "label": "Button link", "info": "Leave blank for the furniture page." },
+    { "type": "color", "id": "background", "label": "Background", "default": "#1c241f" },
+    { "type": "color", "id": "text_color", "label": "Text colour", "default": "#efe9dc" },
+    { "type": "color", "id": "accent", "label": "Accent", "default": "#d9bd84" }
+  ],
+  "blocks": [
+    {
+      "type": "piece",
+      "name": "Piece",
+      "limit": 3,
+      "settings": [
+        { "type": "text", "id": "name", "label": "Name" },
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "text", "id": "render", "label": "Image (theme asset)", "info": "File name of a room render, e.g. fr-curved-sofa-room-card.jpg. Used when no image is chosen." },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    }
+  ],
+  "presets": [ { "name": "Furniture band", "category": "Promotional" } ]
+}
+{% endschema %}

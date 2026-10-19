@@ -1,250 +1,196 @@
-<footer class="site-footer">
-  <div class="page-width">
+{% comment %}
+  Site footer (Sheen Upholstery).
+  A newsletter strip, then a dark band with the brand, two link columns, and the shop's address and opening hours,
+  edged with a stitched line. Payment icons and copyright sit in the bottom bar.
+{% endcomment %}
 
-    <div class="grid">
-      {%- assign row_width = 0 -%}
-      {% for block in section.blocks %}
-        {%- assign row_width = row_width | plus: block.settings.container_width -%}
-        {% if row_width > 100 %}
-          <div class="footer__clear small--hide"></div>
-          {%- assign row_width = row_width | minus: 100 -%}
-        {% endif %}
+{%- liquid
+  assign sid = section.id
+  assign shop_menu = linklists[section.settings.shop_menu]
+  assign help_menu = linklists[section.settings.help_menu]
+-%}
 
-        <div {{ block.shopify_attributes }} class="grid__item footer__item--{{ block.id }}" data-type="{{ block.type }}">
-          {% style %}
-            @media only screen and (min-width: 769px) and (max-width: 959px) {
-              .footer__item--{{ block.id }} {
-                width: 50%;
-                padding-top: 40px;
-              }
-              .footer__item--{{ block.id }}:nth-child(2n + 1) {
-                clear: left;
-              }
-            }
-            @media only screen and (min-width: 960px) {
-              .footer__item--{{ block.id }} {
-                width: {{ block.settings.container_width }}%;
-              }
+<style>
+  #sf-{{ sid }} {
+    --sf-bg: {{ section.settings.background }};
+    --sf-ink: {{ section.settings.text_color }};
+    --sf-accent: {{ section.settings.accent }};
+    --sf-soft: rgba(239, 233, 220, .72);
+    --sf-line: rgba(239, 233, 220, .16);
+    background: var(--sf-bg);
+    color: var(--sf-ink);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  #sf-{{ sid }} * { box-sizing: border-box; }
+  #sf-{{ sid }} a { color: inherit; text-decoration: none; }
+  #sf-{{ sid }} .sf-wrap { max-width: 1280px; margin: 0 auto; padding: 0 32px; }
+  #sf-{{ sid }} .sf-stitch { display: block; width: 100%; height: 14px; color: var(--sf-accent); }
 
-            }
-          {% endstyle %}
+  #sf-{{ sid }} .sf-news { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: 48px; align-items: end; padding: 64px 0 56px; border-bottom: 1px solid var(--sf-line); }
+  #sf-{{ sid }} .sf-eyebrow { font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--sf-accent); margin: 0 0 14px; font-weight: 500; }
+  #sf-{{ sid }} .sf-news h2 { font-family: var(--font-heading-family, inherit); font-weight: 400; font-size: clamp(30px, 3.6vw, 46px); line-height: 1.05; margin: 0; color: var(--sf-ink); text-transform: none; letter-spacing: 0; text-wrap: balance; }
+  #sf-{{ sid }} .sf-news p { margin: 12px 0 0; color: var(--sf-soft); max-width: 460px; }
+  #sf-{{ sid }} .sf-form { display: flex; gap: 0; border-bottom: 1px solid var(--sf-ink); transition: border-color .2s; }
+  #sf-{{ sid }} .sf-form:focus-within { border-color: var(--sf-accent); }
+  #sf-{{ sid }} .sf-form input { flex: 1; min-width: 0; background: transparent; border: 0; color: var(--sf-ink); font: inherit; font-size: 17px; padding: 14px 0; outline: none; }
+  #sf-{{ sid }} .sf-form input::placeholder { color: var(--sf-soft); }
+  #sf-{{ sid }} .sf-form button { background: transparent; border: 0; color: var(--sf-ink); font: inherit; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; display: inline-flex; align-items: center; gap: 8px; padding: 0 0 0 16px; cursor: pointer; min-height: 48px; transition: color .2s, gap .2s; }
+  #sf-{{ sid }} .sf-form button:hover, #sf-{{ sid }} .sf-form button:focus-visible { color: var(--sf-accent); gap: 12px; outline: none; }
+  #sf-{{ sid }} .sf-msg { margin: 12px 0 0; font-size: 14px; color: var(--sf-accent); }
+  #sf-{{ sid }} .sf-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-          {% case block.type %}
-          {% when 'logo_social' %}
-            {% include 'footer-logo', block: block %}
-          {% when 'custom' %}
-            {% include 'footer-custom-text', block: block %}
-          {% when 'newsletter' %}
-            {% include 'footer-newsletter', block: block %}
-          {% when 'menu' %}
-            {% include 'footer-menu', block: block %}
-          {% endcase %}
+  #sf-{{ sid }} .sf-main { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 2fr) minmax(0, 2fr) minmax(0, 3fr); gap: 40px; padding: 56px 0; }
+  #sf-{{ sid }} .sf-brand { font-family: var(--font-heading-family, inherit); font-size: 30px; line-height: .95; text-transform: uppercase; letter-spacing: .02em; margin: 0; }
+  #sf-{{ sid }} .sf-tag { color: var(--sf-soft); margin: 18px 0 0; max-width: 320px; }
+  #sf-{{ sid }} .sf-h { font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--sf-accent); margin: 0 0 16px; font-weight: 500; }
+  #sf-{{ sid }} .sf-links { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  #sf-{{ sid }} .sf-links a { color: var(--sf-soft); background-image: linear-gradient(var(--sf-accent), var(--sf-accent)); background-size: 0 1px; background-repeat: no-repeat; background-position: 0 100%; transition: color .2s, background-size .3s ease; padding-bottom: 2px; }
+  #sf-{{ sid }} .sf-links a:hover, #sf-{{ sid }} .sf-links a:focus-visible { color: var(--sf-ink); background-size: 100% 1px; outline: none; }
+  #sf-{{ sid }} .sf-visit address { font-style: normal; color: var(--sf-soft); }
+  #sf-{{ sid }} .sf-visit address p { margin: 0; }
+  #sf-{{ sid }} .sf-hours { margin: 14px 0 0; color: var(--sf-soft); }
+  #sf-{{ sid }} .sf-contact { margin: 14px 0 0; display: grid; gap: 4px; }
+  #sf-{{ sid }} .sf-contact a:hover, #sf-{{ sid }} .sf-contact a:focus-visible { color: var(--sf-accent); }
+  #sf-{{ sid }} .sf-dir { display: inline-flex; align-items: center; gap: 8px; margin-top: 18px; min-height: 44px; padding: 0 20px; border: 1px solid var(--sf-line); border-radius: 999px; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; transition: border-color .2s, background .2s, color .2s; }
+  #sf-{{ sid }} .sf-dir:hover, #sf-{{ sid }} .sf-dir:focus-visible { border-color: var(--sf-accent); background: var(--sf-accent); color: var(--sf-bg); outline: none; }
+
+  #sf-{{ sid }} .sf-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 28px; padding: 22px 0 28px; border-top: 1px solid var(--sf-line); font-size: 13px; color: var(--sf-soft); }
+  #sf-{{ sid }} .sf-pay { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; margin: 0; padding: 0; }
+  #sf-{{ sid }} .sf-pay svg { width: 38px; height: 24px; display: block; border-radius: 3px; }
+  #sf-{{ sid }} .sf-up { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; }
+  #sf-{{ sid }} .sf-up svg { transition: transform .25s ease; }
+  #sf-{{ sid }} .sf-up:hover, #sf-{{ sid }} .sf-up:focus-visible { color: var(--sf-ink); outline: none; }
+  #sf-{{ sid }} .sf-up:hover svg { transform: translateY(-3px); }
+
+  @media (max-width: 960px) {
+    #sf-{{ sid }} .sf-main { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 36px 24px; }
+    #sf-{{ sid }} .sf-about { grid-column: 1 / -1; }
+  }
+  @media (max-width: 700px) {
+    #sf-{{ sid }} .sf-wrap { padding: 0 16px; }
+    #sf-{{ sid }} .sf-news { grid-template-columns: minmax(0, 1fr); gap: 24px; padding: 48px 0 40px; }
+    #sf-{{ sid }} .sf-visit { grid-column: 1 / -1; }
+    #sf-{{ sid }} .sf-bar { flex-direction: column; align-items: flex-start; }
+  }
+  @media (prefers-reduced-motion: reduce) { #sf-{{ sid }} * { transition: none !important; } }
+</style>
+
+<footer id="sf-{{ sid }}" class="sheen-footer">
+  <svg class="sf-stitch" viewBox="0 0 1200 14" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0 7H1200" stroke="currentColor" stroke-width="1.5" stroke-dasharray="10 8" stroke-linecap="round" fill="none" vector-effect="non-scaling-stroke"/></svg>
+
+  <div class="sf-wrap">
+    {%- if section.settings.show_newsletter -%}
+      <div class="sf-news">
+        <div>
+          {%- if section.settings.news_eyebrow != blank -%}<p class="sf-eyebrow">{{ section.settings.news_eyebrow }}</p>{%- endif -%}
+          <h2>{{ section.settings.news_heading }}</h2>
+          {%- if section.settings.news_text != blank -%}<p>{{ section.settings.news_text }}</p>{%- endif -%}
         </div>
-      {% endfor %}
-      {% for block in section.blocks %}
-        {% if block.type == 'logo' %}
-          <div class="grid__item medium-up--hide">
-            {% include 'footer-logo', block: block %}
-          </div>
-        {% endif %}
-      {% endfor %}
+        <div>
+          {%- form 'customer', id: 'sf-news-form' -%}
+            <input type="hidden" name="contact[tags]" value="newsletter">
+            {%- if form.posted_successfully? -%}
+              <p class="sf-msg" role="status">{{ section.settings.news_thanks }}</p>
+            {%- else -%}
+              <div class="sf-form">
+                <label class="sf-label" for="sf-email-{{ sid }}">Email address</label>
+                <input type="email" id="sf-email-{{ sid }}" name="contact[email]" placeholder="Your email address" autocomplete="email" autocorrect="off" autocapitalize="off" required>
+                <button type="submit">Subscribe
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                </button>
+              </div>
+              {%- if form.errors -%}<p class="sf-msg" role="alert">{{ form.errors | default_errors }}</p>{%- endif -%}
+            {%- endif -%}
+          {%- endform -%}
+        </div>
+      </div>
+    {%- endif -%}
+
+    <div class="sf-main">
+      <div class="sf-about">
+        <p class="sf-brand">{{ shop.name | replace: ' ', '<br>' }}</p>
+        {%- if section.settings.tagline != blank -%}<p class="sf-tag">{{ section.settings.tagline }}</p>{%- endif -%}
+      </div>
+
+      {%- if shop_menu.links.size > 0 -%}
+        <nav aria-label="{{ section.settings.shop_title | escape }}">
+          <p class="sf-h">{{ section.settings.shop_title }}</p>
+          <ul class="sf-links">
+            {%- for link in shop_menu.links -%}<li><a href="{{ link.url }}">{{ link.title }}</a></li>{%- endfor -%}
+          </ul>
+        </nav>
+      {%- endif -%}
+
+      {%- if help_menu.links.size > 0 -%}
+        <nav aria-label="{{ section.settings.help_title | escape }}">
+          <p class="sf-h">{{ section.settings.help_title }}</p>
+          <ul class="sf-links">
+            {%- for link in help_menu.links -%}<li><a href="{{ link.url }}">{{ link.title }}</a></li>{%- endfor -%}
+          </ul>
+        </nav>
+      {%- endif -%}
+
+      <div class="sf-visit">
+        <p class="sf-h">{{ section.settings.visit_title }}</p>
+        {%- if section.settings.address != blank -%}<address>{{ section.settings.address }}</address>{%- endif -%}
+        {%- if section.settings.hours != blank -%}<p class="sf-hours">{{ section.settings.hours }}</p>{%- endif -%}
+        <div class="sf-contact">
+          {%- if section.settings.phone != blank -%}<a href="tel:{{ section.settings.phone | remove: ' ' }}">{{ section.settings.phone }}</a>{%- endif -%}
+          {%- if section.settings.email != blank -%}<a href="mailto:{{ section.settings.email }}">{{ section.settings.email }}</a>{%- endif -%}
+        </div>
+        {%- if section.settings.map_url != blank -%}
+          <a class="sf-dir" href="{{ section.settings.map_url }}" target="_blank" rel="noopener">Get directions
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+          </a>
+        {%- endif -%}
+      </div>
     </div>
 
-    {% if section.settings.show_payment_icons %}
-      {% unless shop.enabled_payment_types == empty %}
-        <ul class="inline-list payment-icons">
-          {% for type in shop.enabled_payment_types %}
-            <li class="icon--payment">
-              {{ type | payment_type_svg_tag: class:'icon icon--full-color' }}
-            </li>
-          {% endfor %}
-        </ul>
-      {% endunless %}
-    {% endif %}
-
-    {% if section.settings.show_copyright %}
-      <p class="footer__small-text">
-        &copy; {{ 'now' | date: '%Y' }} {{ shop.name }}
-        {% if section.settings.copyright_text != blank %}
-          {{ section.settings.copyright_text }}
-        {% endif %}
-      </p>
-    {% endif %}
-    <p class="footer__small-text">{{ powered_by_link }}</p>
-
+    <div class="sf-bar">
+      <span>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}{% if section.settings.copyright_text != blank %} · {{ section.settings.copyright_text }}{% endif %}</span>
+      {%- if section.settings.show_payment_icons -%}
+        {%- unless shop.enabled_payment_types == empty -%}
+          <ul class="sf-pay" aria-label="Payment methods">
+            {%- for type in shop.enabled_payment_types -%}<li>{{ type | payment_type_svg_tag }}</li>{%- endfor -%}
+          </ul>
+        {%- endunless -%}
+      {%- endif -%}
+      <a class="sf-up" href="#">Back to top
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+      </a>
+    </div>
   </div>
 </footer>
 
 {% schema %}
-  {
-    "name": "Footer",
-    "max_blocks": 12,
-    "settings": [
-      {
-        "type": "checkbox",
-        "id": "show_payment_icons",
-        "label": "Show payment icons",
-        "default": false
-      },
-      {
-        "type": "checkbox",
-        "id": "show_copyright",
-        "label": "Show copyright"
-      },
-      {
-        "type": "text",
-        "id": "copyright_text",
-        "label": "Additional copyright text"
-      }
-    ],
-    "blocks": [
-      {
-        "type": "logo_social",
-        "name": "Logo",
-        "limit": 1,
-        "settings": [
-          {
-            "type": "image_picker",
-            "id": "logo",
-            "label": "Logo image"
-          },
-          {
-            "type": "range",
-            "id": "desktop_logo_height",
-            "label": "Logo height",
-            "default": 50,
-            "min": 20,
-            "max": 120,
-            "unit": "px"
-          },
-          {
-            "type": "range",
-            "id": "container_width",
-            "label": "Column width",
-            "default": 25,
-            "min": 15,
-            "max": 95,
-            "unit": "%"
-          }
-        ]
-      },
-      {
-        "type": "menu",
-        "name": "Navigation",
-        "settings": [
-          {
-            "type": "checkbox",
-            "id": "show_footer_title",
-            "label": "Show heading"
-          },
-          {
-            "type": "link_list",
-            "id": "menu",
-            "label": "Choose a menu",
-            "default": "footer",
-            "info": "This menu won't show dropdown items"
-          },
-          {
-            "type": "range",
-            "id": "container_width",
-            "label": "Column width",
-            "default": 25,
-            "min": 15,
-            "max": 95,
-            "unit": "%"
-          }
-        ]
-      },
-      {
-        "type": "newsletter",
-        "name": "Newsletter and social",
-        "limit": 1,
-        "settings": [
-          {
-            "type": "checkbox",
-            "id": "show_footer_title",
-            "label": "Show heading",
-            "default": true
-          },
-          {
-            "type": "paragraph",
-            "content": "Any customers who sign up will have an account created for them in Shopify. [View customers](/admin/customers)."
-          },
-          {
-            "type": "text",
-            "id": "title",
-            "label": "Heading",
-            "default": "Sign up and save"
-          },
-          {
-            "type": "richtext",
-            "id": "text",
-            "label": "Text",
-            "info": "Optional",
-            "default": "<p>Subscribe to get special offers, free giveaways, and once-in-a-lifetime deals.</p>"
-          },
-          {
-            "type": "range",
-            "id": "container_width",
-            "label": "Column width",
-            "default": 25,
-            "min": 15,
-            "max": 95,
-            "unit": "%"
-          }
-        ]
-      },
-      {
-        "type": "custom",
-        "name": "Custom text",
-        "settings": [
-          {
-            "type": "checkbox",
-            "id": "show_footer_title",
-            "label": "Show heading",
-            "default": true
-          },
-          {
-            "type": "text",
-            "id": "title",
-            "label": "Heading",
-            "default": "Custom text"
-          },
-          {
-            "type": "image_picker",
-            "id": "image",
-            "label": "Image"
-          },
-          {
-            "type": "richtext",
-            "id": "text",
-            "label": "Text",
-            "default": "<p>Add your own custom text here.</p>"
-          },
-          {
-            "type": "range",
-            "id": "container_width",
-            "label": "Column width",
-            "default": 25,
-            "min": 15,
-            "max": 95,
-            "unit": "%"
-          }
-        ]
-      }
-    ],
-    "default": {
-      "settings": {},
-      "blocks": [
-        {
-          "type": "menu",
-          "settings": {}
-        },
-        {
-          "type": "logo_social",
-          "settings": {}
-        }
-      ]
-    }
-  }
+{
+  "name": "Footer",
+  "settings": [
+    { "type": "color", "id": "background", "label": "Background", "default": "#1c241f" },
+    { "type": "color", "id": "text_color", "label": "Text colour", "default": "#efe9dc" },
+    { "type": "color", "id": "accent", "label": "Accent", "default": "#d9bd84" },
+    { "type": "header", "content": "Newsletter" },
+    { "type": "checkbox", "id": "show_newsletter", "label": "Show newsletter sign-up", "default": true },
+    { "type": "text", "id": "news_eyebrow", "label": "Eyebrow", "default": "Sign up and save" },
+    { "type": "text", "id": "news_heading", "label": "Heading", "default": "New fabrics and offers, straight to your inbox" },
+    { "type": "text", "id": "news_text", "label": "Text", "default": "Subscribe to get special offers, free giveaways and once-in-a-lifetime deals." },
+    { "type": "text", "id": "news_thanks", "label": "Thank-you message", "default": "Thanks for subscribing. We’ll be in touch soon." },
+    { "type": "header", "content": "Columns" },
+    { "type": "text", "id": "tagline", "label": "Tagline", "default": "Upholstery and curtain fabrics from our shop in East Sheen, London." },
+    { "type": "text", "id": "shop_title", "label": "First column heading", "default": "Shop" },
+    { "type": "link_list", "id": "shop_menu", "label": "First column menu", "default": "footer" },
+    { "type": "text", "id": "help_title", "label": "Second column heading", "default": "Help" },
+    { "type": "link_list", "id": "help_menu", "label": "Second column menu", "default": "footer" },
+    { "type": "text", "id": "visit_title", "label": "Visit heading", "default": "Visit us" },
+    { "type": "richtext", "id": "address", "label": "Address", "default": "<p>358 Upper Richmond Road West, East Sheen, London SW14 7JT</p>" },
+    { "type": "text", "id": "hours", "label": "Opening hours", "default": "Monday to Saturday, 9am to 6pm" },
+    { "type": "text", "id": "phone", "label": "Phone", "default": "020 8878 6474" },
+    { "type": "text", "id": "email", "label": "Email", "default": "info@sheenupholstery.co.uk" },
+    { "type": "url", "id": "map_url", "label": "Directions link" },
+    { "type": "header", "content": "Bottom bar" },
+    { "type": "checkbox", "id": "show_payment_icons", "label": "Show payment icons", "default": true },
+    { "type": "text", "id": "copyright_text", "label": "Additional copyright text" }
+  ]
+}
 {% endschema %}

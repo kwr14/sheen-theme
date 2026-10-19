@@ -36,8 +36,8 @@
     "color_image_overlay": "#000000",
     "color_image_overlay_opacity": 10,
     "color_image_overlay_text_shadow": 20,
-    "type_header_font_family": "tiemann_n4",
-    "type_header_spacing": "-25",
+    "type_header_font_family": "playfair_display_n4",
+    "type_header_spacing": "0",
     "type_header_base_size": 38,
     "type_header_line_height": 1,
     "type_header_capitalize": true,
@@ -191,42 +191,27 @@
       },
       "footer": {
         "type": "footer",
-        "blocks": {
-          "1494301487049": {
-            "type": "menu",
-            "settings": {
-              "show_footer_title": false,
-              "menu": "footer",
-              "container_width": 37
-            }
-          },
-          "1494292487693": {
-            "type": "newsletter",
-            "settings": {
-              "show_footer_title": true,
-              "title": "Sign up and save",
-              "text": "<p>Subscribe to get special offers, free giveaways, and once-in-a-lifetime deals.</p>",
-              "container_width": 62
-            }
-          },
-          "1494301487048": {
-            "type": "logo_social",
-            "disabled": true,
-            "settings": {
-              "desktop_logo_height": 50,
-              "container_width": 95
-            }
-          }
-        },
-        "block_order": [
-          "1494301487049",
-          "1494292487693",
-          "1494301487048"
-        ],
         "settings": {
+          "background": "#1c241f",
+          "text_color": "#efe9dc",
+          "accent": "#d9bd84",
+          "show_newsletter": true,
+          "news_eyebrow": "Sign up and save",
+          "news_heading": "New fabrics and offers, straight to your inbox",
+          "news_text": "Subscribe to get special offers, free giveaways and once-in-a-lifetime deals.",
+          "news_thanks": "Thanks for subscribing. We’ll be in touch soon.",
+          "tagline": "Upholstery and curtain fabrics from our shop in East Sheen, London.",
+          "shop_title": "Shop",
+          "help_title": "Help",
+          "visit_title": "Visit us",
+          "address": "<p>358 Upper Richmond Road West, East Sheen, London SW14 7JT</p>",
+          "hours": "Monday to Saturday, 9am to 6pm",
+          "phone": "020 8878 6474",
+          "email": "info@sheenupholstery.co.uk",
           "show_payment_icons": true,
-          "show_copyright": true,
-          "copyright_text": ""
+          "shop_menu": "footer-shop",
+          "help_menu": "footer",
+          "map_url": "https://www.google.com/maps/search/?api=1&query=358+Upper+Richmond+Road+West+London+SW14+7JT"
         }
       },
       "collection-template": {
@@ -294,32 +279,32 @@
           "1499789718857-0": {
             "type": "collection",
             "settings": {
-              "collection": "designers-guild-christian-lacroix",
-              "title": "",
+              "collection": "harlequin",
+              "title": "Harlequin",
               "focal_point": "center center"
             }
           },
           "1499789718857-1": {
             "type": "collection",
             "settings": {
-              "collection": "designers-guild-john-derian",
-              "title": "",
+              "collection": "sanderson-fabrics",
+              "title": "Sanderson",
               "focal_point": "center center"
             }
           },
           "1499789718857-2": {
             "type": "collection",
             "settings": {
-              "collection": "royal-collection",
-              "title": "",
+              "collection": "zoffany",
+              "title": "Zoffany",
               "focal_point": "center center"
             }
           },
           "1499789718857-3": {
             "type": "collection",
             "settings": {
-              "collection": "ralph-lauren",
-              "title": "",
+              "collection": "scion",
+              "title": "Scion",
               "focal_point": "center center"
             }
           }
@@ -331,7 +316,7 @@
           "1499789718857-3"
         ],
         "settings": {
-          "title": "Shop Our Designers Guild Collection",
+          "title": "Shop by brand",
           "divider": true,
           "per_row": 4,
           "enable_gutter": true
@@ -584,33 +569,33 @@
             "type": "image",
             "settings": {
               "top_subheading": "",
-              "title": "Shop Our Designers Guild\nWilliam Yeoward Fabrics",
-              "title_size": 80,
+              "title": "Upholstery &\ncurtain fabrics",
+              "title_size": 56,
               "subheading": "",
-              "link": "shopify://collections/designers-guild-william-yewoard",
-              "link_text": "Shop This",
-              "link_2": "shopify://collections/fabrics",
-              "link_text_2": "Shop all Fabrics",
+              "link": "shopify://collections/fabrics",
+              "link_text": "Shop fabrics",
+              "link_2": "shopify://pages/contact-us",
+              "link_text_2": "Contact us",
               "color_accent": "#000000",
               "text_align": "vertical-center horizontal-center",
-              "image": "shopify://shop_images/267699.jpg",
-              "focal_point": "top center"
+              "image": "shopify://shop_images/6_1.jpg",
+              "focal_point": "center center"
             }
           },
           "1578770356339": {
             "type": "image",
             "settings": {
               "top_subheading": "",
-              "title": "Shop Our Designers Guild\nFabric Collection",
-              "title_size": 80,
+              "title": "Harlequin, Sanderson\n& Zoffany",
+              "title_size": 56,
               "subheading": "",
-              "link": "shopify://collections/designers-guild-fabrics",
-              "link_text": "Click here",
-              "link_2": "",
-              "link_text_2": "",
+              "link": "shopify://collections/harlequin",
+              "link_text": "Shop Harlequin",
+              "link_2": "shopify://collections/sanderson-fabrics",
+              "link_text_2": "Shop Sanderson",
               "color_accent": "rgba(0,0,0,0)",
               "text_align": "vertical-center horizontal-center",
-              "image": "shopify://shop_images/268101.jpg",
+              "image": "shopify://shop_images/3_2.jpg",
               "focal_point": "center center"
             }
           },
@@ -629,7 +614,8 @@
               "text_align": "vertical-center horizontal-center",
               "image": "shopify://shop_images/Jbrown_Amalfi_Collection.jpg",
               "focal_point": "center center"
-            }
+            },
+            "disabled": true
           },
           "1578770389044": {
             "type": "image",
@@ -646,7 +632,8 @@
               "text_align": "vertical-center horizontal-center",
               "image": "shopify://shop_images/Maida_Vale_final_2_-_Copy.jpg",
               "focal_point": "center center"
-            }
+            },
+            "disabled": true
           }
         },
         "block_order": [
@@ -658,7 +645,7 @@
         "settings": {
           "section_height": "550px",
           "mobile_height": "auto",
-          "parallax": true,
+          "parallax": false,
           "style": "arrows",
           "autoplay": true,
           "autoplay_speed": 7
@@ -697,7 +684,8 @@
               "title": "Brand",
               "tag_list": "Designers Guild\nRoyal Collection\nWilliam Yeoward\nChristian Lacroix\nHoward Hodgkin\nDesigners Guild Essentials\nJohn Derian \nRalph Lauren",
               "collapsed": false
-            }
+            },
+            "disabled": true
           },
           "1578001315713": {
             "type": "tags_group",
@@ -850,7 +838,7 @@
       "1525295772132": {
         "type": "featured-collection",
         "settings": {
-          "title": "Harlequin Fabrics collection",
+          "title": "Harlequin fabrics",
           "home_featured_products": "jbrown-fabrics-collection",
           "per_row": 4,
           "rows": 1,
@@ -1009,7 +997,8 @@
               "color_tint": "#000000",
               "color_tint_opacity": 8,
               "framed": true
-            }
+            },
+            "disabled": true
           },
           "1578037176062": {
             "type": "banner",
@@ -1275,7 +1264,8 @@
         "settings": {
           "full_width": false,
           "space_around": true
-        }
+        },
+        "disabled": true
       },
       "160338008400bcdcb0": {
         "type": "slideshow",
@@ -1286,26 +1276,27 @@
               "top_subheading": "",
               "title": "Endless\npossibilities.",
               "title_size": 80,
-              "subheading": "",
+              "subheading": "Photo: Style Library",
               "link": "",
-              "link_text": "Photo@style library",
+              "link_text": "",
               "link_2": "",
               "link_text_2": "",
               "color_accent": "rgba(0,0,0,0)",
               "text_align": "vertical-center horizontal-center",
               "image": "shopify://shop_images/3_2.jpg",
               "focal_point": "center center"
-            }
+            },
+            "disabled": true
           },
           "160338008400bcdcb0-1": {
             "type": "image",
             "settings": {
               "top_subheading": "",
-              "title": "Dream it, we will\nhelp you realize it!",
+              "title": "Dream it, we will\nhelp you realise it!",
               "title_size": 80,
-              "subheading": "",
+              "subheading": "Photo: Style Library",
               "link": "",
-              "link_text": "Photo@style library",
+              "link_text": "",
               "link_2": "",
               "link_text_2": "",
               "color_accent": "rgba(0,0,0,0)",
@@ -1320,16 +1311,17 @@
               "top_subheading": "",
               "title": "Make your house\nfeel like a home",
               "title_size": 80,
-              "subheading": "",
+              "subheading": "Photo: Style Library",
               "link": "",
-              "link_text": "Photo@style library",
+              "link_text": "",
               "link_2": "",
               "link_text_2": "",
               "color_accent": "rgba(0,0,0,0)",
               "text_align": "vertical-center horizontal-center",
               "image": "shopify://shop_images/6_1.jpg",
               "focal_point": "center center"
-            }
+            },
+            "disabled": true
           },
           "522de276-262b-4922-9067-7fc5df45602e": {
             "type": "image",
@@ -1337,9 +1329,9 @@
               "top_subheading": "",
               "title": "Choose from endless\noptions!",
               "title_size": 80,
-              "subheading": "",
+              "subheading": "Photo: Style Library",
               "link": "",
-              "link_text": "Photo@style library",
+              "link_text": "",
               "link_2": "",
               "link_text_2": "",
               "color_accent": "rgba(0,0,0,0)",
@@ -1352,11 +1344,11 @@
             "type": "image",
             "settings": {
               "top_subheading": "",
-              "title": "Upholstery is what\nwe breath",
+              "title": "Upholstery is what\nwe breathe",
               "title_size": 80,
-              "subheading": "",
+              "subheading": "Photo: Style Library",
               "link": "",
-              "link_text": "Photo@style library",
+              "link_text": "",
               "link_2": "",
               "link_text_2": "",
               "color_accent": "rgba(0,0,0,0)",
@@ -1376,7 +1368,7 @@
         "settings": {
           "section_height": "650px",
           "mobile_height": "auto",
-          "parallax": true,
+          "parallax": false,
           "style": "minimal",
           "autoplay": true,
           "autoplay_speed": 6
@@ -1717,12 +1709,58 @@
           "end_label": "Contact us",
           "end_link": ""
         }
+      },
+      "home_furniture": {
+        "type": "home-furniture",
+        "settings": {
+          "eyebrow": "New · Made to order",
+          "heading": "Furniture made for the room you have",
+          "button_label": "Explore furniture",
+          "button_link": "shopify://pages/furniture",
+          "background": "#1c241f",
+          "accent": "#d9bd84",
+          "text_color": "#efe9dc",
+          "text": "<p>Sofas, armchairs, headboards, footstools, curtains and blinds, each made to order in the fabric you choose.</p>"
+        },
+        "blocks": {
+          "piece-1": {
+            "type": "piece",
+            "settings": {
+              "name": "Curved or cocoon sofa",
+              "render": "fr-curved-sofa-room-card.jpg",
+              "link": "shopify://products/curved-sofa"
+            }
+          },
+          "piece-2": {
+            "type": "piece",
+            "settings": {
+              "name": "Curved tub / barrel chair",
+              "render": "fr-tub-chair-room-card.jpg",
+              "link": "shopify://products/tub-chair"
+            }
+          },
+          "piece-3": {
+            "type": "piece",
+            "settings": {
+              "name": "Tall fluted / channelled",
+              "render": "fr-headboard-room-card.jpg",
+              "link": "shopify://products/headboard-double"
+            }
+          }
+        },
+        "block_order": [
+          "piece-1",
+          "piece-2",
+          "piece-3"
+        ],
+        "disabled": true
       }
     },
     "content_for_index": [
       "1498163293234",
       "1499790633921",
       "1524769873765",
+      "home_furniture",
       "1525912530555",
       "1499789718857",
       "1525886124958",
@@ -1865,35 +1903,7 @@
         },
         "footer": {
           "type": "footer",
-          "blocks": {
-            "1494301487048": {
-              "type": "logo_social",
-              "settings": {
-                "container_width": 95
-              }
-            },
-            "1494301487049": {
-              "type": "menu",
-              "settings": {
-                "menu": "footer",
-                "container_width": 25
-              }
-            },
-            "1494292487693": {
-              "type": "newsletter",
-              "settings": {
-                "container_width": 33
-              }
-            }
-          },
-          "block_order": [
-            "1494301487049",
-            "1494292487693",
-            "1494301487048"
-          ],
-          "settings": {
-            "show_payment_icons": false
-          }
+          "settings": {}
         },
         "collection-template": {
           "type": "collection-template",
@@ -2462,35 +2472,7 @@
         },
         "footer": {
           "type": "footer",
-          "blocks": {
-            "1494301487048": {
-              "type": "logo_social",
-              "settings": {
-                "container_width": 95
-              }
-            },
-            "1494301487049": {
-              "type": "menu",
-              "settings": {
-                "menu": "footer",
-                "container_width": 25
-              }
-            },
-            "1494292487693": {
-              "type": "newsletter",
-              "settings": {
-                "container_width": 30
-              }
-            }
-          },
-          "block_order": [
-            "1494301487049",
-            "1494292487693",
-            "1494301487048"
-          ],
-          "settings": {
-            "show_payment_icons": false
-          }
+          "settings": {}
         },
         "collection-template": {
           "type": "collection-template",
@@ -3124,33 +3106,7 @@
         },
         "footer": {
           "type": "footer",
-          "blocks": {
-            "1494292487693": {
-              "type": "newsletter",
-              "settings": {}
-            },
-            "1526406521795": {
-              "type": "menu",
-              "settings": {
-                "menu": "footer",
-                "container_width": 25
-              }
-            },
-            "1525444454442": {
-              "type": "logo_social",
-              "settings": {
-                "container_width": 95
-              }
-            }
-          },
-          "block_order": [
-            "1494292487693",
-            "1526406521795",
-            "1525444454442"
-          ],
-          "settings": {
-            "show_payment_icons": true
-          }
+          "settings": {}
         },
         "collection-template": {
           "type": "collection-template",
