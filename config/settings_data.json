@@ -320,7 +320,8 @@
           "divider": true,
           "per_row": 4,
           "enable_gutter": true
-        }
+        },
+        "disabled": true
       },
       "1499790633921": {
         "type": "background-image-text",
@@ -649,7 +650,8 @@
           "style": "arrows",
           "autoplay": true,
           "autoplay_speed": 7
-        }
+        },
+        "disabled": true
       },
       "collection-header": {
         "type": "collection-header",
@@ -833,7 +835,8 @@
           "show_button": true,
           "background_image": "shopify://shop_images/Sheen_address.PNG",
           "background_image_position": "center center"
-        }
+        },
+        "disabled": true
       },
       "1525295772132": {
         "type": "featured-collection",
@@ -845,7 +848,8 @@
           "mobile_scrollable": true,
           "view_all": true,
           "divider": false
-        }
+        },
+        "disabled": true
       },
       "1525886124958": {
         "type": "promo-grid",
@@ -1244,7 +1248,8 @@
           "align_text": "left",
           "round_images": false,
           "divider": false
-        }
+        },
+        "disabled": true
       },
       "1590018233448": {
         "type": "advanced-content",
@@ -1372,7 +1377,8 @@
           "style": "minimal",
           "autoplay": true,
           "autoplay_speed": 6
-        }
+        },
+        "disabled": true
       },
       "page-contact-template": {
         "type": "page-contact-template",
@@ -1790,9 +1796,287 @@
           "piece-3"
         ],
         "disabled": true
+      },
+      "atelier_hero": {
+        "type": "atelier-hero",
+        "blocks": {
+          "trust-1": {
+            "type": "trust",
+            "settings": {
+              "icon": "delivery",
+              "title": "Free UK delivery",
+              "text": "on orders over £500",
+              "link": ""
+            }
+          },
+          "trust-2": {
+            "type": "trust",
+            "settings": {
+              "icon": "workshop",
+              "title": "Made to measure",
+              "text": "in our own workshop",
+              "link": "shopify://pages/contact-us"
+            }
+          },
+          "trust-3": {
+            "type": "trust",
+            "settings": {
+              "icon": "pin",
+              "title": "Visit our shop",
+              "text": "East Sheen, Monday to Saturday",
+              "link": "shopify://pages/contact-us"
+            }
+          },
+          "trust-4": {
+            "type": "trust",
+            "settings": {
+              "icon": "swatch",
+              "title": "Designer fabrics",
+              "text": "Harlequin, Sanderson, Zoffany & Scion",
+              "link": "shopify://collections/fabrics"
+            }
+          }
+        },
+        "block_order": [
+          "trust-1",
+          "trust-2",
+          "trust-3",
+          "trust-4"
+        ],
+        "settings": {
+          "eyebrow": "Designer fabrics · made to measure · East Sheen, London",
+          "heading": "Beautiful fabric, made into something you’ll keep",
+          "text": "<p>Choose from Harlequin, Sanderson, Zoffany and more, then let our workshop turn it into curtains, blinds or a re-upholstered favourite.</p>",
+          "button_label": "Shop fabrics",
+          "button_link": "shopify://collections/fabrics",
+          "button2_label": "Request a quote",
+          "button2_link": "shopify://pages/contact-us",
+          "image": "shopify://shop_images/6_1.jpg",
+          "credit": "Photo: Style Library"
+        }
+      },
+      "atelier_use": {
+        "type": "atelier-cards",
+        "blocks": {
+          "use-1": {
+            "type": "card",
+            "settings": {
+              "image": "shopify://shop_images/sheen-pencil-pleat-photo.jpg",
+              "title": "Curtain fabrics",
+              "text": "Linens, prints and velvets that hang beautifully and filter the light.",
+              "link": "shopify://collections/fabrics"
+            }
+          },
+          "use-2": {
+            "type": "card",
+            "settings": {
+              "image": "shopify://shop_images/sheen-wingback-chair-photo.jpg",
+              "title": "Upholstery fabrics",
+              "text": "Hard-wearing weaves, velvets and chenilles for sofas and chairs.",
+              "link": "shopify://collections/fabrics"
+            }
+          },
+          "use-3": {
+            "type": "card",
+            "settings": {
+              "image": "shopify://shop_images/sheen-roman-blind-photo.jpg",
+              "title": "Blind fabrics",
+              "text": "Crisp linens and plains that fold neatly into Roman blinds.",
+              "link": "shopify://collections/fabrics"
+            }
+          },
+          "use-4": {
+            "type": "card",
+            "settings": {
+              "image": "shopify://shop_images/sheen-headboard-photo.jpg",
+              "title": "Headboards & cushions",
+              "text": "Velvets and statement prints for the finishing touches.",
+              "link": "shopify://collections/fabrics"
+            }
+          }
+        },
+        "block_order": [
+          "use-1",
+          "use-2",
+          "use-3",
+          "use-4"
+        ],
+        "settings": {
+          "heading": "Shop by how you’ll use it",
+          "link_label": "All fabrics",
+          "link": "shopify://collections/fabrics",
+          "style": "card",
+          "columns": 4,
+          "pad_end": false
+        }
+      },
+      "atelier_brands": {
+        "type": "atelier-cards",
+        "blocks": {
+          "brand-1": {
+            "type": "card",
+            "settings": {
+              "collection": "harlequin",
+              "title": "Harlequin"
+            }
+          },
+          "brand-2": {
+            "type": "card",
+            "settings": {
+              "collection": "sanderson-fabrics",
+              "title": "Sanderson"
+            }
+          },
+          "brand-3": {
+            "type": "card",
+            "settings": {
+              "collection": "zoffany",
+              "title": "Zoffany"
+            }
+          },
+          "brand-4": {
+            "type": "card",
+            "settings": {
+              "collection": "scion",
+              "title": "Scion"
+            }
+          }
+        },
+        "block_order": [
+          "brand-1",
+          "brand-2",
+          "brand-3",
+          "brand-4"
+        ],
+        "settings": {
+          "heading": "The houses we stock",
+          "link_label": "All fabrics",
+          "link": "shopify://collections/fabrics",
+          "style": "tile",
+          "columns": 4,
+          "pad_end": false
+        }
+      },
+      "atelier_mtm": {
+        "type": "atelier-feature",
+        "blocks": {
+          "step-1": {
+            "type": "step",
+            "settings": {
+              "text": "Choose your fabric online or in the shop"
+            }
+          },
+          "step-2": {
+            "type": "step",
+            "settings": {
+              "text": "Tell us what you’re making and the size of your window or piece"
+            }
+          },
+          "step-3": {
+            "type": "step",
+            "settings": {
+              "text": "We make it by hand and let you know when it’s ready"
+            }
+          }
+        },
+        "block_order": [
+          "step-1",
+          "step-2",
+          "step-3"
+        ],
+        "settings": {
+          "image": "shopify://shop_images/sheen-pinch-pleat-photo.jpg",
+          "eyebrow": "Made to measure",
+          "heading": "Your fabric, made up in our workshop",
+          "text": "<p>Curtains, Roman blinds, cushions, headboards and full re-upholstery, finished by hand.</p>",
+          "note": "",
+          "button_label": "Request a quote",
+          "button_link": "shopify://pages/contact-us",
+          "button2_label": "Fabric calculator",
+          "button2_link": "shopify://pages/fabric-calculator"
+        }
+      },
+      "atelier_reviews": {
+        "type": "atelier-quotes",
+        "blocks": {
+          "review-1": {
+            "type": "quote",
+            "settings": {
+              "text": "<p>A wonderful company, will use no-one else. Yacob delivered our headboard, a fantastic finish! Outstanding job. Communication and service was excellent.</p>",
+              "author": "Lisa"
+            }
+          },
+          "review-2": {
+            "type": "quote",
+            "settings": {
+              "text": "<p>Sheen upholstery transformed our old and damaged arm chair into an elegant and charming work of art. Even our pets love it. Really professional, courteous and competent. We highly recommend them</p>",
+              "author": "Marta"
+            }
+          },
+          "review-3": {
+            "type": "quote",
+            "settings": {
+              "text": "<p>Did a great job reupholstering my old sofa. Looks like new - couldn't be happier with the work and service and thought the price was very fair for the quality and speed of the job.</p>",
+              "author": "David"
+            }
+          },
+          "review-4": {
+            "type": "quote",
+            "settings": {
+              "text": "<p>We are very pleased, again, with Sheen Upholstery. Our heirloom Bedhead, was swiftly reupholstered after having ample choice of fabrics, collection and delivery. Always a pleasure to deal with this team.</p>",
+              "author": "Malcolm"
+            }
+          },
+          "review-5": {
+            "type": "quote",
+            "settings": {
+              "text": "<p>I had a leather armchair with a broken spring which had fallen through underneath the chair. Jacob offered to come and look. He took the chair and cushion away at 12.30 and returned it completely re-upholstered at 5:30. It was a new chair. He then took an old office leather arm chair and has just returned it looking like new. Their prices are reasonable and the service is the most professional and friendly.</p>",
+              "author": "Gonzo"
+            }
+          },
+          "review-6": {
+            "type": "quote",
+            "settings": {
+              "text": "<p>Really happy with repair of our chesterfield armchair. Free collect and delivery service and very reasonably priced. Friendly, professional and trustworthy. Thanks very much.</p>",
+              "author": "Hannah"
+            }
+          }
+        },
+        "block_order": [
+          "review-1",
+          "review-2",
+          "review-3",
+          "review-4",
+          "review-5",
+          "review-6"
+        ],
+        "settings": {
+          "heading": "What our customers say",
+          "link_label": "See our latest projects",
+          "link": "shopify://pages/latest-projects"
+        }
+      },
+      "atelier_visit": {
+        "type": "atelier-visit",
+        "settings": {
+          "eyebrow": "Visit us",
+          "heading": "Come and feel the fabrics",
+          "address": "358 Upper Richmond Road West, East Sheen, London SW14 7JT",
+          "hours": "Monday to Saturday, 9am to 6pm",
+          "phone": "020 8878 6474",
+          "email": "info@sheenupholstery.co.uk",
+          "map_url": "https://www.google.com/maps/dir/?api=1&destination=358+Upper+Richmond+Road+West,+London+SW14+7JT",
+          "image": "shopify://shop_images/2_1.jpg"
+        }
       }
     },
     "content_for_index": [
+      "atelier_hero",
+      "atelier_use",
+      "atelier_brands",
+      "atelier_mtm",
+      "atelier_reviews",
+      "atelier_visit",
       "1498163293234",
       "1499790633921",
       "1524769873765",
