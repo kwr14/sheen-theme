@@ -1924,7 +1924,8 @@
             "type": "card",
             "settings": {
               "collection": "sanderson-fabrics",
-              "title": "Sanderson"
+              "title": "Sanderson",
+              "image": "shopify://shop_images/1_1.jpg"
             }
           },
           "brand-3": {
@@ -2066,7 +2067,7 @@
           "phone": "020 8878 6474",
           "email": "info@sheenupholstery.co.uk",
           "map_url": "https://www.google.com/maps/dir/?api=1&destination=358+Upper+Richmond+Road+West,+London+SW14+7JT",
-          "image": "shopify://shop_images/2_1.jpg"
+          "image": "shopify://shop_images/5_1.jpg"
         }
       }
     },
