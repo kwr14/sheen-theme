@@ -4,7 +4,8 @@
 {% endcomment %}
 {{ 'atelier.css' | asset_url | stylesheet_tag }}
 {%- assign hf = settings.type_header_font_family -%}
-<div class="atl" id="atl-{{ section.id }}" style="--atl-heading-font: {{ hf.family }}, {{ hf.fallback_families }};">
+<style>#atl-{{ section.id }} { --atl-heading-font: {{ hf.family }}, {{ hf.fallback_families }}; }</style>
+<div class="atl" id="atl-{{ section.id }}">
   <div class="atl-w atl-pad atl-pad--end">
     <div class="atl-visit">
       <div>

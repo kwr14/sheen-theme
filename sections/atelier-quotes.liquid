@@ -3,7 +3,8 @@
 {% endcomment %}
 {{ 'atelier.css' | asset_url | stylesheet_tag }}
 {%- assign hf = settings.type_header_font_family -%}
-<div class="atl" id="atl-{{ section.id }}" style="--atl-heading-font: {{ hf.family }}, {{ hf.fallback_families }};">
+<style>#atl-{{ section.id }} { --atl-heading-font: {{ hf.family }}, {{ hf.fallback_families }}; }</style>
+<div class="atl" id="atl-{{ section.id }}">
   <div class="atl-w atl-pad">
     <div class="atl-head">
       <h2 class="atl-h2">{{ section.settings.heading }}</h2>
@@ -14,7 +15,7 @@
     <div class="atl-quotes">
       {%- for block in section.blocks -%}
         <figure class="atl-quote" {{ block.shopify_attributes }}>
-          <blockquote class="atl-quote__text" style="margin:0">{{ block.settings.text }}</blockquote>
+          <blockquote class="atl-quote__text">{{ block.settings.text }}</blockquote>
           {%- if block.settings.author != blank -%}<figcaption><cite>{{ block.settings.author }}</cite></figcaption>{%- endif -%}
         </figure>
       {%- endfor -%}

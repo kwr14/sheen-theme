@@ -5,7 +5,8 @@
 {% endcomment %}
 {{ 'atelier.css' | asset_url | stylesheet_tag }}
 {%- assign hf = settings.type_header_font_family -%}
-<div class="atl" id="atl-{{ section.id }}" style="--atl-heading-font: {{ hf.family }}, {{ hf.fallback_families }};">
+<style>#atl-{{ section.id }} { --atl-heading-font: {{ hf.family }}, {{ hf.fallback_families }}; }</style>
+<div class="atl" id="atl-{{ section.id }}">
   <div class="atl-w atl-pad{% if section.settings.pad_end %} atl-pad--end{% endif %}">
     <div class="atl-head">
       <h2 class="atl-h2">{{ section.settings.heading }}</h2>
@@ -22,7 +23,7 @@
         {%- assign href = block.settings.link | default: col.url | default: '/collections/all' -%}
         {%- capture picture -%}
           {%- if img != blank -%}
-            {%- assign card_alt = img.alt | default: title -%}
+            {%- if block.settings.image != blank -%}{%- assign card_alt = img.alt | default: title -%}{%- else -%}{%- assign card_alt = title -%}{%- endif -%}
             {{ img | image_url: width: 1000 | image_tag: loading: 'lazy', widths: '300, 500, 700, 1000', sizes: '(max-width: 900px) 50vw, 25vw', alt: card_alt }}
           {%- else -%}
             {{ 'collection-1' | placeholder_svg_tag }}

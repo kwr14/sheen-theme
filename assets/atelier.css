@@ -89,7 +89,8 @@
 /* Quotes */
 .atl-quotes { columns: 3; column-gap: 22px; }
 .atl-quote { break-inside: avoid; background: var(--atl-card); border-radius: 6px; padding: 30px 30px 26px; margin: 0 0 22px; display: flex; flex-direction: column; gap: 18px; }
-.atl-quote__text { font-family: var(--atl-heading-font, inherit); font-size: 19px; line-height: 1.45; }
+.atl blockquote.atl-quote__text { font-family: var(--atl-heading-font, inherit); font-size: 19px; line-height: 1.45; font-style: normal; margin: 0; padding: 0; border: 0; text-align: left; quotes: none; color: var(--atl-ink); max-width: none; }
+.atl blockquote.atl-quote__text::before, .atl blockquote.atl-quote__text::after { content: none; display: none; }
 .atl-quote__text p + p { margin-top: 10px; }
 .atl-quote cite { font-style: normal; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--atl-mute); }
 
@@ -115,7 +116,8 @@
   .atl-quotes { columns: 2; }
 }
 @media (max-width: 600px) {
-  .atl-w { padding: 0 16px; }
+  .atl-w { padding-left: 16px; padding-right: 16px; }
+  .atl-quote:nth-child(n+4) { display: none; }
   .atl-trust { grid-template-columns: minmax(0, 1fr); }
   .atl-trust__item { padding: 16px 0; }
   .atl-quotes { columns: 1; }
