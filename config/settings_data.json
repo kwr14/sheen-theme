@@ -1768,25 +1768,28 @@
           "piece-1": {
             "type": "piece",
             "settings": {
-              "name": "Curved or cocoon sofa",
+              "name": "Curved sofa",
               "render": "fr-curved-sofa-room-card.jpg",
-              "link": "shopify://products/curved-sofa"
+              "link": "shopify://products/curved-sofa",
+              "image": "shopify://shop_images/sheen-curved-sofa-photo.jpg"
             }
           },
           "piece-2": {
             "type": "piece",
             "settings": {
-              "name": "Curved tub / barrel chair",
+              "name": "Tub chair",
               "render": "fr-tub-chair-room-card.jpg",
-              "link": "shopify://products/tub-chair"
+              "link": "shopify://products/tub-chair",
+              "image": "shopify://shop_images/sheen-tub-chair-photo.jpg"
             }
           },
           "piece-3": {
             "type": "piece",
             "settings": {
-              "name": "Tall fluted / channelled",
-              "render": "fr-headboard-room-card.jpg",
-              "link": "shopify://products/headboard-double"
+              "name": "Scalloped headboard",
+              "image": "shopify://shop_images/sheen-scalloped-headboard-photo.jpg",
+              "render": "fr-scalloped-headboard-room-card.jpg",
+              "link": "shopify://products/scalloped-headboard"
             }
           }
         },
@@ -1794,8 +1797,7 @@
           "piece-1",
           "piece-2",
           "piece-3"
-        ],
-        "disabled": true
+        ]
       },
       "atelier_hero": {
         "type": "atelier-hero",
@@ -1955,7 +1957,7 @@
           "link": "shopify://collections/fabrics",
           "style": "tile",
           "columns": 4,
-          "pad_end": false
+          "pad_end": true
         }
       },
       "atelier_mtm": {
@@ -2075,13 +2077,13 @@
       "atelier_hero",
       "atelier_use",
       "atelier_brands",
+      "home_furniture",
       "atelier_mtm",
       "atelier_reviews",
       "atelier_visit",
       "1498163293234",
       "1499790633921",
       "1524769873765",
-      "home_furniture",
       "1525912530555",
       "1499789718857",
       "1525886124958",

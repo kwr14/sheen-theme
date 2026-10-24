@@ -10,7 +10,7 @@
   #hf-{{ sid }} * { box-sizing: border-box; }
   #hf-{{ sid }} .hf-inner { max-width: 1280px; margin: 0 auto; padding: 88px 32px; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 64px; align-items: center; }
   #hf-{{ sid }} .hf-eyebrow { font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: {{ section.settings.accent }}; margin: 0 0 20px; font-weight: 500; }
-  #hf-{{ sid }} .hf-h { font-family: var(--font-heading-family, inherit); font-weight: 300; font-size: clamp(36px, 4.6vw, 64px); line-height: 1; letter-spacing: -.015em; margin: 0; color: {{ section.settings.text_color }}; text-transform: none; text-wrap: balance; }
+  #hf-{{ sid }} .hf-h { font-family: {{ settings.type_header_font_family.family }}, {{ settings.type_header_font_family.fallback_families }}; font-weight: 400; font-size: clamp(36px, 4.6vw, 64px); line-height: 1; letter-spacing: -.015em; margin: 0; color: {{ section.settings.text_color }}; text-transform: none; text-wrap: balance; }
   #hf-{{ sid }} .hf-text { font-size: 17px; line-height: 1.65; color: {{ section.settings.text_color }}; opacity: .82; font-weight: 300; margin: 22px 0 0; max-width: 440px; }
   #hf-{{ sid }} .hf-text p { margin: 0; }
   #hf-{{ sid }} .hf-btn { display: inline-flex; align-items: center; gap: 10px; min-height: 50px; padding: 0 28px; margin-top: 32px; border-radius: 999px; background: {{ section.settings.text_color }}; color: {{ section.settings.background }}; text-decoration: none; font-size: 14px; letter-spacing: .08em; text-transform: uppercase; transition: background .2s; }
