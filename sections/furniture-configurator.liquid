@@ -189,7 +189,7 @@
   #fc-{{ section.id }} .fc-stage { position: relative; background: var(--fc-soft); border-radius: 4px; aspect-ratio: 8 / 7; display: flex; align-items: center; justify-content: center; overflow: hidden; }
   #fc-{{ section.id }} .fc-stage img { width: 100%; height: 100%; object-fit: cover; display: block; transition: opacity .2s ease; }
   #fc-{{ section.id }} .fc-stage.is-loading img { opacity: .35; }
-  #fc-{{ section.id }} .fc-stage svg.placeholder-svg { width: 70%; height: auto; fill: #cfc7ba; }
+  #fc-{{ section.id }} .fc-stage svg.placeholder-svg { width: 70%; height: auto; fill: #ddd5c8; }
   #fc-{{ section.id }} .fc-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--fc-line); background: rgba(255,255,255,.92); color: var(--fc-ink); display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; }
   #fc-{{ section.id }} .fc-nav:focus-visible { outline: 2px solid var(--fc-ink); outline-offset: 2px; }
   #fc-{{ section.id }} .fc-nav-prev { left: 12px; }
@@ -221,7 +221,7 @@
   #fc-{{ section.id }} .fc-colours { display: grid; grid-template-columns: repeat(6, minmax(0, 72px)); gap: 12px; }
   #fc-{{ section.id }} .fc-colour { position: relative; display: flex; flex-direction: column; gap: 6px; cursor: pointer; font-size: 12px; line-height: 1.25; color: var(--fc-muted); }
   #fc-{{ section.id }} .fc-colour input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-  #fc-{{ section.id }} .fc-chip { display: block; aspect-ratio: 1; border-radius: 50%; border: 1px solid #d8d2c8; background-color: var(--fc-soft); background-size: cover; background-position: center; box-shadow: 0 0 0 3px var(--fc-bg); }
+  #fc-{{ section.id }} .fc-chip { display: block; aspect-ratio: 1; border-radius: 50%; border: 1px solid #ddd5c8; background-color: var(--fc-soft); background-size: cover; background-position: center; box-shadow: 0 0 0 3px var(--fc-bg); }
   #fc-{{ section.id }} .fc-colour input:checked + .fc-chip { box-shadow: 0 0 0 3px var(--fc-bg), 0 0 0 5px var(--fc-ink); }
   #fc-{{ section.id }} .fc-colour input:checked ~ .fc-colour-name { color: var(--fc-ink); font-weight: 500; }
   #fc-{{ section.id }} .fc-colour input:focus-visible + .fc-chip { outline: 2px solid var(--fc-ink); outline-offset: 6px; }
@@ -669,7 +669,7 @@
         var kind = I.kindFor(D.productType);
         var shots = I.viewsFor ? I.viewsFor(kind) : [{ view: 'front', label: D.illusLabel || 'Your colour' }];
         var drawn = shots.map(function (v) {
-          var pic = I.render({ kind: kind, colour: f.chip || '#b9ae9c', family: f.family, view: v.view });
+          var pic = I.render({ kind: kind, colour: f.chip || '#b9b0a1', family: f.family, view: v.view });
           return { src: pic, thumb: pic, label: v.label, drawn: true,
                    alt: (f.name || '') + ' — ' + v.label.toLowerCase() + ' (illustration)', note: D.illusNote || '' };
         });
@@ -857,7 +857,7 @@
       var kind = I.kindFor(D.productType);
       if (!R.has(kind)) return;
       var token = ++renderToken;
-      R.views(kind, f.family, f.chip || '#b9ae9c').then(function (shots) {
+      R.views(kind, f.family, f.chip || '#b9b0a1').then(function (shots) {
         if (token !== renderToken || state.fabric !== handle) return;
         var list = shots.map(function (s) {
           return { src: s.src, thumb: s.src, label: s.label,
