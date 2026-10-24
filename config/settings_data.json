@@ -177,7 +177,7 @@
           "1524770296206"
         ],
         "settings": {
-          "main_menu_link_list": "main-menu",
+          "main_menu_link_list": "main-menu-staging",
           "mega_menu_images": false,
           "main_menu_alignment": "left-center",
           "header_style": "normal",
