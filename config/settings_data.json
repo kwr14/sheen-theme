@@ -1743,9 +1743,9 @@
           "menu_label": "Product types",
           "cta_label": "Choose your fabric",
           "default_link": "",
-          "background": "#1c241f",
-          "text": "#efe9dc",
-          "accent": "#d9bd84",
+          "background": "#f6f3ee",
+          "text": "#1f2a24",
+          "accent": "#6b5a2e",
           "end_heading": "Can’t see your room here?",
           "end_text": "Tell us about your space and we’ll suggest a style and fabric.",
           "end_label": "Contact us",
@@ -1759,9 +1759,9 @@
           "heading": "Furniture made for the room you have",
           "button_label": "Explore furniture",
           "button_link": "shopify://pages/furniture",
-          "background": "#1c241f",
-          "accent": "#d9bd84",
-          "text_color": "#efe9dc",
+          "background": "#f6f3ee",
+          "accent": "#6b5a2e",
+          "text_color": "#1f2a24",
           "text": "<p>Sofas, armchairs, headboards, footstools, curtains and blinds, each made to order in the fabric you choose.</p>"
         },
         "blocks": {
@@ -1957,7 +1957,7 @@
           "link": "shopify://collections/fabrics",
           "style": "tile",
           "columns": 4,
-          "pad_end": true
+          "pad_end": false
         }
       },
       "atelier_mtm": {
