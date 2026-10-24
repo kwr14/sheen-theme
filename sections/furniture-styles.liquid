@@ -29,14 +29,18 @@
   #rr-{{ sid }} * { box-sizing: border-box; }
   #rr-{{ sid }} a { color: inherit; }
   #rr-{{ sid }} .rr-wrap { max-width: 1280px; margin: 0 auto; padding: 0 32px; }
-  #rr-{{ sid }} .rr-hero { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: 64px; align-items: end; padding: 72px 0 88px; border-bottom: 1px solid var(--rr-line); }
+  #rr-{{ sid }} .rr-hero { display: flex; flex-direction: column; gap: 44px; padding: 72px 0 0; }
   #rr-{{ sid }} .rr-eyebrow { font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--rr-accent); margin: 0 0 22px; font-weight: 500; }
   #rr-{{ sid }} .rr-h1 { font-family: var(--font-heading-family, inherit); font-weight: 400; font-size: clamp(44px, 6.4vw, 96px); line-height: .96; letter-spacing: -.02em; margin: 0; text-wrap: balance; color: var(--rr-ink); text-transform: none; }
   #rr-{{ sid }} .rr-intro { font-size: 17px; line-height: 1.65; color: var(--rr-soft); font-weight: 300; margin: 28px 0 0; max-width: 480px; }
   #rr-{{ sid }} .rr-intro p { margin: 0; }
-  #rr-{{ sid }} .rr-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--rr-line); }
-  #rr-{{ sid }} .rr-list a { display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; align-items: baseline; gap: 12px; padding: 16px 0; border-bottom: 1px solid var(--rr-line); text-decoration: none; font-size: 22px; font-weight: 300; transition: padding .25s ease, color .25s; }
-  #rr-{{ sid }} .rr-list a:hover, #rr-{{ sid }} .rr-list a:focus-visible { padding-left: 12px; color: var(--rr-accent); outline: none; }
+  #rr-{{ sid }} .rr-list { list-style: none; margin: 0; padding: 0; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); border-top: 1px solid var(--rr-line); border-bottom: 1px solid var(--rr-line); }
+  #rr-{{ sid }} .rr-list li + li a { border-left: 1px solid var(--rr-line); }
+  #rr-{{ sid }} .rr-list li:first-child a { padding-left: 0; }
+  #rr-{{ sid }} .rr-list a { display: flex; flex-direction: column; gap: 6px; height: 100%; padding: 18px 20px; text-decoration: none; font-size: 22px; line-height: 1.2; font-weight: 300; transition: color .25s; }
+  #rr-{{ sid }} .rr-list a:hover, #rr-{{ sid }} .rr-list a:focus-visible { color: var(--rr-accent); outline: none; }
+  #rr-{{ sid }} .rr-list a:hover small, #rr-{{ sid }} .rr-list a:hover em, #rr-{{ sid }} .rr-list a:focus-visible small, #rr-{{ sid }} .rr-list a:focus-visible em { color: var(--rr-accent); }
+  #rr-{{ sid }} .rr-list a:focus-visible span { text-decoration: underline; text-underline-offset: 4px; }
   #rr-{{ sid }} .rr-list small { font-size: 12px; letter-spacing: .14em; color: var(--rr-muted); font-weight: 400; }
   #rr-{{ sid }} .rr-list em { font-style: normal; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--rr-muted); }
   #rr-{{ sid }} .rr-cat { padding: 96px 0 0; scroll-margin-top: 110px; }
@@ -64,7 +68,10 @@
   #rr-{{ sid }} .rr-btn { display: inline-flex; align-items: center; min-height: 50px; padding: 0 28px; border-radius: 999px; background: var(--rr-ink); color: var(--rr-bg); text-decoration: none; font-size: 14px; letter-spacing: .08em; text-transform: uppercase; transition: background .2s; }
   #rr-{{ sid }} .rr-btn:hover, #rr-{{ sid }} .rr-btn:focus-visible { background: var(--rr-accent); color: var(--rr-bg); }
   @media (max-width: 900px) {
-    #rr-{{ sid }} .rr-hero { grid-template-columns: minmax(0, 1fr); gap: 40px; padding: 40px 0 56px; }
+    #rr-{{ sid }} .rr-hero { gap: 32px; padding: 40px 0 0; }
+    #rr-{{ sid }} .rr-list { grid-auto-columns: minmax(150px, 1fr); overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+    #rr-{{ sid }} .rr-list::-webkit-scrollbar { display: none; }
+    #rr-{{ sid }} .rr-list a { scroll-snap-align: start; padding: 14px 16px; }
     #rr-{{ sid }} .rr-row { grid-template-columns: minmax(0, 1fr); gap: 20px; }
     #rr-{{ sid }} .rr-band { aspect-ratio: 4 / 3; }
     #rr-{{ sid }} .rr-cat { padding-top: 64px; }
