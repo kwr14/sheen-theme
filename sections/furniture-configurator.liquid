@@ -171,10 +171,10 @@
   #fc-{{ section.id }} {
     --fc-bg: {{ section.settings.background }};
     --fc-card: #ffffff;
-    --fc-ink: #111111;
-    --fc-muted: #5a5650;
-    --fc-line: #e3ded6;
-    --fc-soft: #ede8e0;
+    --fc-ink: #1f2a24;
+    --fc-muted: #5a635e;
+    --fc-line: #ddd5c8;
+    --fc-soft: #ebe5da;
     background: var(--fc-bg);
     color: var(--fc-ink);
   }
@@ -203,7 +203,7 @@
   #fc-{{ section.id }} .fc-view[aria-pressed="true"] img { border: 2px solid var(--fc-ink); }
   #fc-{{ section.id }} .fc-view:focus-visible img { outline: 2px solid var(--fc-ink); outline-offset: 2px; }
   #fc-{{ section.id }} .fc-panel { display: flex; flex-direction: column; gap: 28px; }
-  #fc-{{ section.id }} .fc-title { font-family: var(--font-heading-family, inherit); font-weight: 500; font-size: clamp(34px, 4vw, 48px); line-height: 1.05; margin: 0 0 12px; }
+  #fc-{{ section.id }} .fc-title { font-family: var(--font-heading-family, inherit); font-weight: 400; font-size: clamp(34px, 4vw, 48px); line-height: 1.05; margin: 0 0 12px; }
   #fc-{{ section.id }} .fc-desc { font-size: 16px; line-height: 1.6; color: var(--fc-muted); }
   #fc-{{ section.id }} .fc-desc p { margin: 0 0 8px; }
   #fc-{{ section.id }} .fc-price { display: flex; align-items: baseline; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
@@ -245,9 +245,9 @@
   #fc-{{ section.id }} .fc-breakdown { background: var(--fc-card); border: 1px solid var(--fc-line); border-radius: 4px; padding: 20px 22px; display: flex; flex-direction: column; gap: 10px; font-size: 15px; }
   #fc-{{ section.id }} .fc-row { display: flex; justify-content: space-between; gap: 16px; }
   #fc-{{ section.id }} .fc-row-total { font-weight: 500; font-size: 17px; }
-  #fc-{{ section.id }} .fc-add { width: 100%; min-height: 56px; border: 0; border-radius: 4px; background: var(--fc-ink); color: #fff; font: inherit; font-size: 16px; font-weight: 500; cursor: pointer; }
+  #fc-{{ section.id }} .fc-add { width: 100%; min-height: 56px; border: 0; border-radius: 999px; background: var(--fc-ink); color: #f6f3ee; font: inherit; font-size: 14px; letter-spacing: .08em; text-transform: uppercase; font-weight: 500; cursor: pointer; }
   #fc-{{ section.id }} .fc-add:disabled { opacity: .5; cursor: not-allowed; }
-  #fc-{{ section.id }} .fc-swatch-btn { width: 100%; min-height: 48px; margin-top: 10px; border: 1px solid var(--fc-ink); border-radius: 4px; background: transparent; color: var(--fc-ink); font: inherit; font-size: 15px; font-weight: 500; cursor: pointer; }
+  #fc-{{ section.id }} .fc-swatch-btn { width: 100%; min-height: 48px; margin-top: 10px; border: 1px solid var(--fc-ink); border-radius: 999px; background: transparent; color: var(--fc-ink); font: inherit; font-size: 15px; font-weight: 500; cursor: pointer; }
   #fc-{{ section.id }} .fc-swatch-btn:disabled { opacity: .5; cursor: not-allowed; }
   #fc-{{ section.id }} .fc-small { font-size: 14px; line-height: 1.5; color: var(--fc-muted); margin: 12px 0 0; }
   #fc-{{ section.id }} .fc-note { font-size: 13px; color: var(--fc-muted); margin: 8px 0 0; }
@@ -259,12 +259,12 @@
   #fc-{{ section.id }} .fc-plain label { display: flex; gap: 10px; align-items: center; padding: 10px 14px; border: 1px solid var(--fc-line); border-radius: 4px; background: var(--fc-card); font-size: 14px; cursor: pointer; }
   #fc-{{ section.id }} .fc-details { background: var(--fc-card); border-top: 1px solid var(--fc-line); }
   #fc-{{ section.id }} .fc-details-inner { max-width: 1280px; margin: 0 auto; padding: 64px 32px; display: grid; grid-template-columns: 7fr 5fr; gap: 64px; }
-  #fc-{{ section.id }} h2 { font-family: var(--font-heading-family, inherit); font-weight: 500; font-size: 34px; margin: 0 0 20px; }
+  #fc-{{ section.id }} h2 { font-family: var(--font-heading-family, inherit); font-weight: 400; font-size: 34px; margin: 0 0 20px; }
   #fc-{{ section.id }} table { width: 100%; border-collapse: collapse; font-size: 15px; }
   #fc-{{ section.id }} th, #fc-{{ section.id }} td { border-top: 1px solid var(--fc-line); padding: 14px 0; vertical-align: top; text-align: left; }
   #fc-{{ section.id }} th { font-weight: 500; width: 40%; padding-right: 16px; }
-  #fc-{{ section.id }} td { color: #3f3c38; }
-  #fc-{{ section.id }} .fc-pricing-text { font-size: 15px; line-height: 1.7; color: #3f3c38; }
+  #fc-{{ section.id }} td { color: #4a5550; }
+  #fc-{{ section.id }} .fc-pricing-text { font-size: 15px; line-height: 1.7; color: #4a5550; }
   #fc-{{ section.id }} .fc-pricing-text p { margin: 0 0 14px; }
   #fc-{{ section.id }} .fc-link { font-size: 15px; font-weight: 500; color: var(--fc-ink); }
   @media (max-width: 900px) {

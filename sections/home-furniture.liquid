@@ -16,7 +16,7 @@
   #hf-{{ sid }} .hf-btn { display: inline-flex; align-items: center; gap: 10px; min-height: 50px; padding: 0 28px; margin-top: 32px; border-radius: 999px; background: {{ section.settings.text_color }}; color: {{ section.settings.background }}; text-decoration: none; font-size: 14px; letter-spacing: .08em; text-transform: uppercase; transition: background .2s; }
   #hf-{{ sid }} .hf-btn:hover, #hf-{{ sid }} .hf-btn:focus-visible { background: {{ section.settings.accent }}; color: {{ section.settings.background }}; }
   #hf-{{ sid }} .hf-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); gap: 16px; }
-  #hf-{{ sid }} .hf-piece { position: relative; display: block; border-radius: 10px; overflow: hidden; background: #2a332d; aspect-ratio: 4 / 3; text-decoration: none; }
+  #hf-{{ sid }} .hf-piece { position: relative; display: block; border-radius: 10px; overflow: hidden; background: {{ section.settings.text_color | color_modify: 'alpha', 0.07 }}; aspect-ratio: 4 / 3; text-decoration: none; }
   #hf-{{ sid }} .hf-piece:first-child { grid-row: span 2; aspect-ratio: auto; min-height: 100%; }
   #hf-{{ sid }} .hf-piece img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 1s ease; }
   #hf-{{ sid }} .hf-piece:hover img, #hf-{{ sid }} .hf-piece:focus-visible img { transform: scale(1.04); }

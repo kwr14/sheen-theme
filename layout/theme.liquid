@@ -70,6 +70,7 @@
 
     {% include 'font-face' %}
     {{ 'theme.scss.css' | asset_url | stylesheet_tag }}
+    <style>:root { --font-heading-family: {{ settings.type_header_font_family.family }}, {{ settings.type_header_font_family.fallback_families }}; }</style>
 
     {% style %}
       .collection-item__title {
