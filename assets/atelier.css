@@ -47,8 +47,9 @@
 /* Hero */
 .atl-hero { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 56px; align-items: center; padding: 48px 0 64px; }
 .atl-hero__media { margin: 0; }
-.atl-hero__img { border-radius: 4px; overflow: hidden; aspect-ratio: 16 / 11; background: var(--atl-panel); }
-.atl-hero__img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.atl-hero__img { border-radius: 4px; overflow: hidden; background: var(--atl-panel); }
+.atl-hero__img img { width: 100%; height: auto; display: block; }
+.atl-hero__img svg { width: 100%; height: auto; display: block; aspect-ratio: 16 / 9; }
 .atl-credit { font-size: 12px; color: var(--atl-mute); margin-top: 8px; text-align: right; }
 .atl-trust { display: grid; grid-template-columns: repeat(var(--atl-cols, 4), minmax(0, 1fr)); border-top: 1px solid var(--atl-line); border-bottom: 1px solid var(--atl-line); }
 .atl-trust__item { padding: 22px 20px; display: flex; gap: 14px; align-items: flex-start; font-size: 15px; line-height: 1.45; }
