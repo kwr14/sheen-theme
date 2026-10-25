@@ -631,7 +631,7 @@
     function setText(s, t) { var el = $(s); if (el) el.textContent = t; }
     function setVal(s, t) { var el = $(s); if (el) el.value = t; }
 
-    var state = { fabric: null, size: null };
+    var state = { fabric: null, size: null, touched: false };
     var sizeInputs = $$('[data-fc-size]');
     var checkedSize = sizeInputs.filter(function (i) { return i.checked; })[0];
     if (D.sizeIdx >= 0) {
@@ -660,8 +660,17 @@
       if (tagged.length) return { list: tagged, generic: false };
       var base = untagged.length ? untagged : D.images;
       var list = base.map(function (im, n) {
+        // Alt text like "Roll-arm Sofa in sage linen, front view" names the fabric and the view
+        var m = (im.alt || '').trim().match(/\bin ([^,]+),\s*(.+)$/i);
         var label = (D.labels[n] || '').trim() || ('View ' + (n + 1));
-        return { src: im.src, thumb: im.thumb, label: label, alt: im.alt || label, note: f ? D.photoNote : '' };
+        var note = f ? D.photoNote : '';
+        if (m) {
+          var v = m[2].replace(/\s+view$/i, '').trim();
+          if (/detail/i.test(v)) v = 'Detail';
+          label = v.charAt(0).toUpperCase() + v.slice(1);
+          note = 'Shown in ' + m[1].trim();
+        }
+        return { src: im.src, thumb: im.thumb, label: label, alt: im.alt || label, note: note, photo: true };
       });
       var I = window.SheenFurnitureIllustration;
       if (f && D.illustration && I && (f.chip || f.swatch)) {
@@ -673,7 +682,8 @@
           return { src: pic, thumb: pic, label: v.label, drawn: true,
                    alt: (f.name || '') + ' — ' + v.label.toLowerCase() + ' (illustration)', note: D.illusNote || '' };
         });
-        list = drawn.concat(list);
+        // Until the customer picks a colour, lead with the real photos; after that, lead with their colour
+        list = state.touched ? drawn.concat(list) : list.concat(drawn);
       }
       return { list: list, generic: true };
     }
@@ -746,7 +756,7 @@
         // pick the first selectable colour in this family
         var pane = document.getElementById(t.getAttribute('aria-controls'));
         var inp = pane && pane.querySelector('[data-fc-fabric]:not(:disabled)');
-        if (inp) { inp.checked = true; chooseFabric(inp.value); }
+        if (inp) { inp.checked = true; state.touched = true; chooseFabric(inp.value); }
       });
       t.addEventListener('keydown', function (e) {
         var k = e.key, j = null;
@@ -864,7 +874,7 @@
                    alt: (f.name || '') + ' — ' + s.label.toLowerCase(), note: D.renderNote || '' };
         });
         var photos = res.list.filter(function (v) { return !v.drawn; });
-        setViews({ list: list.concat(photos), generic: true });
+        setViews({ list: state.touched ? list.concat(photos) : photos.concat(list), generic: true });
       }).catch(function () { /* keep the drawings */ });
     }
 
@@ -876,7 +886,7 @@
     }
 
     $$('[data-fc-fabric]').forEach(function (inp) {
-      inp.addEventListener('change', function () { if (inp.checked) chooseFabric(inp.value); });
+      inp.addEventListener('change', function () { if (inp.checked) { state.touched = true; chooseFabric(inp.value); } });
     });
     sizeInputs.forEach(function (inp) {
       inp.addEventListener('change', function () { if (inp.checked) { state.size = inp.value; render(); } });
