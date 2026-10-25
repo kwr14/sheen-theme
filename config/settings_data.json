@@ -1768,10 +1768,10 @@
           "piece-1": {
             "type": "piece",
             "settings": {
-              "name": "Curved sofa",
-              "render": "fr-curved-sofa-room-card.jpg",
-              "link": "shopify://products/curved-sofa",
-              "image": "shopify://shop_images/sheen-curved-sofa-photo.jpg"
+              "name": "English roll-arm sofa",
+              "image": "shopify://shop_images/sheen-roll-arm-sofa-photo.jpg",
+              "render": "fr-roll-arm-sofa-room-card.jpg",
+              "link": "shopify://products/roll-arm-sofa"
             }
           },
           "piece-2": {
