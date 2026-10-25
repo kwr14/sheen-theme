@@ -595,6 +595,7 @@
           -%}
           {%- unless first_out %},{% endunless -%}{%- assign first_out = false -%}
           {{ f.system.handle | json }}: {
+            "handle": {{ f.system.handle | json }},
             "name": {{ f.display_name.value | json }},
             "family": {{ f.fabric_family.value | json }},
             "colour": {{ f.colour_name.value | json }},
@@ -646,19 +647,21 @@
     function norm(s) { return String(s || '').toLowerCase().replace(/\s+/g, ''); }
     function viewsFor(f) {
       var tagged = [], untagged = [];
-      var code = norm(f && f.code);
+      var code = norm(f && f.code), handle = norm(f && f.handle);
       D.images.forEach(function (im) {
         var alt = (im.alt || '').trim();
         if (alt.charAt(0) === '#') {
           var sp = alt.indexOf(' ');
           var tag = norm(sp > 0 ? alt.slice(1, sp) : alt.slice(1));
-          if (code && tag === code) tagged.push({ src: im.src, thumb: im.thumb, label: sp > 0 ? alt.slice(sp + 1).trim() : 'View', alt: (f.name || '') + ' — ' + (sp > 0 ? alt.slice(sp + 1).trim() : '') });
+          if ((code && tag === code) || (handle && tag === handle)) tagged.push({ src: im.src, thumb: im.thumb, label: sp > 0 ? alt.slice(sp + 1).trim() : 'View', alt: (f.name || '') + ' — ' + (sp > 0 ? alt.slice(sp + 1).trim() : '') });
         } else {
           untagged.push(im);
         }
       });
       if (tagged.length) return { list: tagged, generic: false };
-      var base = untagged.length ? untagged : D.images;
+      // Only untagged photos are shared across colours; with none, a colour shows its own renders/drawings
+      var base = untagged;
+      if (!base.length && !(f && D.illustration)) base = D.images.filter(function (im) { return (im.alt || '').trim().charAt(0) !== '#'; });
       var list = base.map(function (im, n) {
         // Alt text like "Roll-arm Sofa in sage linen, front view" names the fabric and the view
         var m = (im.alt || '').trim().match(/\bin ([^,]+),\s*(.+)$/i);
@@ -896,6 +899,14 @@
     var start = null;
     try { start = new URL(window.location.href).searchParams.get('fabric'); } catch (e) {}
     var startInput = start ? root.querySelector('[data-fc-fabric][value="' + start.replace(/"/g, '') + '"]:not(:disabled)') : null;
+    if (!startInput) {
+      // Open on the first colour that has its own photos, else the first selectable colour
+      $$('[data-fc-fabric]:not(:disabled)').some(function (inp) {
+        var res = viewsFor(D.fabrics[inp.value]);
+        if (!res.generic && res.list.length) { startInput = inp; return true; }
+        return false;
+      });
+    }
     if (!startInput) startInput = root.querySelector('[data-fc-fabric]:not(:disabled)');
     if (startInput) {
       startInput.checked = true;
