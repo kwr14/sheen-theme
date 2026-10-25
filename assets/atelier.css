@@ -67,20 +67,20 @@
 /* Cards */
 .atl-grid { display: grid; grid-template-columns: repeat(var(--atl-cols, 4), minmax(0, 1fr)); gap: 22px; }
 .atl-card { display: flex; flex-direction: column; gap: 14px; }
-.atl-card__img { aspect-ratio: 4 / 5; border-radius: 4px; overflow: hidden; background: var(--atl-panel); }
-.atl-card__img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .8s ease; }
+.atl-card__img { border-radius: 4px; overflow: hidden; background: var(--atl-panel); }
+.atl-card__img img { width: 100%; height: auto; display: block; transition: transform .8s ease; }
 .atl-card:hover .atl-card__img img, .atl-card:focus-visible .atl-card__img img { transform: scale(1.04); }
 .atl .atl-card h3 { font-family: var(--atl-heading-font, inherit); font-weight: 400; font-size: 22px; line-height: 1.2; margin: 0; text-transform: none; letter-spacing: 0; color: var(--atl-ink); }
 .atl-card p { font-size: 15px; line-height: 1.5; color: var(--atl-mute); }
-.atl-tile { position: relative; display: block; border-radius: 4px; overflow: hidden; aspect-ratio: 4 / 3; background: var(--atl-panel); }
+.atl-tile { position: relative; display: block; border-radius: 4px; overflow: hidden; aspect-ratio: 16 / 9; background: var(--atl-panel); }
 .atl-tile img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .8s ease; }
 .atl-tile:hover img, .atl-tile:focus-visible img { transform: scale(1.04); }
 .atl-tile span { position: absolute; left: 14px; bottom: 14px; background: var(--atl-bg); color: var(--atl-ink); font-size: 13px; letter-spacing: .14em; text-transform: uppercase; padding: 9px 14px; border-radius: 2px; }
 
 /* Feature (made to measure) */
 .atl-feature { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: 64px; align-items: center; background: var(--atl-panel); border-radius: 6px; overflow: hidden; }
-.atl-feature__img { height: 100%; min-height: 520px; }
-.atl-feature__img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.atl-feature__img { align-self: stretch; display: flex; align-items: center; }
+.atl-feature__img img { width: 100%; height: auto; display: block; }
 .atl-feature__text { padding: 48px 48px 48px 0; }
 .atl-steps { list-style: none; margin: 28px 0 0; padding: 0; display: grid; gap: 16px; counter-reset: atl-step; }
 .atl-steps li { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 12px; align-items: baseline; font-size: 16px; line-height: 1.5; counter-increment: atl-step; }
@@ -97,8 +97,8 @@
 
 /* Visit */
 .atl-visit { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 56px; align-items: center; }
-.atl-visit__img { aspect-ratio: 16 / 10; border-radius: 4px; overflow: hidden; background: var(--atl-panel); }
-.atl-visit__img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.atl-visit__img { border-radius: 4px; overflow: hidden; background: var(--atl-panel); }
+.atl-visit__img img { width: 100%; height: auto; display: block; }
 .atl-visit dl { margin: 22px 0 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px 20px; font-size: 16px; line-height: 1.5; }
 .atl-visit dt { color: var(--atl-brass); font-size: 12px; letter-spacing: .16em; text-transform: uppercase; padding-top: 4px; }
 .atl-visit dd { margin: 0; }
@@ -110,7 +110,6 @@
   .atl-hero, .atl-visit, .atl-feature { grid-template-columns: minmax(0, 1fr); gap: 32px; }
   .atl-hero { padding: 28px 0 48px; }
   .atl-feature__text { padding: 0 24px 32px; }
-  .atl-feature__img { min-height: 0; aspect-ratio: 4 / 3; }
   .atl-trust { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .atl-trust__item + .atl-trust__item { border-left: 0; }
   .atl-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
@@ -126,3 +125,4 @@
   .atl .atl-card h3 { font-size: 19px; }
 }
 @media (prefers-reduced-motion: reduce) { .atl * { transition: none !important; } }
+.atl-card__img svg, .atl-visit__img svg, .atl-feature__img svg { width: 100%; height: auto; display: block; aspect-ratio: 4 / 3; }
