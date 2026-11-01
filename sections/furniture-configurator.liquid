@@ -548,6 +548,7 @@
       "sizeIdx": {{ size_idx }},
       "showPrices": {{ show_prices | json }},
       "productType": {{ product.type | json }},
+      "productHandle": {{ product.handle | json }},
       "illustration": {% if section.settings.show_illustration == false %}false{% else %}true{% endif %},
       "illusLabel": {{ section.settings.illustration_label | default: 'Your colour' | json }},
       "illusNote": {{ section.settings.illustration_note | default: 'Illustration · colour is indicative' | json }},
@@ -867,7 +868,7 @@
       if (!f || !D.illustration || !R || !I) return;
       var res = viewsFor(f);
       if (!res.generic) return;                       // the colour has its own photos
-      var kind = I.kindFor(D.productType);
+      var kind = (D.productHandle && R.has(D.productHandle)) ? D.productHandle : I.kindFor(D.productType);   // per-model renders first
       if (!R.has(kind)) return;
       var token = ++renderToken;
       R.views(kind, f.family, f.chip || '#b9b0a1').then(function (shots) {
