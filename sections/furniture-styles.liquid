@@ -18,35 +18,39 @@
   #rr-{{ sid }} {
     --rr-bg: {{ section.settings.background }};
     --rr-ink: {{ section.settings.text }};
-    --rr-soft: #c9c3b6;
-    --rr-muted: #9fa79f;
-    --rr-line: rgba(239, 233, 220, .16);
+    --rr-soft: {{ section.settings.text | color_modify: 'alpha', 0.78 }};
+    --rr-muted: {{ section.settings.text | color_modify: 'alpha', 0.66 }};
+    --rr-line: {{ section.settings.text | color_modify: 'alpha', 0.16 }};
     --rr-accent: {{ section.settings.accent }};
-    --rr-plate: #e9e5dd;
+    --rr-plate: {{ section.settings.text | color_modify: 'alpha', 0.07 }};
     background: var(--rr-bg);
     color: var(--rr-ink);
   }
   #rr-{{ sid }} * { box-sizing: border-box; }
   #rr-{{ sid }} a { color: inherit; }
   #rr-{{ sid }} .rr-wrap { max-width: 1280px; margin: 0 auto; padding: 0 32px; }
-  #rr-{{ sid }} .rr-hero { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: 64px; align-items: end; padding: 72px 0 88px; border-bottom: 1px solid var(--rr-line); }
+  #rr-{{ sid }} .rr-hero { display: flex; flex-direction: column; gap: 44px; padding: 72px 0 0; }
   #rr-{{ sid }} .rr-eyebrow { font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--rr-accent); margin: 0 0 22px; font-weight: 500; }
-  #rr-{{ sid }} .rr-h1 { font-family: var(--font-heading-family, inherit); font-weight: 300; font-size: clamp(44px, 6.4vw, 96px); line-height: .96; letter-spacing: -.02em; margin: 0; text-wrap: balance; color: var(--rr-ink); text-transform: none; }
+  #rr-{{ sid }} .rr-h1 { font-family: var(--font-heading-family, inherit); font-weight: 400; font-size: clamp(44px, 6.4vw, 96px); line-height: .96; letter-spacing: -.02em; margin: 0; text-wrap: balance; color: var(--rr-ink); text-transform: none; }
   #rr-{{ sid }} .rr-intro { font-size: 17px; line-height: 1.65; color: var(--rr-soft); font-weight: 300; margin: 28px 0 0; max-width: 480px; }
   #rr-{{ sid }} .rr-intro p { margin: 0; }
-  #rr-{{ sid }} .rr-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--rr-line); }
-  #rr-{{ sid }} .rr-list a { display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; align-items: baseline; gap: 12px; padding: 16px 0; border-bottom: 1px solid var(--rr-line); text-decoration: none; font-size: 22px; font-weight: 300; transition: padding .25s ease, color .25s; }
-  #rr-{{ sid }} .rr-list a:hover, #rr-{{ sid }} .rr-list a:focus-visible { padding-left: 12px; color: var(--rr-accent); outline: none; }
+  #rr-{{ sid }} .rr-list { list-style: none; margin: 0; padding: 0; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); border-top: 1px solid var(--rr-line); border-bottom: 1px solid var(--rr-line); }
+  #rr-{{ sid }} .rr-list li + li a { border-left: 1px solid var(--rr-line); }
+  #rr-{{ sid }} .rr-list li:first-child a { padding-left: 0; }
+  #rr-{{ sid }} .rr-list a { display: flex; flex-direction: column; gap: 6px; height: 100%; padding: 18px 20px; text-decoration: none; font-size: 22px; line-height: 1.2; font-weight: 300; transition: color .25s; }
+  #rr-{{ sid }} .rr-list a:hover, #rr-{{ sid }} .rr-list a:focus-visible { color: var(--rr-accent); outline: none; }
+  #rr-{{ sid }} .rr-list a:hover small, #rr-{{ sid }} .rr-list a:hover em, #rr-{{ sid }} .rr-list a:focus-visible small, #rr-{{ sid }} .rr-list a:focus-visible em { color: var(--rr-accent); }
+  #rr-{{ sid }} .rr-list a:focus-visible span { text-decoration: underline; text-underline-offset: 4px; }
   #rr-{{ sid }} .rr-list small { font-size: 12px; letter-spacing: .14em; color: var(--rr-muted); font-weight: 400; }
   #rr-{{ sid }} .rr-list em { font-style: normal; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--rr-muted); }
   #rr-{{ sid }} .rr-cat { padding: 96px 0 0; scroll-margin-top: 110px; }
-  #rr-{{ sid }} .rr-band { position: relative; border-radius: 10px; overflow: hidden; aspect-ratio: 16 / 7; background: #2a332d; }
+  #rr-{{ sid }} .rr-band { position: relative; border-radius: 10px; overflow: hidden; aspect-ratio: 16 / 7; background: var(--rr-plate); }
   #rr-{{ sid }} .rr-band img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 58%; opacity: 0; transform: scale(1.04); transition: opacity .7s ease, transform 1.2s ease; }
   #rr-{{ sid }} .rr-band img.is-on { opacity: 1; transform: none; }
   #rr-{{ sid }} .rr-cap { position: absolute; left: 20px; top: 20px; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; background: rgba(28, 36, 31, .82); color: #efe9dc; padding: 8px 14px; border-radius: 999px; }
   #rr-{{ sid }} .rr-row { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 48px; padding-top: 32px; align-items: start; }
   #rr-{{ sid }} .rr-num { font-size: 13px; letter-spacing: .2em; color: var(--rr-accent); font-weight: 500; }
-  #rr-{{ sid }} .rr-h2 { font-family: var(--font-heading-family, inherit); font-weight: 300; font-size: clamp(36px, 4.4vw, 60px); line-height: 1; margin: 10px 0 14px; letter-spacing: -.015em; color: var(--rr-ink); text-transform: none; }
+  #rr-{{ sid }} .rr-h2 { font-family: var(--font-heading-family, inherit); font-weight: 400; font-size: clamp(36px, 4.4vw, 60px); line-height: 1; margin: 10px 0 14px; letter-spacing: -.015em; color: var(--rr-ink); text-transform: none; }
   #rr-{{ sid }} .rr-sub { color: var(--rr-muted); font-size: 14px; letter-spacing: .08em; text-transform: uppercase; }
   #rr-{{ sid }} .rr-top { display: inline-block; margin-top: 18px; font-size: 13px; color: var(--rr-muted); text-decoration: none; }
   #rr-{{ sid }} .rr-top:hover { color: var(--rr-ink); }
@@ -54,17 +58,20 @@
   #rr-{{ sid }} .rr-card { display: flex; flex-direction: column; gap: 12px; text-decoration: none; color: var(--rr-ink); min-width: 0; border-radius: 8px; outline: none; }
   #rr-{{ sid }} .rr-thumb { aspect-ratio: 4 / 3; border-radius: 8px; overflow: hidden; background: var(--rr-plate); transition: transform .3s ease, box-shadow .3s ease; }
   #rr-{{ sid }} .rr-thumb img, #rr-{{ sid }} .rr-thumb svg { width: 100%; height: 100%; object-fit: cover; display: block; }
-  #rr-{{ sid }} .rr-card:hover .rr-thumb, #rr-{{ sid }} .rr-card:focus-visible .rr-thumb { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(0, 0, 0, .35); }
+  #rr-{{ sid }} .rr-card:hover .rr-thumb, #rr-{{ sid }} .rr-card:focus-visible .rr-thumb { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(0, 0, 0, .16); }
   #rr-{{ sid }} .rr-card.rr-on .rr-thumb { box-shadow: 0 0 0 2px var(--rr-accent); }
   #rr-{{ sid }} .rr-name { font-family: inherit; font-size: 17px; line-height: 1.3; font-weight: 400; margin: 0; text-wrap: balance; color: var(--rr-ink); text-transform: none; letter-spacing: 0; }
   #rr-{{ sid }} .rr-go { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--rr-accent); display: inline-flex; align-items: center; gap: 6px; }
   #rr-{{ sid }} .rr-end { margin-top: 120px; padding: 72px 0 96px; border-top: 1px solid var(--rr-line); display: flex; justify-content: space-between; align-items: center; gap: 28px; flex-wrap: wrap; }
-  #rr-{{ sid }} .rr-end h2 { font-family: var(--font-heading-family, inherit); font-weight: 300; font-size: clamp(30px, 3.6vw, 48px); margin: 0; line-height: 1.05; color: var(--rr-ink); text-transform: none; }
+  #rr-{{ sid }} .rr-end h2 { font-family: var(--font-heading-family, inherit); font-weight: 400; font-size: clamp(30px, 3.6vw, 48px); margin: 0; line-height: 1.05; color: var(--rr-ink); text-transform: none; }
   #rr-{{ sid }} .rr-end p { margin: 12px 0 0; color: var(--rr-soft); font-weight: 300; }
   #rr-{{ sid }} .rr-btn { display: inline-flex; align-items: center; min-height: 50px; padding: 0 28px; border-radius: 999px; background: var(--rr-ink); color: var(--rr-bg); text-decoration: none; font-size: 14px; letter-spacing: .08em; text-transform: uppercase; transition: background .2s; }
   #rr-{{ sid }} .rr-btn:hover, #rr-{{ sid }} .rr-btn:focus-visible { background: var(--rr-accent); color: var(--rr-bg); }
   @media (max-width: 900px) {
-    #rr-{{ sid }} .rr-hero { grid-template-columns: minmax(0, 1fr); gap: 40px; padding: 40px 0 56px; }
+    #rr-{{ sid }} .rr-hero { gap: 32px; padding: 40px 0 0; }
+    #rr-{{ sid }} .rr-list { grid-auto-columns: minmax(150px, 1fr); overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+    #rr-{{ sid }} .rr-list::-webkit-scrollbar { display: none; }
+    #rr-{{ sid }} .rr-list a { scroll-snap-align: start; padding: 14px 16px; }
     #rr-{{ sid }} .rr-row { grid-template-columns: minmax(0, 1fr); gap: 20px; }
     #rr-{{ sid }} .rr-band { aspect-ratio: 4 / 3; }
     #rr-{{ sid }} .rr-cat { padding-top: 64px; }

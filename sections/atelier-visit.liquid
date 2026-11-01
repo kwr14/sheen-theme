@@ -1,0 +1,52 @@
+{% comment %}
+  Atelier homepage: "Visit us" panel with the shop address, hours, phone, email and a directions button.
+  Styles live in assets/atelier.css.
+{% endcomment %}
+{{ 'atelier.css' | asset_url | stylesheet_tag }}
+{%- assign hf = settings.type_header_font_family -%}
+<style>#atl-{{ section.id }} { --atl-heading-font: {{ hf.family }}, {{ hf.fallback_families }}; }</style>
+<div class="atl" id="atl-{{ section.id }}">
+  <div class="atl-w atl-pad atl-pad--end">
+    <div class="atl-visit">
+      <div>
+        {%- if section.settings.eyebrow != blank -%}<p class="atl-eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+        <h2 class="atl-h2">{{ section.settings.heading }}</h2>
+        <dl>
+          {%- if section.settings.address != blank -%}<dt>Shop</dt><dd>{{ section.settings.address }}</dd>{%- endif -%}
+          {%- if section.settings.hours != blank -%}<dt>Open</dt><dd>{{ section.settings.hours }}</dd>{%- endif -%}
+          {%- if section.settings.phone != blank -%}<dt>Call</dt><dd><a href="tel:{{ section.settings.phone | remove: ' ' }}">{{ section.settings.phone }}</a></dd>{%- endif -%}
+          {%- if section.settings.email != blank -%}<dt>Email</dt><dd><a href="mailto:{{ section.settings.email }}">{{ section.settings.email }}</a></dd>{%- endif -%}
+        </dl>
+        {%- if section.settings.map_url != blank -%}
+          <div class="atl-btns"><a class="atl-btn atl-btn--line" href="{{ section.settings.map_url }}" target="_blank" rel="noopener">Get directions</a></div>
+        {%- endif -%}
+      </div>
+      <div class="atl-visit__img">
+        {%- if section.settings.image != blank -%}
+          {%- assign visit_alt = section.settings.image.alt | default: section.settings.heading -%}
+          {{ section.settings.image | image_url: width: 1400 | image_tag: loading: 'lazy', widths: '500, 800, 1100, 1400', sizes: '(max-width: 900px) 100vw, 58vw', alt: visit_alt }}
+        {%- else -%}
+          {{ 'lifestyle-1' | placeholder_svg_tag }}
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Atelier visit us",
+  "class": "atelier-section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Visit us" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Come and feel the fabrics" },
+    { "type": "text", "id": "address", "label": "Address", "default": "358 Upper Richmond Road West, East Sheen, London SW14 7JT" },
+    { "type": "text", "id": "hours", "label": "Opening hours", "default": "Monday to Saturday, 9am to 6pm" },
+    { "type": "text", "id": "phone", "label": "Phone", "default": "020 8878 6474" },
+    { "type": "text", "id": "email", "label": "Email", "default": "info@sheenupholstery.co.uk" },
+    { "type": "url", "id": "map_url", "label": "Directions link" },
+    { "type": "image_picker", "id": "image", "label": "Image" }
+  ],
+  "presets": [ { "name": "Atelier visit us", "category": "Store information" } ]
+}
+{% endschema %}

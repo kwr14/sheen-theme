@@ -171,10 +171,10 @@
   #fc-{{ section.id }} {
     --fc-bg: {{ section.settings.background }};
     --fc-card: #ffffff;
-    --fc-ink: #111111;
-    --fc-muted: #5a5650;
-    --fc-line: #e3ded6;
-    --fc-soft: #ede8e0;
+    --fc-ink: #1f2a24;
+    --fc-muted: #5a635e;
+    --fc-line: #ddd5c8;
+    --fc-soft: #ebe5da;
     background: var(--fc-bg);
     color: var(--fc-ink);
   }
@@ -189,7 +189,7 @@
   #fc-{{ section.id }} .fc-stage { position: relative; background: var(--fc-soft); border-radius: 4px; aspect-ratio: 8 / 7; display: flex; align-items: center; justify-content: center; overflow: hidden; }
   #fc-{{ section.id }} .fc-stage img { width: 100%; height: 100%; object-fit: cover; display: block; transition: opacity .2s ease; }
   #fc-{{ section.id }} .fc-stage.is-loading img { opacity: .35; }
-  #fc-{{ section.id }} .fc-stage svg.placeholder-svg { width: 70%; height: auto; fill: #cfc7ba; }
+  #fc-{{ section.id }} .fc-stage svg.placeholder-svg { width: 70%; height: auto; fill: #ddd5c8; }
   #fc-{{ section.id }} .fc-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--fc-line); background: rgba(255,255,255,.92); color: var(--fc-ink); display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; }
   #fc-{{ section.id }} .fc-nav:focus-visible { outline: 2px solid var(--fc-ink); outline-offset: 2px; }
   #fc-{{ section.id }} .fc-nav-prev { left: 12px; }
@@ -203,7 +203,7 @@
   #fc-{{ section.id }} .fc-view[aria-pressed="true"] img { border: 2px solid var(--fc-ink); }
   #fc-{{ section.id }} .fc-view:focus-visible img { outline: 2px solid var(--fc-ink); outline-offset: 2px; }
   #fc-{{ section.id }} .fc-panel { display: flex; flex-direction: column; gap: 28px; }
-  #fc-{{ section.id }} .fc-title { font-family: var(--font-heading-family, inherit); font-weight: 500; font-size: clamp(34px, 4vw, 48px); line-height: 1.05; margin: 0 0 12px; }
+  #fc-{{ section.id }} .fc-title { font-family: var(--font-heading-family, inherit); font-weight: 400; text-transform: none; letter-spacing: -.01em; font-size: clamp(34px, 4vw, 48px); line-height: 1.05; margin: 0 0 12px; }
   #fc-{{ section.id }} .fc-desc { font-size: 16px; line-height: 1.6; color: var(--fc-muted); }
   #fc-{{ section.id }} .fc-desc p { margin: 0 0 8px; }
   #fc-{{ section.id }} .fc-price { display: flex; align-items: baseline; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
@@ -221,7 +221,7 @@
   #fc-{{ section.id }} .fc-colours { display: grid; grid-template-columns: repeat(6, minmax(0, 72px)); gap: 12px; }
   #fc-{{ section.id }} .fc-colour { position: relative; display: flex; flex-direction: column; gap: 6px; cursor: pointer; font-size: 12px; line-height: 1.25; color: var(--fc-muted); }
   #fc-{{ section.id }} .fc-colour input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-  #fc-{{ section.id }} .fc-chip { display: block; aspect-ratio: 1; border-radius: 50%; border: 1px solid #d8d2c8; background-color: var(--fc-soft); background-size: cover; background-position: center; box-shadow: 0 0 0 3px var(--fc-bg); }
+  #fc-{{ section.id }} .fc-chip { display: block; aspect-ratio: 1; border-radius: 50%; border: 1px solid #ddd5c8; background-color: var(--fc-soft); background-size: cover; background-position: center; box-shadow: 0 0 0 3px var(--fc-bg); }
   #fc-{{ section.id }} .fc-colour input:checked + .fc-chip { box-shadow: 0 0 0 3px var(--fc-bg), 0 0 0 5px var(--fc-ink); }
   #fc-{{ section.id }} .fc-colour input:checked ~ .fc-colour-name { color: var(--fc-ink); font-weight: 500; }
   #fc-{{ section.id }} .fc-colour input:focus-visible + .fc-chip { outline: 2px solid var(--fc-ink); outline-offset: 6px; }
@@ -245,9 +245,9 @@
   #fc-{{ section.id }} .fc-breakdown { background: var(--fc-card); border: 1px solid var(--fc-line); border-radius: 4px; padding: 20px 22px; display: flex; flex-direction: column; gap: 10px; font-size: 15px; }
   #fc-{{ section.id }} .fc-row { display: flex; justify-content: space-between; gap: 16px; }
   #fc-{{ section.id }} .fc-row-total { font-weight: 500; font-size: 17px; }
-  #fc-{{ section.id }} .fc-add { width: 100%; min-height: 56px; border: 0; border-radius: 4px; background: var(--fc-ink); color: #fff; font: inherit; font-size: 16px; font-weight: 500; cursor: pointer; }
+  #fc-{{ section.id }} .fc-add { width: 100%; min-height: 56px; border: 0; border-radius: 999px; background: var(--fc-ink); color: #f6f3ee; font: inherit; font-size: 14px; letter-spacing: .08em; text-transform: uppercase; font-weight: 500; cursor: pointer; }
   #fc-{{ section.id }} .fc-add:disabled { opacity: .5; cursor: not-allowed; }
-  #fc-{{ section.id }} .fc-swatch-btn { width: 100%; min-height: 48px; margin-top: 10px; border: 1px solid var(--fc-ink); border-radius: 4px; background: transparent; color: var(--fc-ink); font: inherit; font-size: 15px; font-weight: 500; cursor: pointer; }
+  #fc-{{ section.id }} .fc-swatch-btn { width: 100%; min-height: 48px; margin-top: 10px; border: 1px solid var(--fc-ink); border-radius: 999px; background: transparent; color: var(--fc-ink); font: inherit; font-size: 15px; font-weight: 500; cursor: pointer; }
   #fc-{{ section.id }} .fc-swatch-btn:disabled { opacity: .5; cursor: not-allowed; }
   #fc-{{ section.id }} .fc-small { font-size: 14px; line-height: 1.5; color: var(--fc-muted); margin: 12px 0 0; }
   #fc-{{ section.id }} .fc-note { font-size: 13px; color: var(--fc-muted); margin: 8px 0 0; }
@@ -259,12 +259,12 @@
   #fc-{{ section.id }} .fc-plain label { display: flex; gap: 10px; align-items: center; padding: 10px 14px; border: 1px solid var(--fc-line); border-radius: 4px; background: var(--fc-card); font-size: 14px; cursor: pointer; }
   #fc-{{ section.id }} .fc-details { background: var(--fc-card); border-top: 1px solid var(--fc-line); }
   #fc-{{ section.id }} .fc-details-inner { max-width: 1280px; margin: 0 auto; padding: 64px 32px; display: grid; grid-template-columns: 7fr 5fr; gap: 64px; }
-  #fc-{{ section.id }} h2 { font-family: var(--font-heading-family, inherit); font-weight: 500; font-size: 34px; margin: 0 0 20px; }
+  #fc-{{ section.id }} h2 { font-family: var(--font-heading-family, inherit); font-weight: 400; text-transform: none; letter-spacing: -.01em; font-size: 34px; margin: 0 0 20px; }
   #fc-{{ section.id }} table { width: 100%; border-collapse: collapse; font-size: 15px; }
   #fc-{{ section.id }} th, #fc-{{ section.id }} td { border-top: 1px solid var(--fc-line); padding: 14px 0; vertical-align: top; text-align: left; }
   #fc-{{ section.id }} th { font-weight: 500; width: 40%; padding-right: 16px; }
-  #fc-{{ section.id }} td { color: #3f3c38; }
-  #fc-{{ section.id }} .fc-pricing-text { font-size: 15px; line-height: 1.7; color: #3f3c38; }
+  #fc-{{ section.id }} td { color: #4a5550; }
+  #fc-{{ section.id }} .fc-pricing-text { font-size: 15px; line-height: 1.7; color: #4a5550; }
   #fc-{{ section.id }} .fc-pricing-text p { margin: 0 0 14px; }
   #fc-{{ section.id }} .fc-link { font-size: 15px; font-weight: 500; color: var(--fc-ink); }
   @media (max-width: 900px) {
@@ -548,6 +548,7 @@
       "sizeIdx": {{ size_idx }},
       "showPrices": {{ show_prices | json }},
       "productType": {{ product.type | json }},
+      "productHandle": {{ product.handle | json }},
       "illustration": {% if section.settings.show_illustration == false %}false{% else %}true{% endif %},
       "illusLabel": {{ section.settings.illustration_label | default: 'Your colour' | json }},
       "illusNote": {{ section.settings.illustration_note | default: 'Illustration · colour is indicative' | json }},
@@ -595,6 +596,7 @@
           -%}
           {%- unless first_out %},{% endunless -%}{%- assign first_out = false -%}
           {{ f.system.handle | json }}: {
+            "handle": {{ f.system.handle | json }},
             "name": {{ f.display_name.value | json }},
             "family": {{ f.fabric_family.value | json }},
             "colour": {{ f.colour_name.value | json }},
@@ -631,7 +633,7 @@
     function setText(s, t) { var el = $(s); if (el) el.textContent = t; }
     function setVal(s, t) { var el = $(s); if (el) el.value = t; }
 
-    var state = { fabric: null, size: null };
+    var state = { fabric: null, size: null, touched: false };
     var sizeInputs = $$('[data-fc-size]');
     var checkedSize = sizeInputs.filter(function (i) { return i.checked; })[0];
     if (D.sizeIdx >= 0) {
@@ -646,22 +648,33 @@
     function norm(s) { return String(s || '').toLowerCase().replace(/\s+/g, ''); }
     function viewsFor(f) {
       var tagged = [], untagged = [];
-      var code = norm(f && f.code);
+      var code = norm(f && f.code), handle = norm(f && f.handle);
       D.images.forEach(function (im) {
         var alt = (im.alt || '').trim();
         if (alt.charAt(0) === '#') {
           var sp = alt.indexOf(' ');
           var tag = norm(sp > 0 ? alt.slice(1, sp) : alt.slice(1));
-          if (code && tag === code) tagged.push({ src: im.src, thumb: im.thumb, label: sp > 0 ? alt.slice(sp + 1).trim() : 'View', alt: (f.name || '') + ' — ' + (sp > 0 ? alt.slice(sp + 1).trim() : '') });
+          if ((code && tag === code) || (handle && tag === handle)) tagged.push({ src: im.src, thumb: im.thumb, label: sp > 0 ? alt.slice(sp + 1).trim() : 'View', alt: (f.name || '') + ' — ' + (sp > 0 ? alt.slice(sp + 1).trim() : '') });
         } else {
           untagged.push(im);
         }
       });
       if (tagged.length) return { list: tagged, generic: false };
-      var base = untagged.length ? untagged : D.images;
+      // Only untagged photos are shared across colours; with none, a colour shows its own renders/drawings
+      var base = untagged;
+      if (!base.length && !(f && D.illustration)) base = D.images.filter(function (im) { return (im.alt || '').trim().charAt(0) !== '#'; });
       var list = base.map(function (im, n) {
+        // Alt text like "Roll-arm Sofa in sage linen, front view" names the fabric and the view
+        var m = (im.alt || '').trim().match(/\bin ([^,]+),\s*(.+)$/i);
         var label = (D.labels[n] || '').trim() || ('View ' + (n + 1));
-        return { src: im.src, thumb: im.thumb, label: label, alt: im.alt || label, note: f ? D.photoNote : '' };
+        var note = f ? D.photoNote : '';
+        if (m) {
+          var v = m[2].replace(/\s+view$/i, '').trim();
+          if (/detail/i.test(v)) v = 'Detail';
+          label = v.charAt(0).toUpperCase() + v.slice(1);
+          note = 'Shown in ' + m[1].trim();
+        }
+        return { src: im.src, thumb: im.thumb, label: label, alt: im.alt || label, note: note, photo: true };
       });
       var I = window.SheenFurnitureIllustration;
       if (f && D.illustration && I && (f.chip || f.swatch)) {
@@ -669,11 +682,12 @@
         var kind = I.kindFor(D.productType);
         var shots = I.viewsFor ? I.viewsFor(kind) : [{ view: 'front', label: D.illusLabel || 'Your colour' }];
         var drawn = shots.map(function (v) {
-          var pic = I.render({ kind: kind, colour: f.chip || '#b9ae9c', family: f.family, view: v.view });
+          var pic = I.render({ kind: kind, colour: f.chip || '#b9b0a1', family: f.family, view: v.view });
           return { src: pic, thumb: pic, label: v.label, drawn: true,
                    alt: (f.name || '') + ' — ' + v.label.toLowerCase() + ' (illustration)', note: D.illusNote || '' };
         });
-        list = drawn.concat(list);
+        // Until the customer picks a colour, lead with the real photos; after that, lead with their colour
+        list = state.touched ? drawn.concat(list) : list.concat(drawn);
       }
       return { list: list, generic: true };
     }
@@ -746,7 +760,7 @@
         // pick the first selectable colour in this family
         var pane = document.getElementById(t.getAttribute('aria-controls'));
         var inp = pane && pane.querySelector('[data-fc-fabric]:not(:disabled)');
-        if (inp) { inp.checked = true; chooseFabric(inp.value); }
+        if (inp) { inp.checked = true; state.touched = true; chooseFabric(inp.value); }
       });
       t.addEventListener('keydown', function (e) {
         var k = e.key, j = null;
@@ -854,17 +868,17 @@
       if (!f || !D.illustration || !R || !I) return;
       var res = viewsFor(f);
       if (!res.generic) return;                       // the colour has its own photos
-      var kind = I.kindFor(D.productType);
+      var kind = (D.productHandle && R.has(D.productHandle)) ? D.productHandle : I.kindFor(D.productType);   // per-model renders first
       if (!R.has(kind)) return;
       var token = ++renderToken;
-      R.views(kind, f.family, f.chip || '#b9ae9c').then(function (shots) {
+      R.views(kind, f.family, f.chip || '#b9b0a1').then(function (shots) {
         if (token !== renderToken || state.fabric !== handle) return;
         var list = shots.map(function (s) {
           return { src: s.src, thumb: s.src, label: s.label,
                    alt: (f.name || '') + ' — ' + s.label.toLowerCase(), note: D.renderNote || '' };
         });
         var photos = res.list.filter(function (v) { return !v.drawn; });
-        setViews({ list: list.concat(photos), generic: true });
+        setViews({ list: state.touched ? list.concat(photos) : photos.concat(list), generic: true });
       }).catch(function () { /* keep the drawings */ });
     }
 
@@ -876,7 +890,7 @@
     }
 
     $$('[data-fc-fabric]').forEach(function (inp) {
-      inp.addEventListener('change', function () { if (inp.checked) chooseFabric(inp.value); });
+      inp.addEventListener('change', function () { if (inp.checked) { state.touched = true; chooseFabric(inp.value); } });
     });
     sizeInputs.forEach(function (inp) {
       inp.addEventListener('change', function () { if (inp.checked) { state.size = inp.value; render(); } });
@@ -886,6 +900,14 @@
     var start = null;
     try { start = new URL(window.location.href).searchParams.get('fabric'); } catch (e) {}
     var startInput = start ? root.querySelector('[data-fc-fabric][value="' + start.replace(/"/g, '') + '"]:not(:disabled)') : null;
+    if (!startInput) {
+      // Open on the first colour that has its own photos, else the first selectable colour
+      $$('[data-fc-fabric]:not(:disabled)').some(function (inp) {
+        var res = viewsFor(D.fabrics[inp.value]);
+        if (!res.generic && res.list.length) { startInput = inp; return true; }
+        return false;
+      });
+    }
     if (!startInput) startInput = root.querySelector('[data-fc-fabric]:not(:disabled)');
     if (startInput) {
       startInput.checked = true;
@@ -930,7 +952,7 @@
     { "type": "header", "content": "Before ordering opens" },
     { "type": "checkbox", "id": "prices_before_live", "label": "Show prices before any colour is Live", "default": false },
     { "type": "text", "id": "no_price_text", "label": "Price text before ordering opens", "default": "Coming soon" },
-    { "type": "richtext", "id": "coming_soon_note", "label": "Note shown before ordering opens", "default": "<p>Ordering opens soon. Explore our fabrics and colours now, and get in touch if you'd like to reserve this piece.</p>" },
+    { "type": "richtext", "id": "coming_soon_note", "label": "Note shown before ordering opens" },
     { "type": "text", "id": "coming_soon_button", "label": "Button text before ordering opens", "default": "Coming soon" },
     { "type": "text", "id": "coming_soon_status", "label": "Fabric note before ordering opens", "default": "Available to order soon." },
     { "type": "richtext", "id": "no_fabrics_text", "label": "Text when no fabrics are available", "default": "<p>Fabrics for this piece are being finalised.</p>" },
