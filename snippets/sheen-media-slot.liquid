@@ -1,0 +1,112 @@
+{%- comment -%}
+  Finds a product's picture by FILE NAME (Sheen Upholstery file-name convention).
+
+  Usage:
+    {%- capture ref -%}{%- render 'sheen-media-slot', link: block.settings.link, slot: 'room' -%}{%- endcapture -%}
+  Accepts link: (a URL like /products/kew-sofa, /collections/x/products/kew-sofa?variant=1) or handle: (kew-sofa),
+  and slot: 'card' or 'room'.
+  Outputs "<product handle>/<media index>" for the FIRST product media (in media order) named
+  <handle>__<slot>.jpg|.jpeg|.png|.webp (case-insensitive; Shopify's "_3f2a1c" / "-1" duplicate suffixes are
+  ignored), or nothing. The caller turns it back into the media object:
+    assign ref_parts = ref | strip | split: '/'
+    assign ref_i = ref_parts[1] | plus: 0
+    assign pic = all_products[ref_parts[0]].media[ref_i].preview_image
+  Same rules as parseMediaFile() in sections/furniture-configurator.liquid and claude/tools/sofa_images.py.
+{%- endcomment -%}
+{%- liquid
+  assign h = handle | default: '' | downcase | strip
+  if h == blank and link != blank
+    assign l = link | downcase
+    if l contains '/products/'
+      assign h = l | split: '/products/' | last | split: '?' | first | split: '#' | first | split: '/' | first | strip
+    endif
+  endif
+  assign p = nil
+  if h != blank
+    assign p = all_products[h]
+  endif
+  assign found = ''
+  assign media_count = p.media.size | default: 0
+
+  if media_count > 0
+    assign want = h | append: '__' | append: slot
+    assign want_size = want | size
+    assign alnum = 'abcdefghijklmnopqrstuvwxyz0123456789-'
+    assign digits = '0123456789'
+
+    for m in p.media
+      assign mi = forloop.index0
+      if m.media_type != 'image'
+        continue
+      endif
+      assign f = m.preview_image.src | append: '' | split: '?' | first | split: '/' | last | url_decode | downcase | remove: ' '
+      # quick reject before the careful parse
+      assign head = f | slice: 0, want_size
+      if head != want
+        continue
+      endif
+      assign ext = f | split: '.' | last
+      unless ext == 'jpg' or ext == 'jpeg' or ext == 'png' or ext == 'webp'
+        continue
+      endunless
+      assign dot_ext = '.' | append: ext
+      assign base = f | remove_last: dot_ext
+
+      # Strip up to three Shopify duplicate suffixes: "_<4–40 letters/digits/hyphens>" or "-<digits>"
+      for pass in (1..3)
+        if base == want
+          break
+        endif
+        assign changed = false
+        assign tail = base | split: '_' | last
+        assign tail_size = tail | size
+        assign cut = '_' | append: tail
+        assign rest = base | remove_last: cut
+        assign rest_end = rest | slice: -1
+        if base contains '_' and tail_size >= 4 and tail_size <= 40 and rest_end != '_' and rest != base
+          assign ok = true
+          assign chars = tail | split: ''
+          for c in chars
+            unless alnum contains c
+              assign ok = false
+              break
+            endunless
+          endfor
+          if ok
+            assign base = rest
+            assign changed = true
+          endif
+        endif
+        unless changed
+          assign tail = base | split: '-' | last
+          assign cut = '-' | append: tail
+          assign rest = base | remove_last: cut
+          assign rest_end = rest | slice: -1
+          if base contains '-' and tail != blank and rest_end != '_' and rest_end != '-' and rest != base
+            assign ok = true
+            assign chars = tail | split: ''
+            for c in chars
+              unless digits contains c
+                assign ok = false
+                break
+              endunless
+            endfor
+            if ok
+              assign base = rest
+              assign changed = true
+            endif
+          endif
+        endunless
+        unless changed
+          break
+        endunless
+      endfor
+
+      if base == want
+        assign found = h | append: '/' | append: mi
+        break
+      endif
+    endfor
+  endif
+-%}
+{{- found -}}
