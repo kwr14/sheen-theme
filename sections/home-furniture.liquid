@@ -2,6 +2,8 @@
   Home page band introducing made-to-order furniture (Sheen Upholstery).
   Dark band in the style of the /pages/furniture lookbook: text and button on one side,
   up to three room images on the other, shown at their own proportions (the first full width, two below). Each "Piece" block takes an image (upload) or a theme-asset render.
+  Pictures by file name: when a piece links to a product (/products/<handle>), that product's media named
+  <handle>__room.jpg is used (snippets/sheen-media-slot.liquid). Order: block upload > product file > theme-asset render.
 {% endcomment %}
 
 {%- assign sid = section.id -%}
@@ -44,9 +46,30 @@
     {%- if section.blocks.size > 0 -%}
       <div class="hf-grid">
         {%- for block in section.blocks limit: 3 -%}
+          {%- liquid
+            # Picture: block upload > linked product's <handle>__room file > theme-asset render
+            assign piece_alt = block.settings.name
+            assign piece_pic = block.settings.image
+            if piece_pic == blank
+              capture piece_ref
+                render 'sheen-media-slot', link: block.settings.link, slot: 'room'
+              endcapture
+              assign piece_ref = piece_ref | strip
+              if piece_ref != blank
+                assign ref_parts = piece_ref | split: '/'
+                assign ref_i = ref_parts[1] | plus: 0
+                assign piece_pic = all_products[ref_parts[0]].media[ref_i].preview_image
+                if piece_pic.alt != blank
+                  assign piece_alt = piece_pic.alt
+                elsif block.settings.name != blank
+                  assign piece_alt = block.settings.name | append: ' in a room'
+                endif
+              endif
+            endif
+          -%}
           <a class="hf-piece" href="{{ block.settings.link | default: '/pages/furniture' }}" {{ block.shopify_attributes }}>
-            {%- if block.settings.image != blank -%}
-              {{ block.settings.image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '400, 800, 1200', sizes: '(max-width: 900px) 100vw, 40vw', alt: block.settings.name }}
+            {%- if piece_pic != blank -%}
+              {{ piece_pic | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '400, 800, 1200', sizes: '(max-width: 900px) 100vw, 40vw', alt: piece_alt }}
             {%- elsif block.settings.render != blank -%}
               <img src="{{ block.settings.render | asset_url }}" alt="{{ block.settings.name | escape }} in a room" loading="lazy" width="1000" height="750">
             {%- endif -%}
@@ -80,9 +103,9 @@
       "limit": 3,
       "settings": [
         { "type": "text", "id": "name", "label": "Name" },
-        { "type": "image_picker", "id": "image", "label": "Image" },
-        { "type": "text", "id": "render", "label": "Image (theme asset)", "info": "File name of a room render, e.g. fr-curved-sofa-room-card.jpg. Used when no image is chosen." },
-        { "type": "url", "id": "link", "label": "Link" }
+        { "type": "image_picker", "id": "image", "label": "Image", "info": "Optional. Overrides the linked product's [handle]__room picture and the theme-asset render." },
+        { "type": "text", "id": "render", "label": "Image (theme asset)", "info": "File name of a room render, e.g. fr-curved-sofa-room-card.jpg. Used when no image is chosen and the linked product has no [handle]__room picture." },
+        { "type": "url", "id": "link", "label": "Link", "info": "A product link (e.g. the Kew Sofa) also supplies its [handle]__room picture." }
       ]
     }
   ],
