@@ -1768,10 +1768,9 @@
           "piece-1": {
             "type": "piece",
             "settings": {
-              "name": "English roll-arm sofa",
-              "image": "shopify://shop_images/sheen-roll-arm-sofa-photo.jpg",
-              "render": "fr-roll-arm-sofa-room-card.jpg",
-              "link": "shopify://products/roll-arm-sofa"
+              "name": "Petersham sofa",
+              "render": "fr-petersham-sofa-room-card.jpg",
+              "link": "shopify://products/petersham-sofa"
             }
           },
           "piece-2": {
