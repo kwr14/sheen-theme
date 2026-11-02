@@ -1481,45 +1481,6 @@
       "furniture-styles": {
         "type": "furniture-styles",
         "blocks": {
-          "style-01": {
-            "type": "style",
-            "settings": {
-              "category": "sofas",
-              "name": "Curved or cocoon sofa",
-              "drawing": "curved-sofa",
-              "link": "shopify://products/curved-sofa",
-              "render": "fr-curved-sofa-card.jpg",
-              "room": "fr-curved-sofa-room-card.jpg",
-              "image": "shopify://shop_images/sheen-curved-sofa-photo.jpg",
-              "room_image": "shopify://shop_images/sheen-curved-sofa-photo.jpg"
-            }
-          },
-          "style-02": {
-            "type": "style",
-            "settings": {
-              "category": "sofas",
-              "name": "Deep-seat modular / corner with chaise",
-              "drawing": "modular-sofa",
-              "link": "shopify://products/modular-sofa",
-              "render": "fr-modular-sofa-card.jpg",
-              "room": "fr-modular-sofa-room-card.jpg",
-              "image": "shopify://shop_images/sheen-modular-sofa-photo.jpg",
-              "room_image": "shopify://shop_images/sheen-modular-sofa-photo.jpg"
-            }
-          },
-          "style-03": {
-            "type": "style",
-            "settings": {
-              "category": "sofas",
-              "name": "English roll-arm (country house)",
-              "drawing": "roll-arm-sofa",
-              "link": "shopify://products/roll-arm-sofa",
-              "render": "fr-roll-arm-sofa-card.jpg",
-              "room": "fr-roll-arm-sofa-room-card.jpg",
-              "image": "shopify://shop_images/sheen-roll-arm-sofa-photo.jpg",
-              "room_image": "shopify://shop_images/sheen-roll-arm-sofa-photo.jpg"
-            }
-          },
           "style-04": {
             "type": "style",
             "settings": {
@@ -1714,12 +1675,93 @@
               "image": "shopify://shop_images/sheen-austrian-blind-photo.jpg",
               "room_image": "shopify://shop_images/sheen-austrian-blind-photo.jpg"
             }
+          },
+          "sofa-petersham": {
+            "type": "style",
+            "settings": {
+              "category": "sofas",
+              "name": "Petersham · English country roll-arm",
+              "drawing": "roll-arm-sofa",
+              "link": "shopify://products/petersham-sofa",
+              "render": "fr-petersham-sofa-card.jpg",
+              "room": "fr-petersham-sofa-room-card.jpg"
+            }
+          },
+          "sofa-kew": {
+            "type": "style",
+            "settings": {
+              "category": "sofas",
+              "name": "Kew · tailored track arm",
+              "drawing": "roll-arm-sofa",
+              "link": "shopify://products/kew-sofa",
+              "render": "fr-kew-sofa-card.jpg",
+              "room": "fr-kew-sofa-room-card.jpg"
+            }
+          },
+          "sofa-mortlake": {
+            "type": "style",
+            "settings": {
+              "category": "sofas",
+              "name": "Mortlake · snug high arm",
+              "drawing": "roll-arm-sofa",
+              "link": "shopify://products/mortlake-sofa",
+              "render": "fr-mortlake-sofa-card.jpg",
+              "room": "fr-mortlake-sofa-room-card.jpg"
+            }
+          },
+          "sofa-barnes": {
+            "type": "style",
+            "settings": {
+              "category": "sofas",
+              "name": "Barnes · compact, for smaller rooms",
+              "drawing": "roll-arm-sofa",
+              "link": "shopify://products/barnes-sofa",
+              "render": "fr-barnes-sofa-card.jpg",
+              "room": "fr-barnes-sofa-room-card.jpg"
+            }
+          },
+          "sofa-syon": {
+            "type": "style",
+            "settings": {
+              "category": "sofas",
+              "name": "Syon · Georgian camel-back",
+              "drawing": "roll-arm-sofa",
+              "link": "shopify://products/syon-sofa",
+              "render": "fr-syon-sofa-card.jpg",
+              "room": "fr-syon-sofa-room-card.jpg"
+            }
+          },
+          "sofa-teddington": {
+            "type": "style",
+            "settings": {
+              "category": "sofas",
+              "name": "Teddington · relaxed loose back",
+              "drawing": "roll-arm-sofa",
+              "link": "shopify://products/teddington-sofa",
+              "render": "fr-teddington-sofa-card.jpg",
+              "room": "fr-teddington-sofa-room-card.jpg"
+            }
+          },
+          "sofa-twickenham": {
+            "type": "style",
+            "settings": {
+              "category": "sofas",
+              "name": "Twickenham · generous set-back arm",
+              "drawing": "roll-arm-sofa",
+              "link": "shopify://products/twickenham-sofa",
+              "render": "fr-twickenham-sofa-card.jpg",
+              "room": "fr-twickenham-sofa-room-card.jpg"
+            }
           }
         },
         "block_order": [
-          "style-01",
-          "style-02",
-          "style-03",
+          "sofa-petersham",
+          "sofa-kew",
+          "sofa-mortlake",
+          "sofa-barnes",
+          "sofa-syon",
+          "sofa-teddington",
+          "sofa-twickenham",
           "style-04",
           "style-05",
           "style-06",
@@ -1739,7 +1781,7 @@
         "settings": {
           "eyebrow": "The furniture lookbook",
           "heading": "Made for the room you have",
-          "intro": "<p>Eighteen styles, each made to order in the fabric you choose. Find your room, pick a piece, then make it yours.</p>",
+          "intro": "<p>Twenty-two styles, each made to order in the fabric you choose. Find your room, pick a piece, then make it yours.</p>",
           "menu_label": "Product types",
           "cta_label": "Choose your fabric",
           "default_link": "",
