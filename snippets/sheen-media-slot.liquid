@@ -3,7 +3,7 @@
 
   Usage:
     {%- capture ref -%}{%- render 'sheen-media-slot', link: block.settings.link, slot: 'room' -%}{%- endcapture -%}
-  Accepts link: (a URL like /products/kew-sofa, /collections/x/products/kew-sofa?variant=1) or handle: (kew-sofa),
+  Accepts link: (a URL like /products/kew-sofa, /collections/x/products/kew-sofa?variant=1) or product_handle: (kew-sofa). Not "handle": Shopify's global `handle` (the page/product handle) would shadow it,
   and slot: 'card' or 'room'.
   Outputs "<product handle>/<media index>" for the FIRST product media (in media order) named
   <handle>__<slot>.jpg|.jpeg|.png|.webp (case-insensitive; Shopify's "_3f2a1c" / "-1" duplicate suffixes are
@@ -14,7 +14,7 @@
   Same rules as parseMediaFile() in sections/furniture-configurator.liquid and claude/tools/sofa_images.py.
 {%- endcomment -%}
 {%- liquid
-  assign h = handle | default: '' | downcase | strip
+  assign h = product_handle | default: '' | downcase | strip
   if h == blank and link != blank
     assign l = link | downcase
     if l contains '/products/'
