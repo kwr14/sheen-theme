@@ -15,6 +15,14 @@
   • Views: product images whose alt text starts with "#<supplier code>" belong to that fabric,
     e.g. "#LF2282C/001 Front", "#LF2282C/001 Side". The words after the code are the view name.
     Fabrics without their own photos show the untagged product images (named by "View names").
+  • Views by FILE NAME (no alt text needed): product media named
+      <product handle>__<colour handle>__<view>.jpg   e.g. kew-sofa__natural-linen-sage__front.jpg
+    belong to that colour. Views: front, three-quarter, side, detail, room (shown in that order);
+    any other word becomes its own label ("arm-detail" → "Arm detail"). <handle>__card.jpg and
+    <handle>__room.jpg are for the Furniture page / home band and are not shown here.
+    Case-insensitive; .jpg .jpeg .png .webp; Shopify's "_3f2a1c" / "-1" duplicate suffixes are ignored;
+    if two files claim the same slot, the first in media order wins. File names win over alt text.
+    Checker: claude/tools/sofa_images.py in the Sheen Backoffice project.
 
   Which fabrics show
   • stock_status "Live" → selectable.  "Temporarily unavailable" → shown, not selectable.
@@ -578,7 +586,16 @@
       ],
       "images": [
         {%- for img in product.images limit: 60 -%}
-          {"src": {{ img | image_url: width: 1600 | json }}, "thumb": {{ img | image_url: width: 200 | json }}, "alt": {{ img.alt | default: '' | json }}}{% unless forloop.last %},{% endunless %}
+          {%- liquid
+            # Media file name without folder or ?v= query, e.g. "kew-sofa__natural-linen-sage__front.jpg"
+            # img.src is "files/<name>?v=…" (older uploads "products/<name>?v=…"); fall back to the CDN URL
+            assign img_path = img.src | append: ''
+            if img_path == blank
+              assign img_path = img | image_url: width: 100
+            endif
+            assign img_file = img_path | split: '?' | first | split: '/' | last | default: ''
+          -%}
+          {"src": {{ img | image_url: width: 1600 | json }}, "thumb": {{ img | image_url: width: 200 | json }}, "alt": {{ img.alt | default: '' | json }}, "file": {{ img_file | default: '' | json }}}{% unless forloop.last %},{% endunless %}
         {%- endfor -%}
       ],
       "fabrics": {
@@ -645,11 +662,54 @@
     var img = $('.fc-main-image'), stage = $('[data-fc-stage]'), viewsEl = $('[data-fc-views]');
     var prevBtn = $('[data-fc-prev]'), nextBtn = $('[data-fc-next]'), labelEl = $('[data-fc-view-label]'), genericEl = $('[data-fc-generic]');
     var views = [], viewIndex = 0;
+    /* sheen-media-files:start (pure; unit-tested by t16/test/media-files.test.js) */
     function norm(s) { return String(s || '').toLowerCase().replace(/\s+/g, ''); }
-    function viewsFor(f) {
-      var tagged = [], untagged = [];
-      var code = norm(f && f.code), handle = norm(f && f.handle);
-      D.images.forEach(function (im) {
+    var FILE_VIEWS = ['front', 'three-quarter', 'side', 'detail', 'room'];
+    var FILE_VIEW_LABELS = { front: 'Front', 'three-quarter': 'Three-quarter', side: 'Side', detail: 'Detail', room: 'In a room' };
+    // "kew-sofa__natural-linen-sage__front_3f2a1c.JPG?v=1" → { sofa, slot: 'colour', colour, view }; "kew-sofa__card.jpg" → { sofa, slot: 'card' }
+    function parseMediaFile(name) {
+      var s = String(name || '').split('?')[0].split('#')[0].split('/').pop();
+      try { s = decodeURIComponent(s); } catch (e) {}
+      s = s.toLowerCase().replace(/\s+/g, '');
+      var m = s.match(/^(.+)\.(jpe?g|png|webp)$/);
+      if (!m) return null;
+      s = m[1];
+      // Shopify duplicate suffixes: "_3f2a1c" (a single underscore, 4–40 letters/digits/hyphens) or "-1"
+      for (var k = 0; k < 3; k++) {
+        var t = s.replace(/([^_])_[a-z0-9-]{4,40}$/, '$1').replace(/([^_-])-\d+$/, '$1');
+        if (t === s) break;
+        s = t;
+      }
+      if (s.indexOf('__') < 0) return null;
+      var p = s.split('__');
+      for (var i = 0; i < p.length; i++) if (!p[i] || p[i].charAt(0) === '_' || p[i].slice(-1) === '_') return null;
+      if (p.length === 2 && (p[1] === 'card' || p[1] === 'room')) return { sofa: p[0], slot: p[1] };
+      if (p.length === 3) return { sofa: p[0], slot: 'colour', colour: p[1], view: p[2] };
+      return null;
+    }
+    function fileViewLabel(view) {
+      if (FILE_VIEW_LABELS[view]) return FILE_VIEW_LABELS[view];
+      var w = String(view || '').replace(/-+/g, ' ').trim();
+      return w ? w.charAt(0).toUpperCase() + w.slice(1) : 'View';
+    }
+    // Sort the product images for one colour: its own photos (by file name, then by "#CODE View" alt tag)
+    // and the untagged photos shared by all colours. Convention files never count as untagged.
+    function classifyImages(images, productHandle, f) {
+      var tagged = [], untagged = [], fileTagged = [], seen = {};
+      var code = norm(f && f.code), handle = norm(f && f.handle), sofa = norm(productHandle);
+      (images || []).forEach(function (im, idx) {
+        var pf = parseMediaFile(im.file);
+        if (pf) {
+          if (pf.slot !== 'colour' || !f || pf.sofa !== sofa || pf.colour !== handle) return;
+          if (seen[pf.view]) return;                       // first file in media order wins the slot
+          seen[pf.view] = true;
+          var rank = FILE_VIEWS.indexOf(pf.view);
+          var label = fileViewLabel(pf.view);
+          var a = (im.alt || '').trim();
+          fileTagged.push({ rank: rank < 0 ? FILE_VIEWS.length : rank, idx: idx,
+            v: { src: im.src, thumb: im.thumb, label: label, alt: (a && a.charAt(0) !== '#') ? a : (f.name || '') + ' — ' + label.toLowerCase() } });
+          return;
+        }
         var alt = (im.alt || '').trim();
         if (alt.charAt(0) === '#') {
           var sp = alt.indexOf(' ');
@@ -659,10 +719,17 @@
           untagged.push(im);
         }
       });
+      fileTagged.sort(function (x, y) { return (x.rank - y.rank) || (x.idx - y.idx); });
+      return { tagged: fileTagged.map(function (x) { return x.v; }).concat(tagged), untagged: untagged };
+    }
+    /* sheen-media-files:end */
+    function viewsFor(f) {
+      var c = classifyImages(D.images, D.productHandle, f);
+      var tagged = c.tagged, untagged = c.untagged;
       if (tagged.length) return { list: tagged, generic: false };
       // Only untagged photos are shared across colours; with none, a colour shows its own renders/drawings
       var base = untagged;
-      if (!base.length && !(f && D.illustration)) base = D.images.filter(function (im) { return (im.alt || '').trim().charAt(0) !== '#'; });
+      if (!base.length && !(f && D.illustration)) base = D.images.filter(function (im) { return (im.alt || '').trim().charAt(0) !== '#' && !parseMediaFile(im.file); });
       var list = base.map(function (im, n) {
         // Alt text like "Roll-arm Sofa in sage linen, front view" names the fabric and the view
         var m = (im.alt || '').trim().match(/\bin ([^,]+),\s*(.+)$/i);
