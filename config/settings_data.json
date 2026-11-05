@@ -1520,45 +1520,6 @@
               "room_image": "shopify://shop_images/sheen-wingback-chair-photo.jpg"
             }
           },
-          "style-07": {
-            "type": "style",
-            "settings": {
-              "category": "headboards",
-              "name": "Tall fluted / channelled",
-              "drawing": "fluted-headboard",
-              "link": "shopify://products/headboard-double",
-              "render": "fr-headboard-card.jpg",
-              "room": "fr-headboard-room-card.jpg",
-              "image": "shopify://shop_images/sheen-headboard-photo.jpg",
-              "room_image": "shopify://shop_images/sheen-headboard-photo.jpg"
-            }
-          },
-          "style-08": {
-            "type": "style",
-            "settings": {
-              "category": "headboards",
-              "name": "Scalloped / arched / curved",
-              "drawing": "scalloped-headboard",
-              "link": "shopify://products/scalloped-headboard",
-              "render": "fr-scalloped-headboard-card.jpg",
-              "room": "fr-scalloped-headboard-room-card.jpg",
-              "image": "shopify://shop_images/sheen-scalloped-headboard-photo.jpg",
-              "room_image": "shopify://shop_images/sheen-scalloped-headboard-photo.jpg"
-            }
-          },
-          "style-09": {
-            "type": "style",
-            "settings": {
-              "category": "headboards",
-              "name": "Slim wing headboard",
-              "drawing": "wing-headboard",
-              "link": "shopify://products/wing-headboard",
-              "render": "fr-wing-headboard-card.jpg",
-              "room": "fr-wing-headboard-room-card.jpg",
-              "image": "shopify://shop_images/sheen-wing-headboard-photo.jpg",
-              "room_image": "shopify://shop_images/sheen-wing-headboard-photo.jpg"
-            }
-          },
           "style-10": {
             "type": "style",
             "settings": {
@@ -1752,6 +1713,72 @@
               "render": "fr-twickenham-sofa-card.jpg",
               "room": "fr-twickenham-sofa-room-card.jpg"
             }
+          },
+          "hb-scalloped-arch": {
+            "type": "style",
+            "settings": {
+              "category": "headboards",
+              "name": "Scalloped Arch · scalloped top, central arch",
+              "drawing": "scalloped-headboard",
+              "link": "shopify://products/scalloped-arch-headboard",
+              "render": "fr-scalloped-arch-headboard-card.jpg",
+              "room": "fr-scalloped-arch-headboard-room-card.jpg"
+            }
+          },
+          "hb-camelback": {
+            "type": "style",
+            "settings": {
+              "category": "headboards",
+              "name": "Camelback · rounded rise, shaped shoulders",
+              "drawing": "scalloped-headboard",
+              "link": "shopify://products/camelback-headboard",
+              "render": "fr-camelback-headboard-card.jpg",
+              "room": "fr-camelback-headboard-room-card.jpg"
+            }
+          },
+          "hb-clover": {
+            "type": "style",
+            "settings": {
+              "category": "headboards",
+              "name": "Clover · tall arch, rounded shoulders",
+              "drawing": "scalloped-headboard",
+              "link": "shopify://products/clover-headboard",
+              "render": "fr-clover-headboard-card.jpg",
+              "room": "fr-clover-headboard-room-card.jpg"
+            }
+          },
+          "hb-notched": {
+            "type": "style",
+            "settings": {
+              "category": "headboards",
+              "name": "Notched · stepped shoulders, brass nailheads",
+              "drawing": "fluted-headboard",
+              "link": "shopify://products/notched-headboard",
+              "render": "fr-notched-headboard-card.jpg",
+              "room": "fr-notched-headboard-room-card.jpg"
+            }
+          },
+          "hb-oval": {
+            "type": "style",
+            "settings": {
+              "category": "headboards",
+              "name": "Oval · soft rolled border",
+              "drawing": "scalloped-headboard",
+              "link": "shopify://products/oval-headboard",
+              "render": "fr-oval-headboard-card.jpg",
+              "room": "fr-oval-headboard-room-card.jpg"
+            }
+          },
+          "hb-curved-peak": {
+            "type": "style",
+            "settings": {
+              "category": "headboards",
+              "name": "Curved Peak · framed, curving to a peak",
+              "drawing": "wing-headboard",
+              "link": "shopify://products/curved-peak-headboard",
+              "render": "fr-curved-peak-headboard-card.jpg",
+              "room": "fr-curved-peak-headboard-room-card.jpg"
+            }
           }
         },
         "block_order": [
@@ -1765,9 +1792,12 @@
           "style-04",
           "style-05",
           "style-06",
-          "style-07",
-          "style-08",
-          "style-09",
+          "hb-scalloped-arch",
+          "hb-camelback",
+          "hb-clover",
+          "hb-notched",
+          "hb-oval",
+          "hb-curved-peak",
           "style-10",
           "style-11",
           "style-12",
@@ -1781,7 +1811,7 @@
         "settings": {
           "eyebrow": "The furniture lookbook",
           "heading": "Made for the room you have",
-          "intro": "<p>Twenty-two styles, each made to order in the fabric you choose. Find your room, pick a piece, then make it yours.</p>",
+          "intro": "<p>Twenty-five styles, each made to order in the fabric you choose. Find your room, pick a piece, then make it yours.</p>",
           "menu_label": "Product types",
           "cta_label": "Choose your fabric",
           "default_link": "",
@@ -1827,10 +1857,9 @@
           "piece-3": {
             "type": "piece",
             "settings": {
-              "name": "Scalloped headboard",
-              "image": "shopify://shop_images/sheen-scalloped-headboard-photo.jpg",
-              "render": "fr-scalloped-headboard-room-card.jpg",
-              "link": "shopify://products/scalloped-headboard"
+              "name": "Scalloped Arch headboard",
+              "link": "shopify://products/scalloped-arch-headboard",
+              "render": "fr-scalloped-arch-headboard-room-card.jpg"
             }
           }
         },
