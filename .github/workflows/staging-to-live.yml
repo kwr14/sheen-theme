@@ -1,0 +1,111 @@
+# Staging → live for the Sheen Upholstery theme (kwr14/sheen-theme).
+#
+#   • Every push to `staging` (Shopify commits there whenever the staging theme changes):
+#       checks the theme JSON, then opens the staging → main pull request, or refreshes it.
+#       Nothing goes live.
+#   • "Ship" (merge staging into main, which Shopify publishes to the live theme in 1–4 minutes):
+#       run this workflow with action = ship (GitHub → Actions → Staging to live → Run workflow),
+#       or tell the Director "ship" in chat.
+#       After the merge, main is merged back into staging so the two branches stay in step.
+name: Staging to live
+
+on:
+  push:
+    branches: [staging]
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "open = open or refresh the PR only; ship = merge staging into main (goes live)"
+        type: choice
+        options: [open, ship]
+        default: open
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: staging-to-live
+  cancel-in-progress: false
+
+jobs:
+  check:
+    name: Check theme files
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: staging
+      - name: Validate theme JSON (config, templates, section groups, locales)
+        run: |
+          python3 - <<'PY'
+          import glob, json, re, sys
+          files = (glob.glob('config/*.json') + glob.glob('templates/**/*.json', recursive=True)
+                   + glob.glob('sections/*.json') + glob.glob('locales/*.json'))
+          bad = []
+          for f in files:
+              s = open(f, encoding='utf-8').read()
+              s = re.sub(r'^\s*/\*.*?\*/', '', s, count=1, flags=re.S)  # Shopify's header comment
+              try:
+                  json.loads(s)
+              except Exception as e:
+                  bad.append(f'{f}: {e}')
+          print('\n'.join(bad) if bad else f'{len(files)} theme JSON files are valid')
+          sys.exit(1 if bad else 0)
+          PY
+
+  pr:
+    name: Open or refresh the PR
+    needs: check
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - name: Open or refresh staging → main
+        run: |
+          set -euo pipefail
+          ahead=$(gh api "repos/$GH_REPO/compare/main...staging" --jq .ahead_by)
+          if [ "$ahead" = "0" ]; then
+            echo "staging has nothing new for main."
+            exit 0
+          fi
+          list=$(gh api "repos/$GH_REPO/compare/main...staging" \
+                   --jq '.commits[-15:][] | "- " + (.commit.message | split("\n")[0])')
+          body=$(printf '%s\n\n%s\n\n%s\n%s\n' \
+            "Opened automatically by the Staging to live workflow: $ahead change(s) on staging are not live yet." \
+            "Latest changes:" "$list" \
+            "To go live: tell the Director \"ship\", or run Actions → Staging to live → Run workflow with action = ship.")
+          n=$(gh pr list --base main --head staging --state open --json number --jq '.[0].number // empty')
+          if [ -z "$n" ]; then
+            gh pr create --base main --head staging --title "Staging → live" --body "$body"
+          else
+            gh pr edit "$n" --body "$body"
+            echo "Refreshed PR #$n"
+          fi
+
+  ship:
+    name: Ship (merge to live)
+    needs: [check, pr]
+    if: github.event_name == 'workflow_dispatch' && inputs.action == 'ship'
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - name: Merge staging into main
+        run: |
+          set -euo pipefail
+          n=$(gh pr list --base main --head staging --state open --json number --jq '.[0].number // empty')
+          if [ -z "$n" ]; then
+            echo "No open staging → main PR: nothing to ship."
+            exit 0
+          fi
+          gh pr merge "$n" --merge --subject "Ship staging to live (PR #$n)"
+          echo "Merged PR #$n. Shopify publishes main to the live theme in about 1–4 minutes."
+      - name: Merge main back into staging
+        run: |
+          # Keeps edits made in the live theme editor (Shopify commits those to main) on staging too.
+          gh api "repos/$GH_REPO/merges" -f base=staging -f head=main \
+            -f commit_message="Sync main back into staging after ship" --silent || \
+            echo "::warning::main could not be merged back into staging automatically; ask the Director."
