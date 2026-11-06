@@ -294,6 +294,7 @@
   #fc-{{ section.id }} .fc-crumbs { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 24px; }
   #fc-{{ section.id }} .fc-layout { grid-template-columns: minmax(0, 1.2fr) minmax(380px, .8fr); gap: clamp(32px, 5vw, 76px); }
   #fc-{{ section.id }} .fc-media { top: 28px; }
+  #fc-{{ section.id }} .fc-panel { padding: clamp(22px, 3vw, 40px); background: #fffefa; border: 1px solid #e5e1d7; box-shadow: 0 14px 36px rgba(44, 48, 37, .06); }
   #fc-{{ section.id }} .fc-stage { aspect-ratio: 1 / 1.04; border-radius: 3px; }
   #fc-{{ section.id }} .fc-views { gap: 12px; margin-top: 16px; }
   #fc-{{ section.id }} .fc-view img { width: 88px; height: 74px; border-radius: 2px; }
@@ -640,6 +641,13 @@
           -%}
           {"src": {{ img | image_url: width: 1600 | json }}, "thumb": {{ img | image_url: width: 200 | json }}, "alt": {{ img.alt | default: '' | json }}, "file": {{ img_file | default: '' | json }}}{% unless forloop.last %},{% endunless %}
         {%- endfor -%}
+        {%- if product.handle == 'petersham-sofa' -%}
+          {%- if product.images.size > 0 -%},{%- endif -%}
+          {"src": {{ 'petersham-sage-elba-front.jpg' | asset_url | json }}, "thumb": {{ 'petersham-sage-elba-front-thumb.jpg' | asset_url | json }}, "alt": "#LF2282C/042 Front", "file": "", "generated": true}
+          ,{"src": {{ 'petersham-sage-elba-angle.jpg' | asset_url | json }}, "thumb": {{ 'petersham-sage-elba-angle-thumb.jpg' | asset_url | json }}, "alt": "#LF2282C/042 Angle", "file": "", "generated": true}
+          ,{"src": {{ 'petersham-sage-elba-room.jpg' | asset_url | json }}, "thumb": {{ 'petersham-sage-elba-room-thumb.jpg' | asset_url | json }}, "alt": "#LF2282C/042 Room", "file": "", "generated": true}
+          ,{"src": {{ 'petersham-sage-elba-detail.jpg' | asset_url | json }}, "thumb": {{ 'petersham-sage-elba-detail-thumb.jpg' | asset_url | json }}, "alt": "#LF2282C/042 Detail", "file": "", "generated": true}
+        {%- endif -%}
       ],
       "fabrics": {
         {%- assign first_out = true -%}
@@ -757,7 +765,7 @@
         if (alt.charAt(0) === '#') {
           var sp = alt.indexOf(' ');
           var tag = norm(sp > 0 ? alt.slice(1, sp) : alt.slice(1));
-          if ((code && tag === code) || (handle && tag === handle)) tagged.push({ src: im.src, thumb: im.thumb, label: sp > 0 ? alt.slice(sp + 1).trim() : 'View', alt: (f.name || '') + ' — ' + (sp > 0 ? alt.slice(sp + 1).trim() : '') });
+          if ((code && tag === code) || (handle && tag === handle)) tagged.push({ src: im.src, thumb: im.thumb, label: sp > 0 ? alt.slice(sp + 1).trim() : 'View', alt: (f.name || '') + ' — ' + (sp > 0 ? alt.slice(sp + 1).trim() : ''), note: im.generated ? 'AI-generated visualisation · compare colour with the physical swatch' : '' });
         } else {
           untagged.push(im);
         }
