@@ -1809,9 +1809,9 @@
           "style-18"
         ],
         "settings": {
-          "eyebrow": "The furniture lookbook",
-          "heading": "Made for the room you have",
-          "intro": "<p>Twenty-five styles, each made to order in the fabric you choose. Find your room, pick a piece, then make it yours.</p>",
+          "eyebrow": "",
+          "heading": "",
+          "intro": "",
           "menu_label": "Product types",
           "cta_label": "Choose your fabric",
           "default_link": "",
