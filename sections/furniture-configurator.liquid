@@ -282,6 +282,50 @@
     #fc-{{ section.id }} .fc-details-inner { padding: 40px 16px; }
     #fc-{{ section.id }} .fc-colours { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; }
   }
+  #fc-{{ section.id }} {
+    --fc-bg: #f6f4ee;
+    --fc-card: #fffefa;
+    --fc-ink: #303b30;
+    --fc-muted: #686b60;
+    --fc-line: #d9d8cb;
+    --fc-soft: #e9e7dc;
+  }
+  #fc-{{ section.id }} .fc-inner { max-width: 1440px; padding-top: 24px; }
+  #fc-{{ section.id }} .fc-crumbs { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 24px; }
+  #fc-{{ section.id }} .fc-layout { grid-template-columns: minmax(0, 1.2fr) minmax(380px, .8fr); gap: clamp(32px, 5vw, 76px); }
+  #fc-{{ section.id }} .fc-media { top: 28px; }
+  #fc-{{ section.id }} .fc-panel { padding: clamp(22px, 3vw, 40px); background: #fffefa; border: 1px solid #e5e1d7; box-shadow: 0 14px 36px rgba(44, 48, 37, .06); }
+  #fc-{{ section.id }} .fc-stage { aspect-ratio: 1 / 1.04; border-radius: 3px; }
+  #fc-{{ section.id }} .fc-views { gap: 12px; margin-top: 16px; }
+  #fc-{{ section.id }} .fc-view img { width: 88px; height: 74px; border-radius: 2px; }
+  #fc-{{ section.id }} .fc-panel { gap: 24px; }
+  #fc-{{ section.id }} .fc-title { font-size: clamp(38px, 4.3vw, 58px); letter-spacing: -.025em; }
+  #fc-{{ section.id }} .fc-desc { max-width: 44em; }
+  #fc-{{ section.id }} .fc-price { margin-top: 22px; }
+  #fc-{{ section.id }} .fc-price strong { font-size: 28px; }
+  #fc-{{ section.id }} .fc-rule { background: var(--fc-line); }
+  #fc-{{ section.id }} legend, #fc-{{ section.id }} .fc-step { font-size: 16px; margin-bottom: 16px; }
+  #fc-{{ section.id }} .fc-step-num { margin-right: 7px; color: #74816c; }
+  #fc-{{ section.id }} .fc-tabs { gap: 9px; }
+  #fc-{{ section.id }} .fc-tab { min-width: 130px; padding: 12px 14px; border-radius: 2px; background: rgba(255,254,250,.72); }
+  #fc-{{ section.id }} .fc-tab[aria-selected="true"] { border-color: #465642; background: #e9ece4; }
+  #fc-{{ section.id }} .fc-colours { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; }
+  #fc-{{ section.id }} .fc-colour { gap: 8px; }
+  #fc-{{ section.id }} .fc-chip { border-radius: 3px; aspect-ratio: 1 / .82; box-shadow: none; }
+  #fc-{{ section.id }} .fc-colour input:checked + .fc-chip { box-shadow: 0 0 0 2px var(--fc-bg), 0 0 0 4px #465642; }
+  #fc-{{ section.id }} .fc-colour-name { text-align: left; font-size: 12px; }
+  #fc-{{ section.id }} .fc-card, #fc-{{ section.id }} .fc-breakdown, #fc-{{ section.id }} .fc-empty { border-radius: 2px; background: #fffefa; }
+  #fc-{{ section.id }} .fc-card-chip { border-radius: 2px; }
+  #fc-{{ section.id }} .fc-add { border-radius: 2px; background: #40513d; letter-spacing: .11em; transition: background .18s ease; }
+  #fc-{{ section.id }} .fc-add:hover:not(:disabled) { background: #293a29; }
+  #fc-{{ section.id }} .fc-swatch-btn { border-radius: 2px; border-color: #65745f; }
+  #fc-{{ section.id }} .fc-swatch-btn:hover:not(:disabled) { background: #e9ece4; }
+  #fc-{{ section.id }} .fc-details { background: #efeee7; }
+  @media (max-width: 900px) {
+    #fc-{{ section.id }} .fc-layout { grid-template-columns: 1fr; gap: 32px; }
+    #fc-{{ section.id }} .fc-colours { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+    #fc-{{ section.id }} .fc-tab { min-width: 112px; }
+  }
 </style>
 
 <section id="fc-{{ section.id }}" data-fc-root>
@@ -597,6 +641,23 @@
           -%}
           {"src": {{ img | image_url: width: 1600 | json }}, "thumb": {{ img | image_url: width: 200 | json }}, "alt": {{ img.alt | default: '' | json }}, "file": {{ img_file | default: '' | json }}}{% unless forloop.last %},{% endunless %}
         {%- endfor -%}
+        {%- assign sofa_photo_handles = 'petersham-sofa,kew-sofa,mortlake-sofa,barnes-sofa,syon-sofa,teddington-sofa,twickenham-sofa' | split: ',' -%}
+        {%- if sofa_photo_handles contains product.handle -%}
+          {%- if product.images.size > 0 -%},{%- endif -%}
+          {%- assign sofa_photo_key = product.handle | remove: '-sofa' -%}
+          {%- assign generated_front = sofa_photo_key | append: '-sage-elba-front.jpg' -%}
+          {%- assign generated_front_thumb = sofa_photo_key | append: '-sage-elba-front-thumb.jpg' -%}
+          {%- assign generated_angle = sofa_photo_key | append: '-sage-elba-angle.jpg' -%}
+          {%- assign generated_angle_thumb = sofa_photo_key | append: '-sage-elba-angle-thumb.jpg' -%}
+          {%- assign generated_room = sofa_photo_key | append: '-sage-elba-room.jpg' -%}
+          {%- assign generated_room_thumb = sofa_photo_key | append: '-sage-elba-room-thumb.jpg' -%}
+          {%- assign generated_detail = sofa_photo_key | append: '-sage-elba-detail.jpg' -%}
+          {%- assign generated_detail_thumb = sofa_photo_key | append: '-sage-elba-detail-thumb.jpg' -%}
+          {"src": {{ generated_front | asset_url | json }}, "thumb": {{ generated_front_thumb | asset_url | json }}, "alt": "#LF2282C/042 Front", "file": "", "generated": true}
+          ,{"src": {{ generated_angle | asset_url | json }}, "thumb": {{ generated_angle_thumb | asset_url | json }}, "alt": "#LF2282C/042 Angle", "file": "", "generated": true}
+          ,{"src": {{ generated_room | asset_url | json }}, "thumb": {{ generated_room_thumb | asset_url | json }}, "alt": "#LF2282C/042 Room", "file": "", "generated": true}
+          ,{"src": {{ generated_detail | asset_url | json }}, "thumb": {{ generated_detail_thumb | asset_url | json }}, "alt": "#LF2282C/042 Detail", "file": "", "generated": true}
+        {%- endif -%}
       ],
       "fabrics": {
         {%- assign first_out = true -%}
@@ -639,6 +700,7 @@
 {%- if library_mode and visible_count > 0 -%}
 <script src="{{ 'furniture-illustration.js' | asset_url }}"></script>
 <script src="{{ 'furniture-renders.js' | asset_url }}"></script>
+<script src="{{ 'furniture-generated-photos.js' | asset_url }}"></script>
 <script>
   (function () {
     var root = document.getElementById('fc-{{ section.id }}');
@@ -714,7 +776,7 @@
         if (alt.charAt(0) === '#') {
           var sp = alt.indexOf(' ');
           var tag = norm(sp > 0 ? alt.slice(1, sp) : alt.slice(1));
-          if ((code && tag === code) || (handle && tag === handle)) tagged.push({ src: im.src, thumb: im.thumb, label: sp > 0 ? alt.slice(sp + 1).trim() : 'View', alt: (f.name || '') + ' — ' + (sp > 0 ? alt.slice(sp + 1).trim() : '') });
+          if ((code && tag === code) || (handle && tag === handle)) tagged.push({ src: im.src, thumb: im.thumb, label: sp > 0 ? alt.slice(sp + 1).trim() : 'View', alt: (f.name || '') + ' — ' + (sp > 0 ? alt.slice(sp + 1).trim() : ''), note: im.generated ? 'AI-generated visualisation · compare colour with the physical swatch' : '' });
         } else {
           untagged.push(im);
         }
@@ -938,9 +1000,15 @@
       var kind = (D.productHandle && R.has(D.productHandle)) ? D.productHandle : I.kindFor(D.productType);   // per-model renders first
       if (!R.has(kind)) return;
       var token = ++renderToken;
+      var productPhotos = window.SheenFurniturePhotos && window.SheenFurniturePhotos[D.productHandle];
+      var roomPhoto = productPhotos && productPhotos[handle];
       R.views(kind, f.family, f.chip || '#b9b0a1').then(function (shots) {
         if (token !== renderToken || state.fabric !== handle) return;
         var list = shots.map(function (s) {
+          if (roomPhoto && s.view === 'room') {
+            return { src: roomPhoto, thumb: roomPhoto, label: 'In a room',
+                     alt: (f.name || '') + ' — in a room', note: 'AI-generated room visualisation · compare colour and texture with the physical swatch' };
+          }
           return { src: s.src, thumb: s.src, label: s.label,
                    alt: (f.name || '') + ' — ' + s.label.toLowerCase(), note: D.renderNote || '' };
         });
