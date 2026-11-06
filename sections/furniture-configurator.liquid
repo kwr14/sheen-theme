@@ -700,6 +700,7 @@
 {%- if library_mode and visible_count > 0 -%}
 <script src="{{ 'furniture-illustration.js' | asset_url }}"></script>
 <script src="{{ 'furniture-renders.js' | asset_url }}"></script>
+<script src="{{ 'furniture-generated-photos.js' | asset_url }}"></script>
 <script>
   (function () {
     var root = document.getElementById('fc-{{ section.id }}');
@@ -999,9 +1000,15 @@
       var kind = (D.productHandle && R.has(D.productHandle)) ? D.productHandle : I.kindFor(D.productType);   // per-model renders first
       if (!R.has(kind)) return;
       var token = ++renderToken;
+      var productPhotos = window.SheenFurniturePhotos && window.SheenFurniturePhotos[D.productHandle];
+      var roomPhoto = productPhotos && productPhotos[handle];
       R.views(kind, f.family, f.chip || '#b9b0a1').then(function (shots) {
         if (token !== renderToken || state.fabric !== handle) return;
         var list = shots.map(function (s) {
+          if (roomPhoto && s.view === 'room') {
+            return { src: roomPhoto, thumb: roomPhoto, label: 'In a room',
+                     alt: (f.name || '') + ' — in a room', note: 'AI-generated room visualisation · compare colour and texture with the physical swatch' };
+          }
           return { src: s.src, thumb: s.src, label: s.label,
                    alt: (f.name || '') + ' — ' + s.label.toLowerCase(), note: D.renderNote || '' };
         });
