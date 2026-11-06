@@ -1013,7 +1013,15 @@
                    alt: (f.name || '') + ' — ' + s.label.toLowerCase(), note: D.renderNote || '' };
         });
         var photos = res.list.filter(function (v) { return !v.drawn; });
-        setViews({ list: state.touched ? list.concat(photos) : photos.concat(list), generic: true });
+        if (roomPhoto) {
+          var heroIndex = list.findIndex(function (v) { return v.src === roomPhoto; });
+          if (heroIndex > 0) list.unshift(list.splice(heroIndex, 1)[0]);
+          // Lead with the matching room photograph so each selected colourway
+          // is visibly updated without requiring the shopper to change views.
+          setViews({ list: list.concat(photos), generic: true });
+        } else {
+          setViews({ list: state.touched ? list.concat(photos) : photos.concat(list), generic: true });
+        }
       }).catch(function () { /* keep the drawings */ });
     }
 
