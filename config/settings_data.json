@@ -1923,8 +1923,8 @@
           "button_link": "shopify://collections/fabrics",
           "button2_label": "Request a quote",
           "button2_link": "shopify://pages/contact-us",
-          "image": "shopify://shop_images/6_1.jpg",
-          "credit": "Photo: Style Library"
+          "image": "shopify://shop_images/kew-sofa__room.jpg",
+          "credit": ""
         }
       },
       "atelier_use": {
@@ -2139,7 +2139,7 @@
           "phone": "020 8878 6474",
           "email": "info@sheenupholstery.co.uk",
           "map_url": "https://www.google.com/maps/dir/?api=1&destination=358+Upper+Richmond+Road+West,+London+SW14+7JT",
-          "image": "shopify://shop_images/5_1.jpg"
+          "image": "shopify://shop_images/teddington-sofa__room.jpg"
         }
       }
     },
