@@ -641,12 +641,22 @@
           -%}
           {"src": {{ img | image_url: width: 1600 | json }}, "thumb": {{ img | image_url: width: 200 | json }}, "alt": {{ img.alt | default: '' | json }}, "file": {{ img_file | default: '' | json }}}{% unless forloop.last %},{% endunless %}
         {%- endfor -%}
-        {%- if product.handle == 'petersham-sofa' -%}
+        {%- assign sofa_photo_handles = 'petersham-sofa,kew-sofa,mortlake-sofa,barnes-sofa,syon-sofa,teddington-sofa,twickenham-sofa' | split: ',' -%}
+        {%- if sofa_photo_handles contains product.handle -%}
           {%- if product.images.size > 0 -%},{%- endif -%}
-          {"src": {{ 'petersham-sage-elba-front.jpg' | asset_url | json }}, "thumb": {{ 'petersham-sage-elba-front-thumb.jpg' | asset_url | json }}, "alt": "#LF2282C/042 Front", "file": "", "generated": true}
-          ,{"src": {{ 'petersham-sage-elba-angle.jpg' | asset_url | json }}, "thumb": {{ 'petersham-sage-elba-angle-thumb.jpg' | asset_url | json }}, "alt": "#LF2282C/042 Angle", "file": "", "generated": true}
-          ,{"src": {{ 'petersham-sage-elba-room.jpg' | asset_url | json }}, "thumb": {{ 'petersham-sage-elba-room-thumb.jpg' | asset_url | json }}, "alt": "#LF2282C/042 Room", "file": "", "generated": true}
-          ,{"src": {{ 'petersham-sage-elba-detail.jpg' | asset_url | json }}, "thumb": {{ 'petersham-sage-elba-detail-thumb.jpg' | asset_url | json }}, "alt": "#LF2282C/042 Detail", "file": "", "generated": true}
+          {%- assign sofa_photo_key = product.handle | remove: '-sofa' -%}
+          {%- assign generated_front = sofa_photo_key | append: '-sage-elba-front.jpg' -%}
+          {%- assign generated_front_thumb = sofa_photo_key | append: '-sage-elba-front-thumb.jpg' -%}
+          {%- assign generated_angle = sofa_photo_key | append: '-sage-elba-angle.jpg' -%}
+          {%- assign generated_angle_thumb = sofa_photo_key | append: '-sage-elba-angle-thumb.jpg' -%}
+          {%- assign generated_room = sofa_photo_key | append: '-sage-elba-room.jpg' -%}
+          {%- assign generated_room_thumb = sofa_photo_key | append: '-sage-elba-room-thumb.jpg' -%}
+          {%- assign generated_detail = sofa_photo_key | append: '-sage-elba-detail.jpg' -%}
+          {%- assign generated_detail_thumb = sofa_photo_key | append: '-sage-elba-detail-thumb.jpg' -%}
+          {"src": {{ generated_front | asset_url | json }}, "thumb": {{ generated_front_thumb | asset_url | json }}, "alt": "#LF2282C/042 Front", "file": "", "generated": true}
+          ,{"src": {{ generated_angle | asset_url | json }}, "thumb": {{ generated_angle_thumb | asset_url | json }}, "alt": "#LF2282C/042 Angle", "file": "", "generated": true}
+          ,{"src": {{ generated_room | asset_url | json }}, "thumb": {{ generated_room_thumb | asset_url | json }}, "alt": "#LF2282C/042 Room", "file": "", "generated": true}
+          ,{"src": {{ generated_detail | asset_url | json }}, "thumb": {{ generated_detail_thumb | asset_url | json }}, "alt": "#LF2282C/042 Detail", "file": "", "generated": true}
         {%- endif -%}
       ],
       "fabrics": {
