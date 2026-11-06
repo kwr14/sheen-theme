@@ -788,7 +788,11 @@
     function viewsFor(f) {
       var c = classifyImages(D.images, D.productHandle, f);
       var tagged = c.tagged, untagged = c.untagged;
-      if (tagged.length) return { list: tagged, generic: false };
+      if (tagged.length) {
+        var taggedRoom = tagged.findIndex(function (v) { return /room/i.test(v.label || ''); });
+        if (taggedRoom > 0) tagged.unshift(tagged.splice(taggedRoom, 1)[0]);
+        return { list: tagged, generic: false };
+      }
       // Only untagged photos are shared across colours; with none, a colour shows its own renders/drawings
       var base = untagged;
       if (!base.length && !(f && D.illustration)) base = D.images.filter(function (im) { return (im.alt || '').trim().charAt(0) !== '#' && !parseMediaFile(im.file); });
