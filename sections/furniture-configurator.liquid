@@ -702,6 +702,11 @@
 <script src="{{ 'furniture-renders.js' | asset_url }}"></script>
 <script src="{{ 'furniture-generated-photos.js' | asset_url }}"></script>
 <script src="{{ 'furniture-fabric-details.js' | asset_url }}"></script>
+<script src="{{ 'furniture-headboard-photos.js' | asset_url }}"></script>
+<script>
+  window.SheenFabricDetails = window.SheenFabricDetails || {};
+  window.SheenFabricDetails['natural-linen-sage'] = {{ 'petersham-sage-elba-detail.jpg' | asset_url | json }};
+</script>
 <script>
   (function () {
     var root = document.getElementById('fc-{{ section.id }}');
@@ -1005,7 +1010,8 @@
       if (!R.has(kind)) return;
       var token = ++renderToken;
       var productPhotos = window.SheenFurniturePhotos && window.SheenFurniturePhotos[D.productHandle];
-      var roomPhoto = productPhotos && productPhotos[handle];
+      var headboardPhotos = window.SheenHeadboardPhotos && window.SheenHeadboardPhotos[D.productHandle];
+      var roomPhoto = (headboardPhotos && headboardPhotos[handle]) || (productPhotos && productPhotos[handle]);
       var fabricDetails = window.SheenFabricDetails || {};
       var detailPhoto = fabricDetails[handle];
       function keyFor(view) {
