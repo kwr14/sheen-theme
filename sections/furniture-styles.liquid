@@ -148,6 +148,10 @@
             {%- assign on = '' -%}
             {%- if count == 0 %}{% assign on = 'is-on' %}{% endif -%}
             {%- liquid
+              assign board_product_handle = ''
+              if block.settings.link contains '/products/'
+                assign board_product_handle = block.settings.link | split: '/products/' | last | split: '?' | first | split: '#' | first | split: '/' | first | strip
+              endif
               # Room scene: block upload > linked product's <handle>__room file > theme-asset render
               assign room_pic = block.settings.room_image
               if room_pic == blank
@@ -163,9 +167,9 @@
               endif
             -%}
             {%- if room_pic != blank -%}
-              <img src="{{ room_pic | image_url: width: 1800 }}" srcset="{{ room_pic | image_url: width: 900 }} 900w, {{ room_pic | image_url: width: 1800 }} 1800w" sizes="(max-width: 1280px) 100vw, 1216px" class="{{ on }}" data-i="{{ count }}" alt="" loading="lazy" width="{{ room_pic.width }}" height="{{ room_pic.height }}">
+              <img src="{{ room_pic | image_url: width: 1800 }}" srcset="{{ room_pic | image_url: width: 900 }} 900w, {{ room_pic | image_url: width: 1800 }} 1800w" sizes="(max-width: 1280px) 100vw, 1216px" class="{{ on }}" data-i="{{ count }}" data-product-handle="{{ board_product_handle }}" alt="" loading="lazy" width="{{ room_pic.width }}" height="{{ room_pic.height }}">
             {%- elsif block.settings.room != blank -%}
-              <img src="{{ block.settings.room | asset_url }}" class="{{ on }}" data-i="{{ count }}" alt="" loading="lazy" width="1000" height="750">
+              <img src="{{ block.settings.room | asset_url }}" class="{{ on }}" data-i="{{ count }}" data-product-handle="{{ board_product_handle }}" alt="" loading="lazy" width="1000" height="750">
             {%- endif -%}
             {%- assign count = count | plus: 1 -%}
           {%- endif -%}
@@ -193,7 +197,11 @@
               {%- for block in section.blocks -%}
                 {%- if block.settings.category == key and block.settings.name != blank -%}
                   {%- assign link = block.settings.link | default: default_link -%}
-                  <a class="rr-card{% if i == 0 %} rr-on{% endif %}" href="{{ link }}" data-i="{{ i }}" data-name="{{ block.settings.name | escape }}" {{ block.shopify_attributes }}>
+                  {%- assign board_product_handle = '' -%}
+                  {%- if link contains '/products/' -%}
+                    {%- assign board_product_handle = link | split: '/products/' | last | split: '?' | first | split: '#' | first | split: '/' | first | strip -%}
+                  {%- endif -%}
+                  <a class="rr-card{% if i == 0 %} rr-on{% endif %}" href="{{ link }}" data-i="{{ i }}" data-name="{{ block.settings.name | escape }}" data-product-handle="{{ board_product_handle }}" {{ block.shopify_attributes }}>
                     {%- liquid
                       # Card picture: block upload > linked product's <handle>__card file > theme-asset render > drawing
                       assign card_pic = block.settings.image
@@ -249,10 +257,37 @@
   </div>
 </div>
 
+<script src="{{ 'furniture-headboard-photos.js' | asset_url }}"></script>
 <script>
   (function () {
     function init(root) {
       if (!root) return;
+      var boardFabrics = {
+        'scalloped-arch-headboard': 'designer-prints-best-stripe-sand-leaf',
+        'camelback-headboard': 'designer-prints-guerbois-forest',
+        'clover-headboard': 'designer-prints-pluto-cornflower',
+        'notched-headboard': 'designer-prints-verity-indigo',
+        'oval-headboard': 'designer-prints-wilderie-porcelain-seaglass',
+        'curved-peak-headboard': 'designer-prints-brera-sage'
+      };
+      function replaceHeadboardPhoto(img, productHandle) {
+        var fabricHandle = boardFabrics[productHandle];
+        var byProduct = window.SheenHeadboardPhotos && window.SheenHeadboardPhotos[productHandle];
+        var src = byProduct && fabricHandle && byProduct[fabricHandle];
+        if (!img || !src) return;
+        img.removeAttribute('srcset');
+        img.src = src;
+        if (img.closest('.rr-thumb')) {
+          var card = img.closest('.rr-card');
+          img.alt = (card && card.getAttribute('data-name') || 'Headboard') + ' in its featured designer fabric';
+        }
+      }
+      root.querySelectorAll('.rr-band img[data-product-handle]').forEach(function (img) {
+        replaceHeadboardPhoto(img, img.getAttribute('data-product-handle'));
+      });
+      root.querySelectorAll('.rr-card[data-product-handle]').forEach(function (card) {
+        replaceHeadboardPhoto(card.querySelector('.rr-thumb img'), card.getAttribute('data-product-handle'));
+      });
       root.querySelectorAll('.rr-cat').forEach(function (cat) {
         var imgs = cat.querySelectorAll('.rr-band img[data-i]');
         var cards = cat.querySelectorAll('.rr-card');
