@@ -74,22 +74,12 @@
       assign board_fabric_handle = 'designer-prints-brera-sage'
   endcase
 
-  # List metafield references are exposed in pages of 50. Add this headboard's
-  # assigned board fabric by handle so the staging preview can reach that record.
-  assign fabric_handles_wrapped = ''
-  for f in fabrics
-    if fabric_handles_wrapped != blank
-      assign fabric_handles_wrapped = fabric_handles_wrapped | append: ','
-    endif
-    assign fabric_handles_wrapped = fabric_handles_wrapped | append: f.system.handle
-  endfor
+  # List metafield references are exposed in pages of 50. Resolve this one
+  # headboard's assigned board fabric directly for the staging showcase.
+  assign board_fabric = nil
   if board_fabric_handle != blank
-    if fabric_handles_wrapped != blank
-      assign fabric_handles_wrapped = fabric_handles_wrapped | append: ','
-    endif
-    assign fabric_handles_wrapped = fabric_handles_wrapped | append: board_fabric_handle
+    assign board_fabric = metaobjects['fabric_colour'][board_fabric_handle]
   endif
-  assign fabric_handles = fabric_handles_wrapped | split: ',' | uniq
 
   # Option positions for Size and Fabric tier
   assign size_idx = -1
@@ -126,8 +116,7 @@
   assign visible_count = 0
   assign any_live = false
   if library_mode
-    for fabric_handle in fabric_handles
-      assign f = metaobjects['fabric_colour'][fabric_handle]
+    for f in fabrics
       assign status = f.stock_status.value | default: 'Not yet approved'
       if status == 'Discontinued'
         continue
@@ -174,6 +163,47 @@
         endif
       endunless
     endfor
+    if board_fabric != blank
+      assign f = board_fabric
+      assign status = f.stock_status.value | default: 'Not yet approved'
+      if status != 'Discontinued'
+        if status != 'Not yet approved' or preview or f.system.handle == board_fabric_handle
+          assign allowed = true
+          assign allow_list = f.allowed_products.value
+          if allow_list != blank and allow_list.size > 0
+            assign allowed = false
+            for a in allow_list
+              assign al = a | downcase | strip
+              assign alast = al | slice: -1
+              if alast == 's'
+                assign al = al | remove_last: 's'
+              endif
+              if al == ptype or al == ptype_base or al == 'all' or al == product.handle
+                assign allowed = true
+                break
+              endif
+            endfor
+          endif
+          if allowed and f.price_tier.value != blank
+            assign visible = visible | append: f.system.handle | append: ','
+            assign visible_count = visible_count | plus: 1
+            if status == 'Live'
+              assign any_live = true
+            endif
+            assign fam = f.fabric_family.value | default: 'Other'
+            assign fam_key = '|' | append: fam | append: '|'
+            assign families_wrapped = '|' | append: families | append: '|'
+            unless families_wrapped contains fam_key
+              if families == ''
+                assign families = fam
+              else
+                assign families = families | append: '|' | append: fam
+              endif
+            endunless
+          endif
+        endif
+      endif
+    endif
   endif
   assign family_list = families | split: '|'
 
@@ -441,8 +471,7 @@
                   {%- for fam in family_list -%}
                     {%- liquid
                       assign fam_tier = ''
-                      for fabric_handle in fabric_handles
-                        assign f = metaobjects['fabric_colour'][fabric_handle]
+                      for f in fabrics
                         if f.fabric_family.value == fam
                           assign fh = ',' | append: f.system.handle | append: ','
                           if visible contains fh
@@ -451,6 +480,12 @@
                           endif
                         endif
                       endfor
+                      if fam_tier == blank and board_fabric.fabric_family.value == fam
+                        assign board_fh = ',' | append: board_fabric.system.handle | append: ','
+                        if visible contains board_fh
+                          assign fam_tier = board_fabric.price_tier.value
+                        endif
+                      endif
                       assign tier_price = ''
                       assign tp_list = tier_prices | split: '|'
                       for tp in tp_list
@@ -480,8 +515,7 @@
                   {%- assign pane_index = forloop.index -%}
                   <fieldset class="fc-colours" role="tabpanel" id="fc-pane-{{ section.id }}-{{ pane_index }}" aria-labelledby="fc-tab-{{ section.id }}-{{ pane_index }}" {% unless forloop.first %}hidden{% endunless %} data-fc-pane="{{ pane_index }}">
                     <legend class="visually-hidden" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">{{ fam }} colours</legend>
-                    {%- for fabric_handle in fabric_handles -%}
-                      {%- assign f = metaobjects['fabric_colour'][fabric_handle] -%}
+                    {%- for f in fabrics -%}
                       {%- liquid
                         if f.fabric_family.value != fam
                           continue
@@ -506,6 +540,23 @@
                         <span class="fc-colour-name">{{ f.colour_name.value }}{% if f_status == 'Temporarily unavailable' %}<span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);"> (temporarily unavailable)</span>{% endif %}</span>
                       </label>
                     {%- endfor -%}
+                    {%- if board_fabric != blank and board_fabric.fabric_family.value == fam -%}
+                      {%- assign board_fh = ',' | append: board_fabric.system.handle | append: ',' -%}
+                      {%- if visible contains board_fh -%}
+                        {%- assign chip_style = '' -%}
+                        {%- if board_fabric.swatch_image.value != blank -%}
+                          {%- assign chip_src = board_fabric.swatch_image.value | image_url: width: 160 -%}
+                          {%- assign chip_style = 'background-image:url(' | append: chip_src | append: ');' -%}
+                        {%- elsif board_fabric.chip_colour.value != blank -%}
+                          {%- assign chip_style = 'background-color:' | append: board_fabric.chip_colour.value | append: ';' -%}
+                        {%- endif -%}
+                        <label class="fc-colour">
+                          <input type="radio" name="fc-fabric-{{ section.id }}" value="{{ board_fabric.system.handle }}" data-fc-fabric>
+                          <span class="fc-chip" style="{{ chip_style }}" aria-hidden="true"></span>
+                          <span class="fc-colour-name">{{ board_fabric.colour_name.value }}</span>
+                        </label>
+                      {%- endif -%}
+                    {%- endif -%}
                   </fieldset>
                 {%- endfor -%}
 
@@ -699,8 +750,7 @@
       ],
       "fabrics": {
         {%- assign first_out = true -%}
-        {%- for fabric_handle in fabric_handles -%}
-          {%- assign f = metaobjects['fabric_colour'][fabric_handle] -%}
+        {%- for f in fabrics -%}
           {%- liquid
             assign fh = ',' | append: f.system.handle | append: ','
             unless visible contains fh
@@ -730,6 +780,33 @@
             "swatch": {{ sw | json }}
           }
         {%- endfor -%}
+        {%- if board_fabric != blank -%}
+          {%- assign fh = ',' | append: board_fabric.system.handle | append: ',' -%}
+          {%- if visible contains fh -%}
+            {%- assign sw = '' -%}
+            {%- if board_fabric.swatch_image.value != blank -%}
+              {%- assign sw = board_fabric.swatch_image.value | image_url: width: 160 -%}
+            {%- endif -%}
+            {%- unless first_out %},{% endunless -%}{%- assign first_out = false -%}
+            {{ board_fabric.system.handle | json }}: {
+              "handle": {{ board_fabric.system.handle | json }},
+              "name": {{ board_fabric.display_name.value | json }},
+              "family": {{ board_fabric.fabric_family.value | json }},
+              "colour": {{ board_fabric.colour_name.value | json }},
+              "supplier": {{ board_fabric.supplier.value | default: '' | json }},
+              "collection": {{ board_fabric.collection.value | default: '' | json }},
+              "code": {{ board_fabric.supplier_code.value | default: '' | json }},
+              "sku": {{ board_fabric.swatch_sku.value | default: '' | json }},
+              "comp": {{ board_fabric.composition.value | default: '' | json }},
+              "badges": {{ board_fabric.badges.value | default: '' | json }},
+              "tier": {{ board_fabric.price_tier.value | json }},
+              "status": {{ board_fabric.stock_status.value | default: 'Not yet approved' | json }},
+              "lead": {{ board_fabric.lead_time_note.value | default: '' | json }},
+              "chip": {{ board_fabric.chip_colour.value | default: '' | json }},
+              "swatch": {{ sw | json }}
+            }
+          {%- endif -%}
+        {%- endif -%}
       }
     }
   </script>
@@ -1111,8 +1188,8 @@
     });
 
     // Initial fabric: ?fabric=<handle>, else the first selectable one
-    var start = null;
-    try { start = new URL(window.location.href).searchParams.get('fabric'); } catch (e) {}
+    var start = {{ board_fabric_handle | json }};
+    try { start = new URL(window.location.href).searchParams.get('fabric') || start; } catch (e) {}
     var startInput = start ? root.querySelector('[data-fc-fabric][value="' + start.replace(/"/g, '') + '"]:not(:disabled)') : null;
     if (!startInput) {
       // Open on the first colour that has its own photos, else the first selectable colour
