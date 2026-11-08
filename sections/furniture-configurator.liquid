@@ -56,6 +56,41 @@
     assign preview = true
   endif
 
+  # Staging art-direction preview: show the assigned designer print on its matching
+  # headboard only. The fabric remains non-orderable until its status is Live.
+  assign board_fabric_handle = ''
+  case product.handle
+    when 'scalloped-arch-headboard'
+      assign board_fabric_handle = 'designer-prints-best-stripe-sand-leaf'
+    when 'camelback-headboard'
+      assign board_fabric_handle = 'designer-prints-guerbois-forest'
+    when 'clover-headboard'
+      assign board_fabric_handle = 'designer-prints-pluto-cornflower'
+    when 'notched-headboard'
+      assign board_fabric_handle = 'designer-prints-verity-indigo'
+    when 'oval-headboard'
+      assign board_fabric_handle = 'designer-prints-wilderie-porcelain-seaglass'
+    when 'curved-peak-headboard'
+      assign board_fabric_handle = 'designer-prints-brera-sage'
+  endcase
+
+  # List metafield references are exposed in pages of 50. Add this headboard's
+  # assigned board fabric by handle so the staging preview can reach that record.
+  assign fabric_handles_wrapped = ''
+  for f in fabrics
+    if fabric_handles_wrapped != blank
+      assign fabric_handles_wrapped = fabric_handles_wrapped | append: ','
+    endif
+    assign fabric_handles_wrapped = fabric_handles_wrapped | append: f.system.handle
+  endfor
+  if board_fabric_handle != blank
+    if fabric_handles_wrapped != blank
+      assign fabric_handles_wrapped = fabric_handles_wrapped | append: ','
+    endif
+    assign fabric_handles_wrapped = fabric_handles_wrapped | append: board_fabric_handle
+  endif
+  assign fabric_handles = fabric_handles_wrapped | split: ',' | uniq
+
   # Option positions for Size and Fabric tier
   assign size_idx = -1
   assign tier_idx = -1
@@ -91,12 +126,13 @@
   assign visible_count = 0
   assign any_live = false
   if library_mode
-    for f in fabrics
+    for fabric_handle in fabric_handles
+      assign f = metaobjects['fabric_colour'][fabric_handle]
       assign status = f.stock_status.value | default: 'Not yet approved'
       if status == 'Discontinued'
         continue
       endif
-      if status == 'Not yet approved' and preview == false
+      if status == 'Not yet approved' and preview == false and f.system.handle != board_fabric_handle
         continue
       endif
       assign allowed = true
@@ -405,7 +441,8 @@
                   {%- for fam in family_list -%}
                     {%- liquid
                       assign fam_tier = ''
-                      for f in fabrics
+                      for fabric_handle in fabric_handles
+                        assign f = metaobjects['fabric_colour'][fabric_handle]
                         if f.fabric_family.value == fam
                           assign fh = ',' | append: f.system.handle | append: ','
                           if visible contains fh
@@ -443,7 +480,8 @@
                   {%- assign pane_index = forloop.index -%}
                   <fieldset class="fc-colours" role="tabpanel" id="fc-pane-{{ section.id }}-{{ pane_index }}" aria-labelledby="fc-tab-{{ section.id }}-{{ pane_index }}" {% unless forloop.first %}hidden{% endunless %} data-fc-pane="{{ pane_index }}">
                     <legend class="visually-hidden" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">{{ fam }} colours</legend>
-                    {%- for f in fabrics -%}
+                    {%- for fabric_handle in fabric_handles -%}
+                      {%- assign f = metaobjects['fabric_colour'][fabric_handle] -%}
                       {%- liquid
                         if f.fabric_family.value != fam
                           continue
@@ -661,7 +699,8 @@
       ],
       "fabrics": {
         {%- assign first_out = true -%}
-        {%- for f in fabrics -%}
+        {%- for fabric_handle in fabric_handles -%}
+          {%- assign f = metaobjects['fabric_colour'][fabric_handle] -%}
           {%- liquid
             assign fh = ',' | append: f.system.handle | append: ','
             unless visible contains fh
