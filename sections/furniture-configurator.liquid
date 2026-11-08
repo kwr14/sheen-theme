@@ -5,7 +5,7 @@
   Data
   • product.metafields.custom.fabrics   shared list of "fabric_colour" metaobjects
   • Headboards use product.metafields.custom.headboard_fabrics, a dedicated list
-    referencing the same records; only records marked "Live" are shown.
+    with one fabric per product, matching that headboard's featured image.
   • Fields used: display_name, fabric_family, supplier, collection, colour_name, supplier_code,
       swatch_sku, swatch_image, chip_colour, composition, badges, price_tier, stock_status,
       lead_time_note, allowed_products
@@ -30,7 +30,8 @@
   • stock_status "Live" → selectable.  "Temporarily unavailable" → shown, not selectable.
   • "Discontinued" → hidden.  "Not yet approved" → hidden, except in preview
     (theme editor, the "Preview unapproved fabrics" setting, or a product tagged "fabric-preview").
-  • Headboards use their dedicated source and show only "Live" fabrics, including in preview.
+  • Headboards use only their featured-image fabric. An unapproved fabric appears only in
+    preview and cannot be purchased until its status is "Live".
   • allowed_products: when filled, the fabric only shows on matching product types (e.g. "Sofa").
     A shape type also matches its base type: "Curved sofas" → Sofa, "Tub chairs" → Armchair.
 
@@ -111,7 +112,7 @@
       if status == 'Discontinued'
         continue
       endif
-      if is_headboard and status != 'Live'
+      if is_headboard and status != 'Live' and preview == false
         continue
       endif
       if is_headboard == false and status == 'Not yet approved' and preview == false
@@ -398,7 +399,9 @@
         <hr class="fc-rule">
 
         {%- if library_mode -%}
-          {%- if request.design_mode and is_headboard == false -%}
+          {%- if is_headboard and preview and any_live == false -%}
+            <p class="fc-preview-flag">Showing the fabric used in this headboard’s main image. It can’t be purchased until approved.</p>
+          {%- elsif request.design_mode and is_headboard == false -%}
             <p class="fc-preview-flag">Editor preview: fabrics marked “Not yet approved” are showing. They can’t be bought.</p>
           {%- elsif preview and any_live == false and section.settings.coming_soon_note != blank -%}
             <div class="fc-soon">{{ section.settings.coming_soon_note }}</div>
@@ -1145,7 +1148,7 @@
     { "type": "text", "id": "size_label", "label": "Step 3 heading", "default": "Choose a size" },
     { "type": "text", "id": "fabric_label", "label": "Heading for products without the fabric library", "default": "Choose your option" },
     { "type": "text", "id": "choose_text", "label": "Button text before a fabric is chosen", "default": "Choose a fabric" },
-    { "type": "checkbox", "id": "show_unapproved", "label": "Show unapproved fabrics (showcase)", "default": false, "info": "Shows fabrics marked 'Not yet approved' to other furniture as a showcase: they can't be bought. Headboards always use their separate source and show Live fabrics only." },
+    { "type": "checkbox", "id": "show_unapproved", "label": "Show unapproved fabrics (showcase)", "default": false, "info": "Shows fabrics marked 'Not yet approved' as a showcase: they can't be bought. Headboards show only the fabric used in each featured image." },
     { "type": "header", "content": "Before ordering opens" },
     { "type": "checkbox", "id": "prices_before_live", "label": "Show prices before any colour is Live", "default": false },
     { "type": "text", "id": "no_price_text", "label": "Price text before ordering opens", "default": "Coming soon" },
