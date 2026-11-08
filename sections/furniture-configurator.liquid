@@ -53,10 +53,9 @@
     # Preserve the existing first-50 behaviour for other products.
     assign fabrics = product.metafields.custom.fabrics.value | slice: 0, 50
   endif
-  assign paginate_items = fabrics | default: product.variants
 -%}
 
-{%- paginate paginate_items by 250 -%}
+{%- paginate product.metafields.custom.headboard_fabrics.value by 250 -%}
 
 {%- liquid
 
