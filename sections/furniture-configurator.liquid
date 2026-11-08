@@ -692,8 +692,8 @@
       "productHandle": {{ product.handle | json }},
       "illustration": {% if section.settings.show_illustration == false %}false{% else %}true{% endif %},
       "illusLabel": {{ section.settings.illustration_label | default: 'Your colour' | json }},
-      "illusNote": {{ section.settings.illustration_note | default: 'Illustration · colour is indicative' | json }},
-      "renderNote": {{ section.settings.render_note | default: 'Rendered image · colour is indicative' | json }},
+      "illusNote": {{ section.settings.illustration_note | default: 'Colour is indicative' | json }},
+      "renderNote": {{ section.settings.render_note | default: 'Colour is indicative' | json }},
       "photoNote": {{ section.settings.generic_photo_note | json }},
       "soonButton": {{ section.settings.coming_soon_button | json }},
       "soonNote": {{ section.settings.coming_soon_status | json }},
@@ -819,6 +819,7 @@
 <script src="{{ 'furniture-generated-photos.js' | asset_url }}"></script>
 <script src="{{ 'furniture-fabric-details.js' | asset_url }}"></script>
 <script src="{{ 'furniture-headboard-photos.js' | asset_url }}"></script>
+<script src="{{ 'furniture-headboard-view-photos.js' | asset_url }}"></script>
 <script>
   window.SheenFabricDetails = window.SheenFabricDetails || {};
   window.SheenFabricDetails['natural-linen-sage'] = {{ 'petersham-sage-elba-detail.jpg' | asset_url | json }};
@@ -898,7 +899,7 @@
         if (alt.charAt(0) === '#') {
           var sp = alt.indexOf(' ');
           var tag = norm(sp > 0 ? alt.slice(1, sp) : alt.slice(1));
-          if ((code && tag === code) || (handle && tag === handle)) tagged.push({ src: im.src, thumb: im.thumb, label: sp > 0 ? alt.slice(sp + 1).trim() : 'View', alt: (f.name || '') + ' — ' + (sp > 0 ? alt.slice(sp + 1).trim() : ''), note: im.generated ? 'AI-generated visualisation · compare colour with the physical swatch' : '' });
+          if ((code && tag === code) || (handle && tag === handle)) tagged.push({ src: im.src, thumb: im.thumb, label: sp > 0 ? alt.slice(sp + 1).trim() : 'View', alt: (f.name || '') + ' — ' + (sp > 0 ? alt.slice(sp + 1).trim() : ''), note: '' });
         } else {
           untagged.push(im);
         }
@@ -1116,7 +1117,7 @@
       upgradeViews(f, state.fabric);
     }
 
-    // Swap the drawings for realistic renders tinted to the chosen colour (assets/furniture-renders.js)
+    // Use fabric-matched headboard photographs where available, with colour renders as fallback.
     var renderToken = 0;
     function upgradeViews(f, handle) {
       var R = window.SheenRenders, I = window.SheenFurnitureIllustration;
@@ -1127,6 +1128,7 @@
       var token = ++renderToken;
       var productPhotos = window.SheenFurniturePhotos && window.SheenFurniturePhotos[D.productHandle];
       var headboardPhotos = window.SheenHeadboardPhotos && window.SheenHeadboardPhotos[D.productHandle];
+      var headboardViewPhotos = window.SheenHeadboardViewPhotos && window.SheenHeadboardViewPhotos[D.productHandle] && window.SheenHeadboardViewPhotos[D.productHandle][handle];
       var roomPhoto = (headboardPhotos && headboardPhotos[handle]) || (productPhotos && productPhotos[handle]);
       var fabricDetails = window.SheenFabricDetails || {};
       var detailPhoto = fabricDetails[handle];
@@ -1145,10 +1147,11 @@
         var list = res.generic ? shots.map(function (s) {
           if (roomPhoto && s.view === 'room') {
             return { src: roomPhoto, thumb: roomPhoto, label: 'In a room',
-                     alt: (f.name || '') + ' — in a room', note: 'AI-generated room visualisation · compare colour and texture with the physical swatch' };
+                     alt: (f.name || '') + ' — in a room', note: '' };
           }
-          return { src: s.src, thumb: s.src, label: s.label,
-                   alt: (f.name || '') + ' — ' + s.label.toLowerCase(), note: D.renderNote || '' };
+          var photo = headboardViewPhotos && headboardViewPhotos[s.view];
+          return { src: photo || s.src, thumb: photo || s.src, label: s.label,
+                   alt: (f.name || '') + ' — ' + s.label.toLowerCase(), note: photo ? '' : (D.renderNote || '') };
         }) : colorPhotos.slice();
         if (!res.generic) {
           // Keep colour-tagged photos and fill any missing view (for example,
@@ -1163,7 +1166,7 @@
         if (detailPhoto && !list.some(function (v) { return keyFor(v) === 'detail'; })) {
           list.push({ src: detailPhoto, thumb: detailPhoto, label: 'Detail',
                       alt: (f.name || '') + ' — fabric detail',
-                      note: 'AI-generated fabric detail · compare colour and texture with the physical swatch' });
+                      note: '' });
         }
         var order = { room: 0, front: 1, angle: 2, side: 3, detail: 4 };
         list.sort(function (a, b) {
@@ -1230,8 +1233,8 @@
     { "type": "text", "id": "generic_photo_note", "label": "Label on photos not in the chosen fabric", "default": "Shown in a sample fabric" },
     { "type": "checkbox", "id": "show_illustration", "label": "Show an illustration in the chosen colour", "default": true, "info": "Used when a colour has no photos of its own (alt text '#CODE View')" },
     { "type": "text", "id": "illustration_label", "label": "Illustration view name", "default": "Your colour", "info": "Only used if the drawing script can't provide its own views (Front, Angle, Side, In a room)." },
-    { "type": "text", "id": "illustration_note", "label": "Label on the illustration", "default": "Illustration · colour is indicative" },
-    { "type": "text", "id": "render_note", "label": "Label on the 3D renders", "default": "Rendered image · colour is indicative" },
+    { "type": "text", "id": "illustration_note", "label": "Label on the illustration", "default": "Colour is indicative" },
+    { "type": "text", "id": "render_note", "label": "Label on the 3D renders", "default": "Colour is indicative" },
     { "type": "text", "id": "price_note", "label": "Text next to price", "default": "incl. VAT · in your chosen fabric" },
     { "type": "header", "content": "Fabric picker" },
     { "type": "text", "id": "family_label", "label": "Step 1 heading", "default": "Choose a fabric" },
