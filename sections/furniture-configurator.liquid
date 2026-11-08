@@ -47,6 +47,11 @@
   assign current = product.selected_or_first_available_variant
   assign form_id = 'fc-form-' | append: section.id
   assign is_headboard = false
+  assign is_armchair = false
+  assign product_type_lower = product.type | downcase
+  if product_type_lower contains 'chair'
+    assign is_armchair = true
+  endif
   if product.type == 'Headboards'
     assign is_headboard = true
     assign fabric_source_key = 'headboard_fabrics'
@@ -213,6 +218,7 @@
   #fc-{{ section.id }} .fc-layout { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 64px; align-items: start; }
   #fc-{{ section.id }} .fc-layout > *, #fc-{{ section.id }} .fc-panel > *, #fc-{{ section.id }} form > div { min-width: 0; }
   #fc-{{ section.id }} .fc-media { position: sticky; top: 24px; }
+  #fc-{{ section.id }} .fc-media[hidden] { display: none !important; }
   #fc-{{ section.id }} .fc-stage { position: relative; background: var(--fc-soft); border-radius: 4px; aspect-ratio: 8 / 7; display: flex; align-items: center; justify-content: center; overflow: hidden; }
   #fc-{{ section.id }} .fc-stage img { width: 100%; height: 100%; object-fit: cover; display: block; transition: opacity .2s ease; }
   #fc-{{ section.id }} .fc-stage.is-loading img { opacity: .35; }
@@ -361,7 +367,7 @@
       {%- comment -%} ── Media ── {%- endcomment -%}
       <div class="fc-media">
         <div class="fc-stage" data-fc-stage>
-          {%- if product.featured_image -%}
+          {%- if product.featured_image and is_armchair == false -%}
             {%- assign main_alt = product.title | escape -%}
             {{ product.featured_image | image_url: width: 1600 | image_tag: class: 'fc-main-image', widths: '600, 900, 1200, 1600', sizes: '(max-width: 900px) 100vw, 58vw', alt: main_alt, fetchpriority: 'high' }}
           {%- else -%}
@@ -622,6 +628,7 @@
       "showPrices": {{ show_prices | json }},
       "productType": {{ product.type | json }},
       "productHandle": {{ product.handle | json }},
+      "photoOnly": {{ is_armchair | json }},
       "illustration": {% if section.settings.show_illustration == false %}false{% else %}true{% endif %},
       "illusLabel": {{ section.settings.illustration_label | default: 'Your colour' | json }},
       "illusNote": {{ section.settings.illustration_note | default: 'Colour is indicative' | json }},
@@ -750,7 +757,7 @@
     }
 
     /* ── Views ── */
-    var img = $('.fc-main-image'), stage = $('[data-fc-stage]'), viewsEl = $('[data-fc-views]');
+    var img = $('.fc-main-image'), media = $('.fc-media'), stage = $('[data-fc-stage]'), viewsEl = $('[data-fc-views]');
     var prevBtn = $('[data-fc-prev]'), nextBtn = $('[data-fc-next]'), labelEl = $('[data-fc-view-label]'), genericEl = $('[data-fc-generic]');
     var views = [], viewIndex = 0;
     /* sheen-media-files:start (pure; unit-tested by t16/test/media-files.test.js) */
@@ -822,6 +829,7 @@
         if (taggedRoom > 0) tagged.unshift(tagged.splice(taggedRoom, 1)[0]);
         return { list: tagged, generic: false };
       }
+      if (D.photoOnly) return { list: [], generic: true };
       // Only untagged photos are shared across colours; with none, a colour shows its own renders/drawings
       var base = untagged;
       if (!base.length && !(f && D.illustration)) base = D.images.filter(function (im) { return (im.alt || '').trim().charAt(0) !== '#' && !parseMediaFile(im.file); });
@@ -873,9 +881,18 @@
     }
     function setViews(res) {
       views = res.list || [];
+      if (D.photoOnly && media) media.hidden = views.length === 0;
+      if (D.photoOnly && stage) stage.hidden = views.length === 0;
       if (!viewsEl) return;
       viewsEl.innerHTML = '';
       viewsEl.hidden = views.length < 2;
+      if (!views.length) {
+        if (prevBtn) prevBtn.hidden = true;
+        if (nextBtn) nextBtn.hidden = true;
+        if (labelEl) labelEl.hidden = true;
+        if (genericEl) genericEl.hidden = true;
+        return;
+      }
       views.forEach(function (v, n) {
         var b = document.createElement('button');
         b.type = 'button'; b.className = 'fc-view';
@@ -1027,15 +1044,25 @@
     var renderToken = 0;
     function upgradeViews(f, handle) {
       var R = window.SheenRenders, I = window.SheenFurnitureIllustration;
-      if (!f || !D.illustration || !R || !I) return;
+      if (!f) return;
       var res = viewsFor(f);
-      var kind = (D.productHandle && R.has(D.productHandle)) ? D.productHandle : I.kindFor(D.productType);   // per-model renders first
-      if (!R.has(kind)) return;
       var token = ++renderToken;
       var productPhotos = window.SheenFurniturePhotos && window.SheenFurniturePhotos[D.productHandle];
       var headboardPhotos = window.SheenHeadboardPhotos && window.SheenHeadboardPhotos[D.productHandle];
       var headboardViewPhotos = window.SheenHeadboardViewPhotos && window.SheenHeadboardViewPhotos[D.productHandle] && window.SheenHeadboardViewPhotos[D.productHandle][handle];
       var roomPhoto = (headboardPhotos && headboardPhotos[handle]) || (productPhotos && productPhotos[handle]);
+      if (D.photoOnly) {
+        var photoList = res.list.slice();
+        if (roomPhoto && !photoList.some(function (v) { return /room/i.test(v.label || ''); })) {
+          photoList.push({ src: roomPhoto, thumb: roomPhoto, label: 'In a room',
+                           alt: (f.name || '') + ' — in a room', note: '', photo: true });
+        }
+        setViews({ list: photoList, generic: photoList.length === 0 });
+        return;
+      }
+      if (!D.illustration || !R || !I) return;
+      var kind = (D.productHandle && R.has(D.productHandle)) ? D.productHandle : I.kindFor(D.productType);   // per-model renders first
+      if (!R.has(kind)) return;
       var fabricDetails = window.SheenFabricDetails || {};
       var detailPhoto = fabricDetails[handle];
       function keyFor(view) {
@@ -1059,7 +1086,7 @@
           return { src: photo || s.src, thumb: photo || s.src, label: s.label,
                    alt: (f.name || '') + ' — ' + s.label.toLowerCase(), note: photo ? '' : (D.renderNote || '') };
         }) : colorPhotos.slice();
-        if (!res.generic) {
+        if (!res.generic && !D.photoOnly) {
           // Keep colour-tagged photos and fill any missing view (for example,
           // the side view absent from the Sage photo sets) with its tinted render.
           shots.forEach(function (s) {
