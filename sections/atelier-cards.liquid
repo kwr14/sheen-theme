@@ -19,10 +19,13 @@
         {%- assign col = block.settings.collection -%}
         {%- if col != blank and col.handle == blank -%}{%- assign col = collections[col] -%}{%- endif -%}
         {%- assign img = block.settings.image | default: col.image -%}
+        {%- assign theme_asset = block.settings.theme_asset | strip -%}
         {%- assign title = block.settings.title | default: col.title -%}
         {%- assign href = block.settings.link | default: col.url | default: '/collections/all' -%}
         {%- capture picture -%}
-          {%- if img != blank -%}
+          {%- if theme_asset != blank -%}
+            <img src="{{ theme_asset | asset_url }}" alt="{{ title | escape }}" loading="lazy" width="1200" height="900">
+          {%- elsif img != blank -%}
             {%- if block.settings.image != blank -%}{%- assign card_alt = img.alt | default: title -%}{%- else -%}{%- assign card_alt = title -%}{%- endif -%}
             {{ img | image_url: width: 1000 | image_tag: loading: 'lazy', widths: '300, 500, 700, 1000', sizes: '(max-width: 900px) 50vw, 25vw', alt: card_alt }}
           {%- else -%}
@@ -65,6 +68,7 @@
       "name": "Card",
       "settings": [
         { "type": "image_picker", "id": "image", "label": "Image", "info": "Leave blank to use the collection's image." },
+        { "type": "text", "id": "theme_asset", "label": "Theme asset image", "info": "Optional theme asset file name. When set, this image overrides the image picker and collection image." },
         { "type": "collection", "id": "collection", "label": "Collection" },
         { "type": "text", "id": "title", "label": "Title", "info": "Leave blank to use the collection's name." },
         { "type": "text", "id": "text", "label": "Text" },

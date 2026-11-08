@@ -1859,7 +1859,8 @@
             "settings": {
               "name": "Scalloped Arch headboard",
               "link": "shopify://products/scalloped-arch-headboard",
-              "render": "fr-scalloped-arch-headboard-room-card.jpg"
+              "render": "headboard-scalloped-arch-best-stripe-sand-leaf-front.png",
+              "prefer_theme_asset": true
             }
           }
         },
@@ -1960,7 +1961,8 @@
           "use-4": {
             "type": "card",
             "settings": {
-              "image": "shopify://shop_images/sheen-headboard-photo.jpg",
+              "image": "",
+              "theme_asset": "headboard-notched-verity-indigo-front.png",
               "title": "Headboards & cushions",
               "text": "Velvets and statement prints for the finishing touches.",
               "link": "shopify://collections/fabrics"
