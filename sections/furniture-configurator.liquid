@@ -1144,7 +1144,7 @@
       R.views(kind, f.family, f.chip || '#b9b0a1').then(function (shots) {
         if (token !== renderToken || state.fabric !== handle) return;
         var colorPhotos = res.list.filter(function (v) { return !v.drawn; });
-        var list = res.generic ? shots.map(function (s) {
+        var list = (res.generic || headboardViewPhotos) ? shots.map(function (s) {
           if (roomPhoto && s.view === 'room') {
             return { src: roomPhoto, thumb: roomPhoto, label: 'In a room',
                      alt: (f.name || '') + ' — in a room', note: '' };
