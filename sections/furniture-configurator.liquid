@@ -3,8 +3,10 @@
   Flow: fabric family tabs → colour chips → size → add to basket / order a swatch.
 
   Data
-  • product.metafields.custom.fabrics   list of "fabric_colour" metaobjects (the shared fabric library)
-      fields used: display_name, fabric_family, supplier, collection, colour_name, supplier_code,
+  • product.metafields.custom.fabrics   shared list of "fabric_colour" metaobjects
+  • Headboards use product.metafields.custom.headboard_fabrics, a dedicated list
+    referencing the same records; only records marked "Live" are shown.
+  • Fields used: display_name, fabric_family, supplier, collection, colour_name, supplier_code,
       swatch_sku, swatch_image, chip_colour, composition, badges, price_tier, stock_status,
       lead_time_note, allowed_products
   • Variants = Size × Fabric tier (option names "Size" and "Fabric tier"; tiers Core / Premium / Designer).
@@ -28,6 +30,7 @@
   • stock_status "Live" → selectable.  "Temporarily unavailable" → shown, not selectable.
   • "Discontinued" → hidden.  "Not yet approved" → hidden, except in preview
     (theme editor, the "Preview unapproved fabrics" setting, or a product tagged "fabric-preview").
+  • Headboards use their dedicated source and show only "Live" fabrics, including in preview.
   • allowed_products: when filled, the fabric only shows on matching product types (e.g. "Sofa").
     A shape type also matches its base type: "Curved sofas" → Sofa, "Tub chairs" → Armchair.
 
@@ -42,7 +45,20 @@
   assign lead_time = product.metafields.custom.lead_time.value
   assign current = product.selected_or_first_available_variant
   assign form_id = 'fc-form-' | append: section.id
-  assign fabrics = product.metafields.custom.fabrics.value
+  assign is_headboard = false
+  if product.type == 'Headboards'
+    assign is_headboard = true
+    assign fabrics = product.metafields.custom.headboard_fabrics.value
+  else
+    # Preserve the existing first-50 behaviour for other products.
+    assign fabrics = product.metafields.custom.fabrics.value | slice: 0, 50
+  endif
+  assign paginate_items = fabrics | default: product.variants
+-%}
+
+{%- paginate paginate_items by 250 -%}
+
+{%- liquid
 
   assign metres_display = metres | append: ''
   assign metres_parts = metres_display | split: '.'
@@ -54,31 +70,6 @@
   assign preview = false
   if section.settings.show_unapproved or request.design_mode or product.tags contains 'fabric-preview'
     assign preview = true
-  endif
-
-  # Staging art-direction preview: show the assigned designer print on its matching
-  # headboard only. The fabric remains non-orderable until its status is Live.
-  assign board_fabric_handle = ''
-  case product.handle
-    when 'scalloped-arch-headboard'
-      assign board_fabric_handle = 'designer-prints-best-stripe-sand-leaf'
-    when 'camelback-headboard'
-      assign board_fabric_handle = 'designer-prints-guerbois-forest'
-    when 'clover-headboard'
-      assign board_fabric_handle = 'designer-prints-pluto-cornflower'
-    when 'notched-headboard'
-      assign board_fabric_handle = 'designer-prints-verity-indigo'
-    when 'oval-headboard'
-      assign board_fabric_handle = 'designer-prints-wilderie-porcelain-seaglass'
-    when 'curved-peak-headboard'
-      assign board_fabric_handle = 'designer-prints-brera-sage'
-  endcase
-
-  # List metafield references are exposed in pages of 50. Resolve this one
-  # headboard's assigned board fabric directly for the staging showcase.
-  assign board_fabric = nil
-  if board_fabric_handle != blank
-    assign board_fabric = metaobjects['fabric_colour'][board_fabric_handle]
   endif
 
   # Option positions for Size and Fabric tier
@@ -121,7 +112,10 @@
       if status == 'Discontinued'
         continue
       endif
-      if status == 'Not yet approved' and preview == false and f.system.handle != board_fabric_handle
+      if is_headboard and status != 'Live'
+        continue
+      endif
+      if is_headboard == false and status == 'Not yet approved' and preview == false
         continue
       endif
       assign allowed = true
@@ -163,47 +157,6 @@
         endif
       endunless
     endfor
-    if board_fabric != blank
-      assign f = board_fabric
-      assign status = f.stock_status.value | default: 'Not yet approved'
-      if status != 'Discontinued'
-        if status != 'Not yet approved' or preview or f.system.handle == board_fabric_handle
-          assign allowed = true
-          assign allow_list = f.allowed_products.value
-          if allow_list != blank and allow_list.size > 0
-            assign allowed = false
-            for a in allow_list
-              assign al = a | downcase | strip
-              assign alast = al | slice: -1
-              if alast == 's'
-                assign al = al | remove_last: 's'
-              endif
-              if al == ptype or al == ptype_base or al == 'all' or al == product.handle
-                assign allowed = true
-                break
-              endif
-            endfor
-          endif
-          if allowed and f.price_tier.value != blank
-            assign visible = visible | append: f.system.handle | append: ','
-            assign visible_count = visible_count | plus: 1
-            if status == 'Live'
-              assign any_live = true
-            endif
-            assign fam = f.fabric_family.value | default: 'Other'
-            assign fam_key = '|' | append: fam | append: '|'
-            assign families_wrapped = '|' | append: families | append: '|'
-            unless families_wrapped contains fam_key
-              if families == ''
-                assign families = fam
-              else
-                assign families = families | append: '|' | append: fam
-              endif
-            endunless
-          endif
-        endif
-      endif
-    endif
   endif
   assign family_list = families | split: '|'
 
@@ -446,7 +399,7 @@
         <hr class="fc-rule">
 
         {%- if library_mode -%}
-          {%- if request.design_mode -%}
+          {%- if request.design_mode and is_headboard == false -%}
             <p class="fc-preview-flag">Editor preview: fabrics marked “Not yet approved” are showing. They can’t be bought.</p>
           {%- elsif preview and any_live == false and section.settings.coming_soon_note != blank -%}
             <div class="fc-soon">{{ section.settings.coming_soon_note }}</div>
@@ -480,12 +433,6 @@
                           endif
                         endif
                       endfor
-                      if fam_tier == blank and board_fabric.fabric_family.value == fam
-                        assign board_fh = ',' | append: board_fabric.system.handle | append: ','
-                        if visible contains board_fh
-                          assign fam_tier = board_fabric.price_tier.value
-                        endif
-                      endif
                       assign tier_price = ''
                       assign tp_list = tier_prices | split: '|'
                       for tp in tp_list
@@ -540,23 +487,6 @@
                         <span class="fc-colour-name">{{ f.colour_name.value }}{% if f_status == 'Temporarily unavailable' %}<span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);"> (temporarily unavailable)</span>{% endif %}</span>
                       </label>
                     {%- endfor -%}
-                    {%- if board_fabric != blank and board_fabric.fabric_family.value == fam -%}
-                      {%- assign board_fh = ',' | append: board_fabric.system.handle | append: ',' -%}
-                      {%- if visible contains board_fh -%}
-                        {%- assign chip_style = '' -%}
-                        {%- if board_fabric.swatch_image.value != blank -%}
-                          {%- assign chip_src = board_fabric.swatch_image.value | image_url: width: 160 -%}
-                          {%- assign chip_style = 'background-image:url(' | append: chip_src | append: ');' -%}
-                        {%- elsif board_fabric.chip_colour.value != blank -%}
-                          {%- assign chip_style = 'background-color:' | append: board_fabric.chip_colour.value | append: ';' -%}
-                        {%- endif -%}
-                        <label class="fc-colour">
-                          <input type="radio" name="fc-fabric-{{ section.id }}" value="{{ board_fabric.system.handle }}" data-fc-fabric>
-                          <span class="fc-chip" style="{{ chip_style }}" aria-hidden="true"></span>
-                          <span class="fc-colour-name">{{ board_fabric.colour_name.value }}</span>
-                        </label>
-                      {%- endif -%}
-                    {%- endif -%}
                   </fieldset>
                 {%- endfor -%}
 
@@ -780,38 +710,12 @@
             "swatch": {{ sw | json }}
           }
         {%- endfor -%}
-        {%- if board_fabric != blank -%}
-          {%- assign fh = ',' | append: board_fabric.system.handle | append: ',' -%}
-          {%- if visible contains fh -%}
-            {%- assign sw = '' -%}
-            {%- if board_fabric.swatch_image.value != blank -%}
-              {%- assign sw = board_fabric.swatch_image.value | image_url: width: 160 -%}
-            {%- endif -%}
-            {%- unless first_out %},{% endunless -%}{%- assign first_out = false -%}
-            {{ board_fabric.system.handle | json }}: {
-              "handle": {{ board_fabric.system.handle | json }},
-              "name": {{ board_fabric.display_name.value | json }},
-              "family": {{ board_fabric.fabric_family.value | json }},
-              "colour": {{ board_fabric.colour_name.value | json }},
-              "supplier": {{ board_fabric.supplier.value | default: '' | json }},
-              "collection": {{ board_fabric.collection.value | default: '' | json }},
-              "code": {{ board_fabric.supplier_code.value | default: '' | json }},
-              "sku": {{ board_fabric.swatch_sku.value | default: '' | json }},
-              "comp": {{ board_fabric.composition.value | default: '' | json }},
-              "badges": {{ board_fabric.badges.value | default: '' | json }},
-              "tier": {{ board_fabric.price_tier.value | json }},
-              "status": {{ board_fabric.stock_status.value | default: 'Not yet approved' | json }},
-              "lead": {{ board_fabric.lead_time_note.value | default: '' | json }},
-              "chip": {{ board_fabric.chip_colour.value | default: '' | json }},
-              "swatch": {{ sw | json }}
-            }
-          {%- endif -%}
-        {%- endif -%}
       }
     }
   </script>
   {%- endif -%}
 </section>
+{%- endpaginate -%}
 
 {%- if library_mode and visible_count > 0 -%}
 <script src="{{ 'furniture-illustration.js' | asset_url }}"></script>
@@ -1191,7 +1095,7 @@
     });
 
     // Initial fabric: ?fabric=<handle>, else the first selectable one
-    var start = {{ board_fabric_handle | json }};
+    var start = '';
     try { start = new URL(window.location.href).searchParams.get('fabric') || start; } catch (e) {}
     var startInput = start ? root.querySelector('[data-fc-fabric][value="' + start.replace(/"/g, '') + '"]:not(:disabled)') : null;
     if (!startInput) {
@@ -1242,7 +1146,7 @@
     { "type": "text", "id": "size_label", "label": "Step 3 heading", "default": "Choose a size" },
     { "type": "text", "id": "fabric_label", "label": "Heading for products without the fabric library", "default": "Choose your option" },
     { "type": "text", "id": "choose_text", "label": "Button text before a fabric is chosen", "default": "Choose a fabric" },
-    { "type": "checkbox", "id": "show_unapproved", "label": "Show unapproved fabrics (showcase)", "default": false, "info": "Shows fabrics marked 'Not yet approved' to everyone, as a showcase: they can't be bought. Products tagged 'fabric-preview' always show them. Turn off once colours are Live." },
+    { "type": "checkbox", "id": "show_unapproved", "label": "Show unapproved fabrics (showcase)", "default": false, "info": "Shows fabrics marked 'Not yet approved' to other furniture as a showcase: they can't be bought. Headboards always use their separate source and show Live fabrics only." },
     { "type": "header", "content": "Before ordering opens" },
     { "type": "checkbox", "id": "prices_before_live", "label": "Show prices before any colour is Live", "default": false },
     { "type": "text", "id": "no_price_text", "label": "Price text before ordering opens", "default": "Coming soon" },
