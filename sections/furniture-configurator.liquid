@@ -48,14 +48,14 @@
   assign is_headboard = false
   if product.type == 'Headboards'
     assign is_headboard = true
-    assign fabrics = product.metafields.custom.headboard_fabrics.value
+    assign fabric_source_key = 'headboard_fabrics'
   else
-    # Preserve the existing first-50 behaviour for other products.
-    assign fabrics = product.metafields.custom.fabrics.value | slice: 0, 50
+    assign fabric_source_key = 'fabrics'
   endif
+  assign fabrics = product.metafields.custom[fabric_source_key].value
 -%}
 
-{%- paginate product.metafields.custom.headboard_fabrics.value by 250 -%}
+{%- paginate product.metafields.custom[fabric_source_key].value by 250 -%}
 
 {%- liquid
 
@@ -106,7 +106,7 @@
   assign visible_count = 0
   assign any_live = false
   if library_mode
-    for f in fabrics
+    for f in product.metafields.custom[fabric_source_key].value
       assign status = f.stock_status.value | default: 'Not yet approved'
       if status == 'Discontinued'
         continue
@@ -423,7 +423,7 @@
                   {%- for fam in family_list -%}
                     {%- liquid
                       assign fam_tier = ''
-                      for f in fabrics
+                      for f in product.metafields.custom[fabric_source_key].value
                         if f.fabric_family.value == fam
                           assign fh = ',' | append: f.system.handle | append: ','
                           if visible contains fh
@@ -461,7 +461,7 @@
                   {%- assign pane_index = forloop.index -%}
                   <fieldset class="fc-colours" role="tabpanel" id="fc-pane-{{ section.id }}-{{ pane_index }}" aria-labelledby="fc-tab-{{ section.id }}-{{ pane_index }}" {% unless forloop.first %}hidden{% endunless %} data-fc-pane="{{ pane_index }}">
                     <legend class="visually-hidden" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">{{ fam }} colours</legend>
-                    {%- for f in fabrics -%}
+                    {%- for f in product.metafields.custom[fabric_source_key].value -%}
                       {%- liquid
                         if f.fabric_family.value != fam
                           continue
@@ -679,7 +679,7 @@
       ],
       "fabrics": {
         {%- assign first_out = true -%}
-        {%- for f in fabrics -%}
+        {%- for f in product.metafields.custom[fabric_source_key].value -%}
           {%- liquid
             assign fh = ',' | append: f.system.handle | append: ','
             unless visible contains fh
